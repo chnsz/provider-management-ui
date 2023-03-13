@@ -1,7 +1,7 @@
 import { getProviderHealthCheckSum } from '@/services/portal/api';
 import ReactEcharts from 'echarts-for-react';
 import React, { useEffect, useState } from 'react';
-import '../protal.less';
+import '../portal.less';
 
 const Health: React.FC = () => {
     const [items, setItems] = useState<Portal.ProviderHealthCheckSum>({

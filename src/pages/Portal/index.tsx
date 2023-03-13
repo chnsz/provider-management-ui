@@ -1,4 +1,4 @@
-import Demo from '@/pages/Portal/components/demo';
+import ApiCoverage from '@/pages/Portal/components/api-coverage';
 import Health from '@/pages/Portal/components/health';
 import { getApiCoverageSum } from '@/services/portal/api';
 import { Col, Row } from 'antd';
@@ -11,12 +11,12 @@ const Portal: React.FC = () => {
         <div style={{ height: '398px' }}>
             <Row>
                 <Col span={8}>
-                    <Demo />
+                    <ApiCoverage />
                 </Col>
                 <Col span={5}>
                     <Health />
                 </Col>
-                <Col span={11}></Col>
+                <Col span={11} />
             </Row>
         </div>
     );
