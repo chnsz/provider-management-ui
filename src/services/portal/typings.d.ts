@@ -8,4 +8,17 @@ declare namespace Portal {
         failing: number;
         notSuitable: number;
     };
+
+    type ApiHealthCheck = {
+        resource: {
+            success: number;
+            apiFailed: number;
+            other: number;
+        };
+        dataSource: {
+            success: number;
+            apiFailed: number;
+            other: number;
+        };
+    };
 }

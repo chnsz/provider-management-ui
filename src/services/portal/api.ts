@@ -1,6 +1,10 @@
-import {request} from "@@/exports";
+import { request } from '@@/exports';
 
 /** 查询API对接汇总数据 GET /portal/api-coverage-sum */
 export async function getApiCoverageSum() {
-    return request<Portal.ApiCoverage>('/portal/api-coverage-sum', {method: 'GET'});
+    return request<Portal.ApiCoverage>('/portal/api-coverage-sum', { method: 'GET' });
+}
+
+export async function getApiHealthCheckSum() {
+    return request<Portal.ApiHealthCheck>('/portal/api-health-sum', { method: 'GET' });
 }
