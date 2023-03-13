@@ -1,0 +1,92 @@
+html,
+body,
+#root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+}
+
+canvas {
+    display: block;
+}
+
+body {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+ul,
+ol {
+    list-style: none;
+}
+
+@media (max-width: 768px) {
+    .ant-table {
+        width: 100%;
+        overflow-x: auto;
+
+        &-thead > tr,
+        &-tbody > tr {
+            > th,
+            > td {
+                white-space: pre;
+
+                > span {
+                    display: block;
+                }
+            }
+        }
+    }
+}
+
+.colorWeak {
+    filter: invert(80%);
+}
+
+.ant-layout {
+    min-height: 100vh;
+}
+
+.ant-pro-sider .ant-layout-sider .ant-pro-sider-fixed {
+    left: unset;
+}
+
+.ant-pro-top-nav-header-logo {
+    margin-right: 32px;
+
+    img {
+        height: 32px !important;
+    }
+}
+
+.ant-pro-top-nav-header-logo > *:first-child > h1 {
+    margin-left: 20px;
+    font-size: 18px !important;
+}
+
+.ant-pro-top-nav-header-menu {
+    padding: 0px !important;
+}
+
+.ant-pro-top-nav-header-base-menu,
+.ant-pro-top-nav-header-base-menu .ant-pro-base-menu-item-title {
+    height: 100%;
+}
+
+.ant-timeline-item {
+    font-size: 14px;
+}
+
+.diff-content {
+    padding: 24px;
+    color: #fff;
+    font-weight: normal;
+    font-size: 16px;
+    font-family: Consolas, 'Courier New', monospace;
+    white-space: pre;
+    background: rgb(43 43 43);
+}
