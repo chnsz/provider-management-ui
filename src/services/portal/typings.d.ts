@@ -9,7 +9,7 @@ declare namespace Portal {
         notSuitable: number;
     };
 
-    type ApiHealthCheck = {
+    type ProviderHealthCheckSum = {
         resource: {
             success: number;
             apiFailed: number;

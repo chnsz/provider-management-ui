@@ -1,29 +1,24 @@
-import { getApiHealthCheckSum } from '@/services/portal/api';
+import { getProviderHealthCheckSum } from '@/services/portal/api';
 import ReactEcharts from 'echarts-for-react';
 import React, { useEffect, useState } from 'react';
-import '../portal.less';
+import '../protal.less';
 
 const Health: React.FC = () => {
-    const [resourceSuccess, setResourceSuccess] = useState<number>();
-    const [resourceApiFailed, setResourceApiFailed] = useState<number>();
-    const [resourceOther, setResourceOther] = useState<number>();
-    const [dataSuccess, setDataSuccess] = useState<number>();
-    const [dataApiFailed, setDataApiFailed] = useState<number>();
-    const [dataOther, setDataOther] = useState<number>();
+    const [items, setItems] = useState<Portal.ProviderHealthCheckSum>({
+        dataSource: {
+            apiFailed: 0,
+            other: 0,
+            success: 0,
+        },
+        resource: {
+            apiFailed: 0,
+            other: 0,
+            success: 0,
+        },
+    });
     useEffect(() => {
-        getApiHealthCheckSum().then((rsp) => {
-            const dataSuccess = rsp.dataSource.success;
-            const dataApiFailed = rsp.dataSource.apiFailed;
-            const dataOther = rsp.dataSource.other;
-            const resourceSuccess = rsp.resource.success;
-            const resourceApiFailed = rsp.resource.apiFailed;
-            const resourceOther = rsp.resource.other;
-            setResourceSuccess(resourceSuccess);
-            setResourceApiFailed(resourceApiFailed);
-            setResourceOther(resourceOther);
-            setDataSuccess(dataSuccess);
-            setDataApiFailed(dataApiFailed);
-            setDataOther(dataOther);
+        getProviderHealthCheckSum().then((rsp) => {
+            setItems(rsp);
         });
     }, []);
     const option = {
@@ -37,7 +32,7 @@ const Health: React.FC = () => {
         },
         series: [
             {
-                name: 'Health',
+                name: 'resource',
                 type: 'pie',
                 selectedMode: 'single',
                 radius: ['15%', '30%'],
@@ -48,13 +43,13 @@ const Health: React.FC = () => {
                     show: false,
                 },
                 data: [
-                    { value: resourceSuccess, name: '成功' },
-                    { value: resourceOther, name: '其他原因' },
-                    { value: resourceApiFailed, name: 'API' },
+                    { value: items.resource.success, name: '成功' },
+                    { value: items.resource.other, name: '其他原因' },
+                    { value: items.resource.apiFailed, name: 'API' },
                 ],
             },
             {
-                name: 'Health',
+                name: 'dataSource',
                 type: 'pie',
                 radius: ['45%', '60%'],
                 labelLine: {
@@ -64,9 +59,9 @@ const Health: React.FC = () => {
                     show: false,
                 },
                 data: [
-                    { value: dataSuccess, name: '成功' },
-                    { value: dataApiFailed, name: 'API' },
-                    { value: dataOther, name: '其他原因' },
+                    { value: items.dataSource.success, name: '成功' },
+                    { value: items.dataSource.apiFailed, name: 'API' },
+                    { value: items.dataSource.other, name: '其他原因' },
                 ],
             },
         ],
@@ -76,17 +71,7 @@ const Health: React.FC = () => {
     return (
         <div className={'portal-card'}>
             <div className={'header title'}>健康度</div>
-            <ReactEcharts
-                option={option}
-                // @ts-ignore
-                resourceSuccess={resourceSuccess}
-                resourceApiFailed={resourceApiFailed}
-                resourceOther={resourceOther}
-                dataSuccess={dataSuccess}
-                dataApiFailed={dataApiFailed}
-                dataOther={dataOther}
-                style={{ height: '100%', width: '100%' }}
-            />
+            <ReactEcharts option={option} style={{ height: '100%', width: '100%' }} />
         </div>
     );
 };

@@ -1,4 +1,4 @@
-import {Request, Response} from "express";
+import { Request, Response } from 'express';
 
 export default {
     'GET /portal/api-coverage-sum': (req: Request, res: Response) => {
@@ -11,7 +11,7 @@ export default {
         });
     },
 
-    'GET /portal/api-health-sum': (req: Request, res: Response) => {
+    'GET /portal/provider-health-check-sum': (req: Request, res: Response) => {
         res.send({
             resource: {
                 success: 83,
