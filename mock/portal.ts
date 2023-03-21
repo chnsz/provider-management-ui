@@ -10,10 +10,19 @@ export default {
             notSuitable: 45,
         });
     },
+
     'GET /portal/provider-health-check-sum': (req: Request, res: Response) => {
         res.send({
-            resource: { success: 100, apiFailed: 20, other: 10 },
-            dataSource: { success: 200, apiFailed: 30, other: 15 },
+            resource: {
+                success: 83,
+                apiFailed: 10,
+                other: 7,
+            },
+            dataSource: {
+                success: 84,
+                apiFailed: 10,
+                other: 7,
+            },
         });
     },
 };

@@ -8,4 +8,17 @@ declare namespace Portal {
         failing: number;
         notSuitable: number;
     };
+
+    type ProviderHealthCheckSum = {
+        resource: {
+            success: number;
+            apiFailed: number;
+            other: number;
+        };
+        dataSource: {
+            success: number;
+            apiFailed: number;
+            other: number;
+        };
+    };
 }
