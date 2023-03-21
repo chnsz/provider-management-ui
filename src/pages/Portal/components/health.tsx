@@ -70,8 +70,10 @@ const Health: React.FC = () => {
 
     return (
         <div className={'portal-card'}>
-            <div className={'header title'}>健康度</div>
-            <ReactEcharts option={option} style={{ height: '100%', width: '100%' }} />
+            <div className={'header'}>健康度</div>
+            <div className={'container'}>
+                <ReactEcharts option={option} />
+            </div>
         </div>
     );
 };
