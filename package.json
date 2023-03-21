@@ -6,6 +6,7 @@
     "scripts": {
         "analyze": "cross-env ANALYZE=1 max build",
         "build": "max build",
+        "build-docker": "max build && docker build -t chengxiangdong/pms-ui:latest ./ ",
         "deploy": "npm run build && npm run gh-pages",
         "dev": "npm run start:dev",
         "gh-pages": "gh-pages -d dist",
