@@ -1,6 +1,6 @@
 ﻿import type {RequestOptions} from '@@/plugin-request/request';
 import type {RequestConfig} from '@umijs/max';
-import {message, notification} from 'antd';
+import {message} from 'antd';
 
 // 错误处理方案： 错误类型
 enum ErrorShowType {
@@ -13,11 +13,9 @@ enum ErrorShowType {
 
 // 与后端约定的响应数据格式
 interface ResponseStructure {
-    success: boolean;
-    data: any;
-    errorCode?: number;
-    errorMessage?: string;
-    showType?: ErrorShowType;
+    code: number;
+    data?: any;
+    errorMsg?: string;
 }
 
 /**
@@ -30,12 +28,12 @@ export const errorConfig: RequestConfig = {
     errorConfig: {
         // 错误抛出
         errorThrower: (res) => {
-            const {success, data, errorCode, errorMessage, showType} =
-                res as unknown as ResponseStructure;
-            if (!success) {
-                const error: any = new Error(errorMessage);
+            const {code, data, errorMsg} = res as unknown as ResponseStructure;
+            if (code !== 200) {
+                const error: any = new Error(errorMsg);
                 error.name = 'BizError';
-                error.info = {errorCode, errorMessage, showType, data};
+                const showType = ErrorShowType.ERROR_MESSAGE
+                error.info = {code, errorMsg, showType, data};
                 throw error; // 抛出自制的错误
             }
         },
@@ -46,29 +44,7 @@ export const errorConfig: RequestConfig = {
             if (error.name === 'BizError') {
                 const errorInfo: ResponseStructure | undefined = error.info;
                 if (errorInfo) {
-                    const {errorMessage, errorCode} = errorInfo;
-                    switch (errorInfo.showType) {
-                        case ErrorShowType.SILENT:
-                            // do nothing
-                            break;
-                        case ErrorShowType.WARN_MESSAGE:
-                            message.warning(errorMessage);
-                            break;
-                        case ErrorShowType.ERROR_MESSAGE:
-                            message.error(errorMessage);
-                            break;
-                        case ErrorShowType.NOTIFICATION:
-                            notification.open({
-                                description: errorMessage,
-                                message: errorCode,
-                            });
-                            break;
-                        case ErrorShowType.REDIRECT:
-                            // TODO: redirect
-                            break;
-                        default:
-                            message.error(errorMessage);
-                    }
+                    message.error(errorInfo.errorMsg);
                 }
             } else if (error.response) {
                 // Axios 的错误
@@ -101,8 +77,11 @@ export const errorConfig: RequestConfig = {
             // 拦截响应数据，进行个性化处理
             const {data} = response as unknown as ResponseStructure;
 
-            if (data?.success === false) {
-                message.error('请求失败！');
+            if (data && data.code && data.code !== 200) {
+                message.error('请求失败！' + data.errorMsg);
+            }
+            if (data.data) {
+                response.data = data.data;
             }
             return response;
         },
