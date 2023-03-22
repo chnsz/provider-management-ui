@@ -1,5 +1,6 @@
+// @ts-nocheck
 /**
- * @name 代理的配置
+ * 代理的配置
  * @see 在生产环境 代理是无法生效的，所以这里没有生产环境的配置
  * -------------------------------
  * The agent cannot take effect in the production environment
@@ -16,5 +17,9 @@ export default {
             target: 'http://172.16.0.16:82/',
             changeOrigin: false,
         },
+        "/pms/": {
+            target: 'http://pms-test.huaweicloud.plus/', // @ts-nocheck
+            changeOrigin: true
+        }
     },
 };
