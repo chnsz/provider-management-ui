@@ -11,3 +11,8 @@ export async function getProviderHealthCheckSum() {
         method: 'GET',
     });
 }
+
+/** 查询服务动态信息 GET /portal/news-info */
+export async function getApiNewsInfo() {
+    return request<Portal.ServiceNews[]>('/portal/news-info', { method: 'GET' });
+}

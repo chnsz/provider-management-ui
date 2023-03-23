@@ -1,5 +1,6 @@
 import ApiCoverage from '@/pages/Portal/components/api-coverage';
 import Health from '@/pages/Portal/components/health';
+import News from '@/pages/Portal/components/news';
 import { getApiCoverageSum } from '@/services/portal/api';
 import { Col, Row } from 'antd';
 import React from 'react';
@@ -16,7 +17,9 @@ const Portal: React.FC = () => {
                 <Col span={5}>
                     <Health />
                 </Col>
-                <Col span={11} />
+                <Col span={11}>
+                    <News />
+                </Col>
             </Row>
         </div>
     );
