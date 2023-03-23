@@ -37,7 +37,7 @@ export default [
     {
         path: '/api/definition',
         name: 'api-definition',
-        component: './api/definition/index',
+        component: './api/index',
     },
     {
         path: '/api/changes',
