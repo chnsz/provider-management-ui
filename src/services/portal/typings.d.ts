@@ -1,5 +1,3 @@
-// @ts-ignore
-/* eslint-disable */
 declare namespace Portal {
     type ApiCoverage = {
         covered: number;
@@ -62,5 +60,18 @@ declare namespace Portal {
     type ServiceNews = {
         title: string;
         created: string;
+    };
+
+    type ProviderCar = {
+        key: number;
+        title: string;
+        resourceType: string;
+        apiCount: number;
+        name: string;
+        flexible_engine_status: string;
+        g42_status: string;
+        flexible_engine_param: string;
+        g42_status_param: string;
+        eps_support: string;
     };
 }

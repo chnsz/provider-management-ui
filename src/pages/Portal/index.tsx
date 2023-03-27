@@ -1,6 +1,7 @@
 import ApiCoverage from '@/pages/Portal/components/api-coverage';
 import Health from '@/pages/Portal/components/health';
 import News from '@/pages/Portal/components/news';
+import ProviderCard from '@/pages/Portal/components/provider-card';
 import ResourcePlan from '@/pages/Portal/components/resource-plan';
 import ServiceStatisticsCard from '@/pages/Portal/components/service-statistics-card';
 import { getApiCoverageSum } from '@/services/portal/api';
@@ -15,7 +16,7 @@ const Portal: React.FC = () => {
             <Row>
                 <ServiceStatisticsCard />
             </Row>
-            <div style={{ height: '24px' }}></div>
+            <div style={{ height: '24px' }} />
             <div style={{ height: '398px' }}>
                 <Row>
                     <Col span={8}>
@@ -28,9 +29,16 @@ const Portal: React.FC = () => {
                         <News />
                     </Col>
                 </Row>
-                <div>
-                    <ResourcePlan />
-                </div>
+                <Row>
+                    <Col span={24}>
+                        <ResourcePlan />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={24}>
+                        <ProviderCard />
+                    </Col>
+                </Row>
             </div>
         </>
     );
