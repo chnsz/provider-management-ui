@@ -1,5 +1,3 @@
-// @ts-ignore
-/* eslint-disable */
 declare namespace Portal {
     type ApiCoverage = {
         covered: number;
@@ -20,5 +18,10 @@ declare namespace Portal {
             apiFailed: number;
             other: number;
         };
+    };
+
+    type ServiceNews = {
+        title: string;
+        created: string;
     };
 }
