@@ -99,4 +99,45 @@ export default {
             },
         });
     },
+
+    'GET /portal/resource-plan-sum': (req: Request, res: Response) => {
+        res.send([
+            {
+                serialNo: 1,
+                feature: '磁盘管理',
+                theme: '磁盘管理资源，API已满足',
+                priority: 'P2',
+                state: '未启动',
+                date: '2022-01-28',
+                operate: '编辑 更多',
+            },
+            {
+                serialNo: 2,
+                feature: '包周期',
+                theme: '包周期API已发布，可支持创建包周期特性',
+                priority: 'P1',
+                state: '已完成',
+                date: '2022-01-28',
+                operate: '编辑 更多',
+            },
+            {
+                serialNo: 3,
+                feature: '启动模板',
+                theme: '通过启动模板快速创建资源，目前API缺失',
+                priority: 'P2',
+                state: '冻结',
+                date: '2022-01-28',
+                operate: '编辑 更多',
+            },
+            {
+                serialNo: 4,
+                feature: '标签',
+                theme: '标签API已发布，可支持标签特性',
+                priority: 'P0',
+                state: '开发中',
+                date: '2022-01-28',
+                operate: '编辑 更多',
+            },
+        ]);
+    },
 };
