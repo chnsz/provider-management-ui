@@ -70,4 +70,33 @@ export default {
             },
         ]);
     },
+
+    'GET /portal/service-statistics-card-sum': (req: Request, res: Response) => {
+        res.send({
+            product: {
+                product_img: 'http://xxxx',
+                product_short: 'ECS',
+                owner: '张三',
+            },
+            api_sum: {
+                total: 117,
+                used: 89,
+                planed: 12,
+                need_publish: 2,
+                not_analyzed: 6,
+                not_suitable: 8,
+                offline_used: 1,
+                offline: 5,
+                unpublished: 5,
+            },
+            provider: {
+                total: 11,
+                resource: 7,
+                data_source: 4,
+                tag_support: true,
+                pre_paid_support: true,
+                eps_support: true,
+            },
+        });
+    },
 };

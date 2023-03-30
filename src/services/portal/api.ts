@@ -12,6 +12,13 @@ export async function getProviderHealthCheckSum() {
     });
 }
 
+/** 查询API对接汇总数据 GET /portal/service-statistics-card-sum */
+export async function getApiPanelSum() {
+    return request<Portal.ProductSumPanel>('/portal/service-statistics-card-sum', {
+        method: 'GET',
+    });
+}
+
 /** 查询服务动态信息 GET /portal/news-info */
 export async function getApiNewsInfo() {
     return request<Portal.ServiceNews[]>('/portal/news-info', { method: 'GET' });
