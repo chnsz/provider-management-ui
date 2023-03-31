@@ -49,9 +49,14 @@ declare namespace Portal {
         };
     };
 
-    type ServiceNews = {
-        title: string;
-        created: string;
+    type getResourcePlan = {
+        serialNo: number;
+        feature: string;
+        theme: string;
+        priority: string;
+        state: string;
+        date: string;
+        operate: string;
     };
 
     type ServiceNews = {
