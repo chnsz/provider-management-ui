@@ -140,4 +140,57 @@ export default {
             },
         ]);
     },
+
+    'GET /portal/provider-car': (req: Request, res: Response) => {
+        res.send([
+            {
+                serialNo: 1,
+                title: 'resource',
+                resourceType: 'resource',
+                apicount: 32,
+                name: 'New York No. 1 Lake Park',
+                flexible_engine_status: '1',
+                g42_status: '2',
+                flexible_engine_param: '1',
+                g42_status_param: '1',
+                eps_support: '1',
+            },
+            {
+                serialNo: 2,
+                title: 'resource',
+                resourceType: 'resource',
+                name: 'London No. 2 Lake Park',
+                apicount: 32,
+                flexible_engine_status: '2',
+                g42_status: '3',
+                flexible_engine_param: '4',
+                g42_status_param: '4',
+                eps_support: '4',
+            },
+            {
+                serialNo: 3,
+                title: 'resource',
+                resourceType: 'resource',
+                name: 'Sydney No. 3 Lake Park',
+                apicount: 32,
+                flexible_engine_status: '3',
+                g42_status: '1',
+                flexible_engine_param: '4',
+                g42_status_param: '4',
+                eps_support: '4',
+            },
+            {
+                serialNo: 4,
+                title: 'resource',
+                resourceType: 'resource',
+                name: 'Sydney No. 3 Lake Park',
+                apicount: 32,
+                flexible_engine_status: '1',
+                g42_status: '1',
+                flexible_engine_param: '4',
+                g42_status_param: '4',
+                eps_support: '4',
+            },
+        ]);
+    },
 };
