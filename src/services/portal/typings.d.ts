@@ -63,8 +63,7 @@ declare namespace Portal {
     };
 
     type ProviderCar = {
-        key: number;
-        title: string;
+        serialNo: string;
         resourceType: string;
         apiCount: number;
         name: string;
@@ -73,5 +72,51 @@ declare namespace Portal {
         flexible_engine_param: string;
         g42_status_param: string;
         eps_support: string;
+    };
+
+    type ProviderList = {
+        id: number;
+        cloudName: string;
+        type: string;
+        productName: string;
+        category: string;
+        name: string;
+        activeStatus: string;
+        publishStatus: string;
+        releaseDate: date;
+        tagSupport: string;
+        prePaidSupport: string;
+        epsSupport: string;
+        created: date;
+        updated: date;
+        apiList?: ProviderApi[];
+    };
+
+    type ProviderApi = {
+        apiGroup: string;
+        apiName: string;
+        apiNameEn: string;
+        created: string;
+        id: integer;
+        method: string;
+        name: string;
+        productGroup: string;
+        productName: string;
+        type: string;
+        updated: string;
+        uriShort: string;
+    };
+    type responseResult<T> = {
+        code: number;
+        total: number;
+        data: {
+            items: T[];
+            total: number;
+        };
+    };
+
+    type CateType = {
+        value: string;
+        label: string;
     };
 }

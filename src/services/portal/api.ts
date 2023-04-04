@@ -32,3 +32,34 @@ export async function getProviderCar() {
 export async function getResourcePlanSum() {
     return request<Portal.getResourcePlan[]>('/portal/resource-plan-sum', { method: 'GET' });
 }
+
+/** 资源信息详情 GET /pms/provider-list */
+export async function getProviderList(params: {
+    /** 当前的页码 */
+    current: number;
+    /** 页面的容量 */
+    pageSize: number;
+    /** 云名称 */
+    cloudName?: string;
+    /** 资源类型 */
+    resourceType?: string;
+    /** 资源名称 */
+    resourceName?: string;
+    /** 状态 */
+    status?: string;
+}) {
+    return request<Portal.responseResult<Portal.ProviderList>>(
+        `/pms/provider/list/${params.pageSize}/${params.current}`,
+        {
+            method: 'GET',
+            params: {
+                ...params,
+            },
+        },
+    );
+}
+
+/** 查询Catalog列表 GET /pms/provider/catalogs */
+export async function getCateType() {
+    return request<Portal.responseResult<string>>(`/pms/provider/catalogs`, { method: 'GET' });
+}

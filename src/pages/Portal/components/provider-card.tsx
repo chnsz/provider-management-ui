@@ -28,12 +28,12 @@ const ProviderCard: React.FC = () => {
         getProviderCar().then((rsp) => {
             setData(rsp);
             if (data) {
-                console.log('data: ' + data[0].name);
+                console.log('data: ' + data[0].apiCount);
             }
         });
     }, []);
 
-    const columns: ColumnsType<Portal.ProviderCar[]> = [
+    const columns: ColumnsType<Portal.ProviderCar> = [
         {
             title: '序号',
             dataIndex: 'serialNo',
@@ -52,8 +52,8 @@ const ProviderCard: React.FC = () => {
         },
         {
             title: '引用API个数',
-            key: 'apicount',
-            dataIndex: 'apicount',
+            key: 'apiCount',
+            dataIndex: 'apiCount',
             align: 'center',
             render: (apicount) => (
                 <a type="button" onClick={showModal}>
@@ -248,7 +248,12 @@ const ProviderCard: React.FC = () => {
             <div className={'portal-card service-sum-card'}>
                 <div className={'summary-header'}>资源信息</div>
                 <div className={'summary-container'}>
-                    <Table columns={columns} dataSource={data} pagination={false} />
+                    <Table
+                        rowKey={(record) => record.serialNo}
+                        columns={columns}
+                        dataSource={data}
+                        pagination={false}
+                    />
                 </div>
             </div>
             <Modal
