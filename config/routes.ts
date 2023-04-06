@@ -45,6 +45,11 @@ export default [
         component: './api/changes/index',
     },
     {
+        path: '/notice',
+        name: 'notice',
+        component: './Notice/index',
+    },
+    {
         path: '*',
         layout: false,
         component: './404',

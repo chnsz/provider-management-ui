@@ -1,46 +1,44 @@
 import ApiCoverage from '@/pages/Portal/components/api-coverage';
 import Health from '@/pages/Portal/components/health';
-import News from '@/pages/Portal/components/news';
-import ProviderCard from '@/pages/Portal/components/provider-card';
-import ResourcePlan from '@/pages/Portal/components/resource-plan';
+import ProviderListCard from '@/pages/Portal/components/provider-list-card';
+import ResourcePlanCard from '@/pages/Portal/components/resource-plan-card';
+import ServiceNewsCard from '@/pages/Portal/components/service-news-card';
 import ServiceStatisticsCard from '@/pages/Portal/components/service-statistics-card';
-import { getApiCoverageSum } from '@/services/portal/api';
-import { Col, Row } from 'antd';
+import { getNotice } from '@/services/notice/api';
 import React from 'react';
 
 const Portal: React.FC = () => {
-    getApiCoverageSum().then((d) => console.log('d', d));
+    getNotice('1').then((d) => {
+        console.log('getNotice', d);
+    });
 
     return (
-        <>
-            <Row>
-                <ServiceStatisticsCard />
-            </Row>
+        <div>
             <div style={{ height: '24px' }} />
-            <div style={{ height: '398px' }}>
-                <Row>
-                    <Col span={8}>
-                        <ApiCoverage />
-                    </Col>
-                    <Col span={5}>
-                        <Health />
-                    </Col>
-                    <Col span={11}>
-                        <News />
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={24}>
-                        <ResourcePlan />
-                    </Col>
-                </Row>
-                <Row>
-                    <Col span={24}>
-                        <ProviderCard />
-                    </Col>
-                </Row>
+            <ServiceStatisticsCard />
+            <div style={{ marginTop: '24px', display: 'flex', height: '400px' }}>
+                <div style={{ width: 'calc(33.33% - 13.33px)' }}>
+                    <ApiCoverage />
+                </div>
+                <div style={{ width: '20px' }}></div>
+                <div style={{ width: 'calc(33.33% - 13.33px)' }}>
+                    <Health />
+                </div>
+                <div style={{ width: '20px' }}></div>
+                <div style={{ width: 'calc(33.33% - 13.33px)' }}>
+                    <ServiceNewsCard />
+                </div>
             </div>
-        </>
+            <div style={{ marginTop: '24px', display: 'flex', height: '400px' }}>
+                <div style={{ width: 'calc(50% - 10px)' }}>
+                    <ResourcePlanCard />
+                </div>
+                <div style={{ width: '20px' }}></div>
+                <div style={{ width: 'calc(50% - 10px)' }}>
+                    <ProviderListCard />
+                </div>
+            </div>
+        </div>
     );
 };
 

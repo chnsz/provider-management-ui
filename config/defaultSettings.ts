@@ -1,4 +1,4 @@
-import {ProLayoutProps} from '@ant-design/pro-components';
+import { ProLayoutProps } from '@ant-design/pro-components';
 
 /**
  * @name
@@ -49,7 +49,7 @@ const Settings: ProLayoutProps & {
             colorBgMenuItemCollapsedHover: '#242424',
         },
         pageContainer: {
-            paddingInlinePageContainerContent: 24,
+            paddingInlinePageContainerContent: 20,
             paddingBlockPageContainerContent: 0,
         },
     },

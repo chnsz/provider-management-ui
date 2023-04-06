@@ -11,7 +11,7 @@ import type { ColumnsType } from 'antd/es/table';
 import React, { useEffect, useState } from 'react';
 import '../portal.less';
 
-const ProviderCard: React.FC = () => {
+const ProviderListCard: React.FC = () => {
     const [data, setData] = useState<Portal.ProviderCar[]>();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -245,9 +245,9 @@ const ProviderCard: React.FC = () => {
 
     return (
         <>
-            <div className={'portal-card service-sum-card'}>
-                <div className={'summary-header'}>资源信息</div>
-                <div className={'summary-container'}>
+            <div className={'portal-card'}>
+                <div className={'header'}>资源信息</div>
+                <div className={'container'}>
                     <Table columns={columns} dataSource={data} pagination={false} />
                 </div>
             </div>
@@ -263,4 +263,4 @@ const ProviderCard: React.FC = () => {
         </>
     );
 };
-export default ProviderCard;
+export default ProviderListCard;

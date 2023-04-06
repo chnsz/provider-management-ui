@@ -53,4 +53,5 @@ export default {
     'menu.api-definition': 'API 定义',
     'menu.api-changes': 'API 变更',
     'menu.portal': 'Portal',
+    'menu.notice': '通知消息',
 };

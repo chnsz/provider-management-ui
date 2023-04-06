@@ -4,7 +4,7 @@
 
     .header {
         height: 50px;
-        padding: 15px 16px;
+        padding: 15px 20px;
         font-weight: bold;
         font-size: 16px;
         border-bottom: 1px solid #eaeaea;
@@ -21,60 +21,54 @@
         font-weight: bold;
         font-size: 16px;
     }
-
-    .table {
-        height: calc(100% - 50px);
-        padding: 24px;
-    }
 }
 
 .service-news {
-    .title-header {
-        display: flex;
-        height: 50px;
-        padding: 15px 24px;
-        font-weight: bold;
-        font-size: 16px;
-        border-bottom: 1px solid #eaeaea;
+    .title {
+        display: inline-block;
+        width: calc(100% - 50px);
     }
 
-    .content-more {
-        float: right;
-        width: 90px;
-        height: 30px;
-        padding: 5px 0;
+    .more {
+        display: inline-block;
+        width: 50px;
+        padding-right: 8px;
         color: rgba(0, 0, 0, 0.43);
+        font-weight: normal;
         font-size: 14px;
         text-align: right;
-    }
-
-    .news-info {
-        display: flex;
-        padding: 3px 0;
-    }
-
-    .news-text {
-        width: calc(100% - 90px);
-        overflow: hidden;
-        font-size: 14px;
-        white-space: nowrap;
-        text-overflow: ellipsis;
         cursor: pointer;
     }
 
-    .news-date {
-        width: 90px;
-        color: rgba(0, 0, 0, 0.65);
-        font-size: 14px;
-        text-align: right;
-    }
+    .item {
+        padding: 3px 0;
 
-    i {
-        display: inline-block;
-        width: 5px;
-        margin-right: 8px;
-        border: solid #1890ff;
-        border-radius: 4px;
+        i {
+            display: inline-block;
+            width: 5px;
+            margin-right: 8px;
+            border: solid #1890ff;
+            border-radius: 4px;
+        }
+
+        a {
+            display: inline-block;
+            width: calc(100% - 100px);
+            overflow: hidden;
+            white-space: nowrap;
+            -o-text-overflow: ellipsis;
+            text-overflow: ellipsis;
+        }
+
+        span {
+            display: inline-block;
+            width: 99px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-align: right;
+            -o-text-overflow: ellipsis;
+            text-overflow: ellipsis;
+        }
     }
 }
 
@@ -195,20 +189,6 @@
     }
 }
 
-.service-sum-card {
-    .summary-header {
-        height: 50px;
-        padding: 15px 16px;
-        font-weight: bold;
-        font-size: 16px;
-        border-bottom: 1px solid #eaeaea;
-    }
-
-    .summary-container {
-        padding: 24px;
-    }
-}
-
 .resource-plan-header {
     display: flex;
     width: 100%;
@@ -217,17 +197,14 @@
     border-bottom: 1px solid #eaeaea;
 
     .header-resource {
-        width: calc(100% - 300px);
-        margin-left: 12px;
-        color: #272727;
-        font-weight: bold;
-        font-size: 16px;
+        width: calc(100% - 400px);
     }
 
     .header-button {
         float: right;
-        width: 300px;
-        margin-right: 24px;
+        width: 400px;
+        margin-right: 6px;
+        font-weight: normal;
         text-align: right;
     }
 }
