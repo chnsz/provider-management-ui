@@ -33,7 +33,6 @@ const ServiceStatisticsCard: React.FC = () => {
     });
     useEffect(() => {
         getApiPanelSum().then((rsp) => {
-            console.log('rsp: ', rsp);
             setItem(rsp);
         });
     }, []);

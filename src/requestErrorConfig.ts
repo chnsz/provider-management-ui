@@ -1,6 +1,6 @@
-﻿import type {RequestOptions} from '@@/plugin-request/request';
-import type {RequestConfig} from '@umijs/max';
-import {message} from 'antd';
+﻿import type { RequestOptions } from '@@/plugin-request/request';
+import type { RequestConfig } from '@umijs/max';
+import { message } from 'antd';
 
 // 错误处理方案： 错误类型
 enum ErrorShowType {
@@ -28,12 +28,12 @@ export const errorConfig: RequestConfig = {
     errorConfig: {
         // 错误抛出
         errorThrower: (res) => {
-            const {code, data, errorMsg} = res as unknown as ResponseStructure;
+            const { code, data, errorMsg } = res as unknown as ResponseStructure;
             if (code !== 200) {
                 const error: any = new Error(errorMsg);
                 error.name = 'BizError';
-                const showType = ErrorShowType.ERROR_MESSAGE
-                error.info = {code, errorMsg, showType, data};
+                const showType = ErrorShowType.ERROR_MESSAGE;
+                error.info = { code, errorMsg, showType, data };
                 throw error; // 抛出自制的错误
             }
         },
@@ -66,8 +66,9 @@ export const errorConfig: RequestConfig = {
     requestInterceptors: [
         (config: RequestOptions) => {
             // 拦截请求配置，进行个性化处理。
-            const url = config?.url?.concat('?token = 123');
-            return {...config, url};
+            // const url = config?.url?.concat('?token = 123');
+            const url = config?.url;
+            return { ...config, url };
         },
     ],
 
@@ -75,7 +76,7 @@ export const errorConfig: RequestConfig = {
     responseInterceptors: [
         (response) => {
             // 拦截响应数据，进行个性化处理
-            const {data} = response as unknown as ResponseStructure;
+            const { data } = response as unknown as ResponseStructure;
 
             if (data && data.code && data.code !== 200) {
                 message.error('请求失败！' + data.errorMsg);
