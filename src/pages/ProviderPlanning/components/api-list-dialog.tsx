@@ -1,0 +1,279 @@
+import {getApiDetailList, getApiGroupList} from '@/services/api/api';
+import {getProductList} from '@/services/product/api';
+import {ProFormSelect, ProFormText} from '@ant-design/pro-components';
+import {QueryFilter} from '@ant-design/pro-form';
+import {ProSchemaValueEnumObj} from '@ant-design/pro-utils/es/typing';
+import {Button, Divider, Modal, Table, Tag} from 'antd';
+import {ColumnsType} from 'antd/es/table/interface';
+import React, {useEffect, useState} from 'react';
+
+type ApiListDialogProp = {
+    handle?: (option: 'ok' | 'cancel', rows: ApiDialogData[], idArr: number[]) => any;
+};
+
+export interface ApiDialogData {
+    key: React.Key;
+    productName: string;
+    apiGroup: string;
+    name: string;
+    nameEn: string;
+    useStatus: string;
+    method: string;
+    uri: string;
+    publishStatus: string;
+}
+
+const columns: ColumnsType<ApiDialogData> = [
+    {
+        title: '服务',
+        dataIndex: 'productName',
+        ellipsis: true,
+        width: 100,
+    },
+    {
+        title: 'API 分组',
+        dataIndex: 'apiGroup',
+        ellipsis: true,
+        width: 200,
+    },
+    {
+        title: 'API 名称',
+        dataIndex: 'name',
+        ellipsis: true,
+        width: 220,
+    },
+    {
+        title: '覆盖状态',
+        dataIndex: 'useStatus',
+        width: 90,
+        render: (val) => {
+            switch (val) {
+                case 'used':
+                    return <Tag color="blue">已使用</Tag>;
+                case 'need_analysis':
+                    return <Tag color="orange">待分析</Tag>;
+                case 'planning':
+                    return <Tag color="cyan">规划中</Tag>;
+                case 'missing_api':
+                    return <Tag color="red">缺少API</Tag>;
+                case 'ignore':
+                    return <Tag>不适合</Tag>;
+            }
+            return <Tag>{val}</Tag>;
+        },
+    },
+    {
+        title: 'URI ',
+        dataIndex: 'uri',
+        ellipsis: true,
+        render: (v, row) => {
+            return (
+                <>
+                    <Tag>{row.method}</Tag> {row.uri}
+                </>
+            );
+        },
+    },
+    {
+        title: '发布状态',
+        dataIndex: 'publishStatus',
+        width: 100,
+        render: (val) => {
+            switch (val) {
+                case 'online':
+                    return <Tag color="blue">开放中</Tag>;
+                case 'offline':
+                    return <Tag color="orange">已下线</Tag>;
+                case 'unpublished':
+                    return <Tag color="geekblue">线下API</Tag>;
+            }
+            return <Tag>{val}</Tag>;
+        },
+    },
+];
+
+type FormProps = {
+    productName: string;
+    apiGroup: string;
+    publishStatus: string;
+    apiName: string;
+    uri: string;
+    useRemark: string;
+};
+
+const SearchForm: React.FC<{ onSearch: (val: FormProps) => any }> = (props) => {
+    const [productNameMap, setProductNameMap] = useState<ProSchemaValueEnumObj>({});
+    const [apiGroupMap, setApiGroupMap] = useState<ProSchemaValueEnumObj>({});
+
+    useEffect(() => {
+        getProductList().then((d) => {
+            const map: ProSchemaValueEnumObj = {};
+            d.items.map((p) => p.productName)
+                .sort()
+                .forEach(n => map[n] = n);
+            setProductNameMap(map);
+        });
+    }, []);
+
+    const onProductNameChange = (v: string) => {
+        getApiGroupList(v).then((d) => {
+            const map: ProSchemaValueEnumObj = {};
+            d.map(t => t.apiGroup)
+                .sort()
+                .forEach(n => map[n] = n);
+            setApiGroupMap(map);
+        });
+    };
+
+    return (
+        <QueryFilter<FormProps>
+            span={6}
+            style={{marginTop: '20px', marginBottom: '-27px'}}
+            onFinish={async (values) => {
+                props.onSearch(values);
+            }}
+        >
+            <ProFormSelect
+                name="productName"
+                label="产品服务"
+                showSearch
+                rules={[{required: true}]}
+                fieldProps={{
+                    allowClear: false,
+                    onChange: onProductNameChange,
+                }}
+                valueEnum={productNameMap}
+            />
+            <ProFormSelect name="apiGroup" label="分组名称" showSearch valueEnum={apiGroupMap}/>
+            <ProFormText name="apiName" label="API 名称"/>
+            <ProFormText name="uri" label="URI"/>
+            <ProFormSelect
+                name="publishStatus"
+                label="发布状态"
+                showSearch
+                valueEnum={{
+                    online: '开放中',
+                    offline: '已下线',
+                    unpublished: '线下API',
+                }}
+            />
+            <ProFormSelect
+                name="useRemark"
+                label="覆盖分析"
+                showSearch
+                valueEnum={{
+                    used: '已使用',
+                    need_analysis: '待分析',
+                    planning: '规划中',
+                    ignore: '不适合',
+                    missing_api: '缺少API',
+                }}
+            />
+        </QueryFilter>
+    );
+};
+
+const ApiListDialog: React.FC<ApiListDialogProp> = (props) => {
+    const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+    const [selectedRows, setSelectedRows] = useState<ApiDialogData[]>([]);
+    const [data, setData] = useState<ApiDialogData[]>([]);
+    const [total, setTotal] = useState<number>(0);
+    const [pageSize, setPageSize] = useState<number>(20);
+    const [pageNum, setPageNum] = useState<number>(1);
+    const [queryParams, setQueryParams] = useState<Api.queryListParams>({});
+
+    const onSelectChange = (newSelectedRowKeys: React.Key[], rows: ApiDialogData[]) => {
+        setSelectedRowKeys(newSelectedRowKeys);
+        setSelectedRows(rows);
+    };
+
+    const handle = (option: 'ok' | 'cancel') => {
+        return () => {
+            setIsDialogOpen(false);
+            if (props.handle) {
+                const idArr = selectedRowKeys.map((t) => parseInt(t.toString()));
+                props.handle(option, selectedRows, idArr);
+            }
+        };
+    };
+
+    const onSearch = (val: FormProps) => {
+        setPageNum(1);
+        setQueryParams({
+            productName: val.productName,
+            apiGroup: val.apiGroup,
+            apiName: val.apiName,
+            uri: val.uri,
+            publishStatus: val.publishStatus,
+            useRemark: val.useRemark,
+        });
+    };
+
+    useEffect(() => {
+        getApiDetailList(queryParams, pageSize, pageNum).then((d) => {
+            const arr = d.items.map((t: Api.Detail) => {
+                return {
+                    key: t.id,
+                    productName: t.productName,
+                    apiGroup: t.apiGroup,
+                    name: t.apiName,
+                    nameEn: t.apiNameEn,
+                    useStatus: t.useRemark,
+                    method: t.method,
+                    uri: t.uri,
+                    publishStatus: t.publishStatus,
+                };
+            });
+            setData(arr);
+            setTotal(d.total);
+        });
+    }, [pageNum, pageSize, queryParams]);
+
+    const rowSelection = {
+        selectedRowKeys,
+        onChange: onSelectChange,
+    };
+
+    return (
+        <>
+            <Button size={'small'} onClick={() => setIsDialogOpen(true)}>
+                + 新增绑定
+            </Button>
+            <Modal
+                title="选择要关联的 API"
+                width={1200}
+                cancelText={'取消'}
+                okText={'确定'}
+                open={isDialogOpen}
+                onOk={handle('ok')}
+                onCancel={handle('cancel')}
+            >
+                <SearchForm onSearch={onSearch}/>
+                <Divider/>
+                <Table
+                    rowSelection={rowSelection}
+                    columns={columns}
+                    dataSource={data}
+                    pagination={{
+                        defaultCurrent: 1,
+                        total: total,
+                        size: 'default',
+                        pageSize: pageSize,
+                        current: pageNum,
+                        showTotal: (total) => `总条数：${total}`,
+                        onShowSizeChange: (current, size) => {
+                            setPageSize(size);
+                        },
+                        onChange: (page: number, size: number) => {
+                            setPageNum(page);
+                            setPageSize(size);
+                        },
+                    }}
+                />
+            </Modal>
+        </>
+    );
+};
+
+export default ApiListDialog;

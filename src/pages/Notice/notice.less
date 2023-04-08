@@ -6,29 +6,14 @@
             width: 90px;
         }
         .side-tools-bar {
+            font-weight: normal;
             width: calc(100% - 90px);
             text-align: right;
         }
     }
     .top {
-        height: auto;
-        padding: 15px 15px 10px 15px;
+        padding: 20px;
         background: #fff;
-
-        .title {
-            padding-bottom: 15px;
-            font-weight: bold;
-            font-size: 16px;
-        }
-
-        .filter-btn {
-            padding-bottom: 10px;
-            line-height: 32px;
-
-            .ant-btn {
-                margin-left: 15px;
-            }
-        }
     }
 
     .item-list {
@@ -74,14 +59,27 @@
         width: 100%;
         color: rgba(0, 0, 0, 0.45);
         font-size: 14px;
-        line-height: 1.5715;
 
-        .type {
-            width: calc(100% - 300px);
+        .item-col > div:first-child {
+            margin-bottom: 5px;
         }
 
-        .created {
-            width: 300px;
+        .item-title {
+            width: calc(100% - 260px);
+        }
+
+        .product-col {
+            width: 90px;
+            text-align: center;
+        }
+
+        .owner-col {
+            width: 90px;
+            text-align: center;
+        }
+
+        .date-col {
+            width: 80px;
             text-align: right;
         }
     }

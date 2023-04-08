@@ -141,7 +141,7 @@ export const layout: RunTimeLayoutConfig = ({initialState}) => {
         childrenRender: (children) => {
             // if (initialState?.loading) return <PageLoading />;
             return (
-                <>
+                <div style={{height: 'calc(100vh - 116px)'}}>
                     {children}
                     {/*<SettingDrawer
             disableUrlParams
@@ -154,7 +154,7 @@ export const layout: RunTimeLayoutConfig = ({initialState}) => {
               }));
             }}
           />*/}
-                </>
+                </div>
             );
         },
         ...initialState?.settings,

@@ -13,7 +13,7 @@ const ServiceNewsCard: React.FC = () => {
         const params = new URLSearchParams(location.search);
         const productName = params.get('productName') || '';
 
-        getNoticeList('all', [productName], [], 11, 0).then((data) => {
+        getNoticeList({productName: [productName]}, 11, 1).then((data) => {
             setNoticeList(data.items);
         });
     }, []);

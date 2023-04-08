@@ -12,3 +12,18 @@ declare namespace Global {
 
     type AffectResponse = Response<{ affectedRow: number }>;
 }
+
+declare namespace Relation {
+    type ProviderRelation = {
+        id: number;
+        dataType: string;
+        providerType: string;
+        providerName: string;
+    };
+
+    type ApiRelation = {
+        dataType: string;
+        dataId: number;
+        apiId: number;
+    };
+}

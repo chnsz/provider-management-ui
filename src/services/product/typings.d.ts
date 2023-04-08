@@ -15,4 +15,10 @@ declare namespace Product {
         // 更新日期
         updated: string;
     };
+
+    type User = {
+        username: string;
+        ip: string;
+        kbUserId: number;
+    }
 }

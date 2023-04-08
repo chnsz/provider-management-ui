@@ -2,9 +2,15 @@ import React from 'react';
 import Vditor from 'vditor';
 import 'vditor/dist/index.css';
 
-const Editor = () => {
-    const [vd, setVd] = React.useState<Vditor>();
-    React.useEffect(() => {
+type EditorProps = {
+    defaultValue: string;
+    onChange?: (str: string) => any;
+    outline?: boolean;
+};
+
+const Editor: React.FC<EditorProps> = (props) => {
+    let id = 0;
+    setTimeout(() => {
         const vditor = new Vditor('vditor', {
             width: '100%',
             height: '100%',
@@ -13,15 +19,18 @@ const Editor = () => {
                 type: 'text',
             },
             outline: {
-                enable: true,
+                enable: props.outline || false,
                 position: 'left',
             },
-            // mode: "sv",
+            mode: "wysiwyg",
             preview: {
-                actions: ['desktop', 'mobile'],
+                actions: [], // 'desktop', 'mobile'
+                hljs: {
+                    style: 'native',
+                    lineNumber: true,
+                }
             },
             toolbar: [
-                'emoji',
                 'headings',
                 'bold',
                 'italic',
@@ -41,39 +50,45 @@ const Editor = () => {
                 'insert-before',
                 'insert-after',
                 '|',
+                'table',
+                // 'emoji',
                 'upload',
                 'record',
-                'table',
                 '|',
                 'undo',
                 'redo',
                 '|',
-                'fullscreen',
-                'edit-mode',
-                {
-                    name: 'more',
-                    toolbar: [
-                        'both',
-                        'code-theme',
-                        'content-theme',
-                        'export',
-                        'outline',
-                        'preview',
-                    ],
-                },
+                'outline',
+                'export',
+                'preview',
+                /*{
+                        name: 'more',
+                        toolbar: [
+                            'both',
+                            // 'code-theme',
+                            // 'content-theme',
+                            // 'edit-mode',
+                            // 'fullscreen',
+                        ],
+                    },*/
             ],
             // theme: 'dark',
             after: () => {
-                vditor.setValue('`Vditor` 最小代码示例');
-                setVd(vditor);
-                console.log(vd);
+                vditor.setValue(props.defaultValue || '');
             },
             blur: (val) => {
-                console.log(val);
+                id = window.setTimeout(() => {
+                    if (props.onChange) {
+                        props.onChange(val);
+                    }
+                }, 1000)
+            },
+            focus() {
+                window.clearTimeout(id);
             },
         });
-    }, []);
-    return <div id="vditor" />;
+    }, 100);
+    return <div id="vditor"/>;
 };
 
 export default Editor;

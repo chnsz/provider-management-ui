@@ -12,6 +12,12 @@ export async function getProviderHealthCheckSum() {
     });
 }
 
+export async function pmsTest() {
+    return request<Portal.ProviderHealthCheckSum>('/pms/api/list/10/0?productName=ECS&apiName=', {
+        method: 'GET',
+    });
+}
+
 /** 查询API对接汇总数据 GET /portal/service-statistics-card-sum */
 export async function getApiPanelSum() {
     return request<Portal.ProductSumPanel>('/portal/service-statistics-card-sum', {
