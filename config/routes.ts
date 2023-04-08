@@ -47,7 +47,14 @@ export default [
     {
         path: '/notice',
         name: 'notice',
+        hideInMenu: true,
         component: './Notice/index',
+    },
+    {
+        path: '/provider-planning',
+        name: 'provider_planning',
+        hideInMenu: true,
+        component: './ProviderPlanning/index',
     },
     {
         path: '*',

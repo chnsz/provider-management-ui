@@ -8,6 +8,6 @@ export async function getProductList() {
 }
 
 /** 查询全部田主 GET /pms/product */
-export async function getOwnerList() {
-    return request<Global.List<string[]>>(`${basePath}/product/owner/list`, { method: 'GET' });
+export async function getUserList() {
+    return request<Global.List<Product.User[]>>(`${basePath}/product/owner/list`, { method: 'GET' });
 }

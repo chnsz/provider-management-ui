@@ -1,6 +1,6 @@
 import { request } from '@@/exports';
 
-const servicePath: string = '/pms';
+const basePath: string = '/pms';
 
 /** 查询api列表 Get /api/list/{limit}/{offset} */
 export async function getApiListSum(
@@ -16,7 +16,7 @@ export async function getApiListSum(
     const limit = pageSize;
     const offset = (pageNum - 1) * pageSize;
 
-    return request<Global.List<Api.ApiList[]>>(`${servicePath}/api/list/${limit}/${offset}`, {
+    return request<Global.List<Api.ApiList[]>>(`${basePath}/api/list/${limit}/${offset}`, {
         method: 'GET',
         params: queryParams,
     });
@@ -32,7 +32,7 @@ export async function getApiChangeSum(
     },
     id: number,
 ) {
-    return request<Global.List<Api.ApiChange[]>>(`${servicePath}/api/${id}/change-history`, {
+    return request<Global.List<Api.ApiChange[]>>(`${basePath}/api/${id}/change-history`, {
         method: 'GET',
         params: { ...queryParams },
     });
@@ -40,7 +40,29 @@ export async function getApiChangeSum(
 
 /** 查询api分组列表 Get /api/groups/list */
 export async function getApiGroupsSum() {
-    return request<Api.ApiGroups[]>(`${servicePath}/api/groups/list/?productName=ECS`, {
+    return request<Api.ApiGroups[]>(`${basePath}/api/groups/list/?productName=ECS`, {
         method: 'GET',
+    });
+}
+
+/** 查询API列表 GET /pms/api/list/{limit}/{offset} */
+export async function getApiDetailList(
+    params: Api.queryListParams,
+    pageSize: number,
+    pageNum: number,
+) {
+    const limit = pageSize;
+    const offset = (pageNum - 1) * pageSize;
+
+    return request<Global.List<Api.Detail[]>>(`${basePath}/api/list/${limit}/${offset}`, {
+        method: 'GET',
+        params: { ...params },
+    });
+}
+
+export async function getApiGroupList(productName: string) {
+    return request<Api.Group[]>(`${basePath}/api/groups/list`, {
+        method: 'GET',
+        params: { productName: productName },
     });
 }
