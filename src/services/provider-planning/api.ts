@@ -28,7 +28,7 @@ export async function getProviderPlanningList(
         productName?: string[];
         owner?: string[];
         title?: string;
-        status?: string;
+        status?: string[];
         assignee?: string;
     },
     pageSize: number,

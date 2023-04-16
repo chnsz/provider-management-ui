@@ -1,11 +1,14 @@
-import { EditOutlined } from '@ant-design/icons';
-import { Button, Input, InputRef, Select } from 'antd';
-import { SelectProps } from 'antd/es/select';
-import React, { ReactElement, useEffect, useRef, useState } from 'react';
+import {EditOutlined} from '@ant-design/icons';
+import {Button, DatePicker, Input, InputRef, Select} from 'antd';
+import {SelectProps} from 'antd/es/select';
+import React, {ReactElement, useEffect, useRef, useState} from 'react';
 import './editable-description.less';
+import dayjs from 'dayjs';
+
 
 type EditableDesProps = {
     children?: ReactElement[] | JSX.Element | string;
+    type?: 'text' | 'select' | 'date',
     value: string | number;
     onChange?: (val: string | number) => any;
     options?: SelectProps['options'];
@@ -38,7 +41,7 @@ const EditableDes: React.FC<EditableDesProps> = (props) => {
             <div className={'description'}>
                 <div className={'view'}>{props.children ? props.children : defaultVal}</div>
                 <div className={'edit-btn'} title={'编辑'} onClick={onEditClick}>
-                    <EditOutlined />
+                    <EditOutlined/>
                 </div>
             </div>
         );
@@ -54,7 +57,7 @@ const EditableDes: React.FC<EditableDesProps> = (props) => {
     };
 
     const getEdit = () => {
-        const input = (
+        const text = (
             <Input
                 ref={inputRef}
                 defaultValue={defaultVal}
@@ -74,9 +77,23 @@ const EditableDes: React.FC<EditableDesProps> = (props) => {
             />
         );
 
+        const datePicker = () => {
+            return (
+                <DatePicker defaultValue={value ? dayjs(new Date(), 'YYYY-MM-DD') : undefined}
+                            placeholder={''}
+                            onChange={(d, s) => value = s}
+                />
+            )
+        }
+
+        let input = props.options ? select : text
+        if (props.type === 'date') {
+            input = datePicker();
+        }
+
         return (
             <div className={'edit-block'}>
-                <div className={'edit-input'}>{props.options ? select : input}</div>
+                <div className={'edit-input'}>{input}</div>
                 <div className={'submit-btn'}>
                     <Button type={'link'} size={'small'} onClick={onSubmit}>
                         保存

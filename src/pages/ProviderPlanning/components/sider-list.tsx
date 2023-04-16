@@ -1,8 +1,7 @@
-import { getPlanningStatus } from '@/pages/ProviderPlanning/components/provider-planning-detail';
+import { getTaskStatus } from '@/pages/Task/components/task-detail';
 import { toShortDate } from '@/utils/common';
 import classNames from 'classnames';
 import React from 'react';
-import {SendOutlined} from "@ant-design/icons";
 
 type SideListProps = {
     data: ProviderPlanning.ProviderPlanning[];
@@ -44,9 +43,7 @@ const SideList: React.FC<SideListProps> = (props) => {
                         </div>
                         <div className={'item-col status-col'}>
                             <div>状态</div>
-                            <div className={'value'}>
-                                {getPlanningStatus(p.status)}
-                            </div>
+                            <div className={'value'}>{getTaskStatus(p.status)}</div>
                         </div>
                         <div className={'item-col owner-col'}>
                             <div>责任人</div>

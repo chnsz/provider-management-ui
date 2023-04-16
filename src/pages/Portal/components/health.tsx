@@ -2,6 +2,7 @@ import { getProviderHealthCheckSum } from '@/services/portal/api';
 import ReactEcharts from 'echarts-for-react';
 import React, { useEffect, useState } from 'react';
 import '../portal.less';
+import {Result} from "antd";
 
 const Health: React.FC = () => {
     const [items, setItems] = useState<Portal.ProviderHealthCheckSum>({
@@ -73,6 +74,7 @@ const Health: React.FC = () => {
             <div className={'header'}>健康度</div>
             <div className={'container'}>
                 <ReactEcharts option={option} />
+                <Result title="建设中..."/>
             </div>
         </div>
     );

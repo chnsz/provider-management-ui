@@ -27,7 +27,7 @@
         border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 
         .value {
-            color: rgba(0, 0, 0, 0.85);
+            color: rgba(0, 0, 0, 0.88);
         }
 
         .item-col > div:first-child {
@@ -70,36 +70,11 @@
         background: rgba(204, 204, 204, 0.36);
         cursor: pointer;
     }
+
     .selected {
         background: rgb(204 204 204 / 56%) !important;
     }
 
-    .basic-info {
-        display: flex;
-        margin-top: 15px;
-
-        .primary-info {
-            flex: 3;
-        }
-
-        .secondary-info {
-            flex: 1;
-            padding-left: 10px;
-            border-left: 1px solid #d7d7d7;
-        }
-
-        .ant-descriptions-item-label {
-            display: inline-block;
-            width: 75px;
-            text-align: right;
-        }
-
-        .kanboard-label {
-            display: inline-block;
-            margin-left: 45px;
-            padding-right: 8px;
-        }
-    }
 
     .label-name {
         display: block;
@@ -109,7 +84,6 @@
     .detail-info {
         display: flex;
         height: 600px;
-        margin-top: 30px;
 
         .primary-info {
             width: 67%;
@@ -144,6 +118,7 @@
             padding-left: 10px;
         }
     }
+
     .load-more {
         padding: 15px 0;
         text-align: center;
@@ -151,13 +126,28 @@
 
     .tools-bar {
         display: flex;
+        margin-bottom: 15px;
 
         .left-bar {
             flex: 1;
         }
+
         .right-bar {
             flex: 1;
             text-align: right;
         }
+    }
+
+    .detail-title {
+        display: inline-block;
+        font-weight: normal;
+        font-size: 14px;
+        margin-top: 2px;
+    }
+
+    .kanboard-label {
+        display: inline-block;
+        margin-left: 45px;
+        padding-right: 8px;
     }
 }

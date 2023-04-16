@@ -35,7 +35,7 @@ const RelationApi: React.FC<RelationApiProps> = ({idList, planningId, onChange})
 
     const onAdd = (idList: number[], rows: ApiDialogData[]) => {
         const exitsData = data.map((t) => t.key);
-        const apiIdList = idList.filter((t) => exitsData.indexOf(t.toString()) === -1);
+        const apiIdList = idList.filter((t) => !exitsData.includes(t.toString()));
 
         bindProviderPlanningApi(planningId, apiIdList).then(() => {
             const arr = [...data];
@@ -61,6 +61,7 @@ const RelationApi: React.FC<RelationApiProps> = ({idList, planningId, onChange})
     useEffect(() => {
         if (idList.length === 0) {
             setData([]);
+            onChange([]);
             return;
         }
 
@@ -76,6 +77,7 @@ const RelationApi: React.FC<RelationApiProps> = ({idList, planningId, onChange})
                 };
             });
             setData(arr);
+            onChange(arr);
         });
     }, [idList]);
 

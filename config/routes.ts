@@ -18,21 +18,13 @@ export default [
     {
         path: '/home',
         name: 'home',
-        component: './home',
-        // component: '../layouts/BaseLayout',
-        // 不展示顶栏
-        // headerRender: false,
-        // // 不展示页脚
-        // footerRender: false,
-        // // 不展示菜单
-        // menuRender: false,
-        // // 不展示菜单顶栏
-        // menuHeaderRender: false,
+        component: './Portal/index',
     },
     {
-        path: '/portal',
+        path: '/service',
+        hideInMenu: true,
         name: 'portal',
-        component: './Portal/index',
+        component: './Portal/service_portal',
     },
     {
         path: '/api/definition',
@@ -45,16 +37,22 @@ export default [
         component: './api/changes/index',
     },
     {
-        path: '/notice',
-        name: 'notice',
-        hideInMenu: true,
-        component: './Notice/index',
-    },
-    {
         path: '/provider-planning',
         name: 'provider_planning',
-        hideInMenu: true,
+        hideInMenu: process.env.NODE_ENV === 'production',
         component: './ProviderPlanning/index',
+    },
+    {
+        path: '/task',
+        name: 'task',
+        hideInMenu: process.env.NODE_ENV === 'production',
+        component: './Task/index',
+    },
+    {
+        path: '/notice',
+        name: 'notice',
+        hideInMenu: process.env.NODE_ENV === 'production',
+        component: './Notice/index',
     },
     {
         path: '*',

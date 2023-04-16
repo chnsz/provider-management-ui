@@ -49,7 +49,8 @@ const Settings: ProLayoutProps & {
             colorBgMenuItemCollapsedHover: '#242424',
         },
         pageContainer: {
-            paddingInlinePageContainerContent: 20,
+            colorBgPageContainer: '#f0f2f5',
+            paddingInlinePageContainerContent: 0,
             paddingBlockPageContainerContent: 0,
         },
     },

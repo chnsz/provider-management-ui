@@ -14,6 +14,7 @@ const Footer: React.FC = () => {
             textAlign: 'justify',
             verticalAlign: 'middle',
             height: '60px',
+            background: '#f0f2f5',
         };
     });
 

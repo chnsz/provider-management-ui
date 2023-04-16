@@ -5,12 +5,14 @@
         .side-title {
             width: 90px;
         }
+
         .side-tools-bar {
-            font-weight: normal;
             width: calc(100% - 90px);
+            font-weight: normal;
             text-align: right;
         }
     }
+
     .top {
         padding: 20px;
         background: #fff;
@@ -19,6 +21,7 @@
     .item-list {
         height: calc(100% - 60px);
     }
+
     .item {
         padding: 10px 20px;
         border-color: transparent;
@@ -41,8 +44,7 @@
         }
     }
 
-    .item:hover,
-    .selected {
+    .item:hover {
         background: rgb(204 204 204 / 36%);
         border-color: #fff;
         border-style: solid;
@@ -50,6 +52,7 @@
         border-bottom: 1px solid whitesmoke;
         cursor: pointer;
     }
+
     .selected {
         background: rgb(204 204 204 / 56%) !important;
     }
@@ -83,8 +86,34 @@
             text-align: right;
         }
     }
+
     .load-more {
         padding: 15px;
         text-align: center;
+    }
+
+    .detail-header {
+        display: inline-block;
+        font-weight: normal;
+        font-size: 14px;
+        margin-top: 2px;
+    }
+
+    .detail-title {
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+        border-bottom: 1px solid #eaeaea;
+        margin-bottom: 8px;
+        padding-bottom: 8px;
+        width: calc(100% - 200px);
+        overflow: hidden;
+        white-space: nowrap;
+        -o-text-overflow: ellipsis;
+        text-overflow: ellipsis;
+    }
+
+    .detail {
+        padding: 15px;
     }
 }

@@ -1,0 +1,75 @@
+.task {
+    .load-more {
+        padding: 15px 0;
+        text-align: center;
+    }
+
+    .kanboard-label {
+        display: inline-block;
+        margin-left: 45px;
+        padding-right: 8px;
+    }
+
+    .task-title {
+        display: inline-block;
+        font-weight: normal;
+        font-size: 14px;
+        margin-top: 2px;
+        width: calc(100% - 200px);
+        overflow: hidden;
+        white-space: nowrap;
+        -o-text-overflow: ellipsis;
+        text-overflow: ellipsis;
+    }
+}
+
+.side-list {
+    padding: 10px 15px;
+
+    .list {
+        display: flex;
+        padding: 10px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+
+        .col {
+            color: rgba(0, 0, 0, 0.88);
+        }
+
+        .col > div:first-child {
+            margin-bottom: 5px;
+            color: rgba(0, 0, 0, 0.45);
+        }
+
+        .col > div {
+            overflow: hidden;
+            white-space: nowrap;
+            -o-text-overflow: ellipsis;
+            text-overflow: ellipsis;
+        }
+    }
+
+    .list:hover,
+    .selected {
+        background: rgba(204, 204, 204, 0.36);
+        cursor: pointer;
+    }
+
+    .title {
+        width: calc(100% - 240px);
+    }
+
+    .status {
+        width: 80px;
+        text-align: center;
+    }
+
+    .assignee {
+        width: 80px;
+        text-align: center;
+    }
+
+    .date {
+        width: 80px;
+        text-align: right;
+    }
+}

@@ -1,10 +1,11 @@
 import EditableDes from '@/components/EditableDescription';
 import Editor from '@/components/editor';
 import RelationTabs from '@/pages/ProviderPlanning/components/relation-tabs';
+import {getTaskStatus, priorityOptions, statusOptions} from '@/pages/Task/components/task-detail';
 import {getProductFeatureList} from '@/services/product-feature/api';
 import {getProductList, getUserList} from '@/services/product/api';
 import {getProviderPlanning, updateProviderPlanning} from '@/services/provider-planning/api';
-import {toShortDate} from '@/utils/common';
+import {toLongDate} from '@/utils/common';
 import {InfoCircleOutlined} from '@ant-design/icons';
 import {Badge, Descriptions, Tooltip} from 'antd';
 import {SelectProps} from 'antd/es/select';
@@ -15,22 +16,6 @@ type PlanningDetailProps = {
     providerPlanning: ProviderPlanning.ProviderPlanning;
     onChange: (p: ProviderPlanning.ProviderPlanning) => any;
 };
-
-const priorityOptions = [
-    {label: 'P0', value: 0},
-    {label: 'P1', value: 1},
-    {label: 'P2', value: 2},
-    {label: 'P3', value: 3},
-];
-
-const statusOptions = [
-    {label: 'new', value: 'new'},
-    {label: 'processing', value: 'processing'},
-    {label: 'merging', value: 'merging'},
-    {label: 'merged', value: 'merged'},
-    {label: 'closed', value: 'closed'},
-    {label: 'freeze', value: 'freeze'},
-];
 
 export const getPlanningStatus = (status: string) => {
     let color = '';
@@ -59,7 +44,6 @@ const ProviderPlanningDetail: React.FC<PlanningDetailProps> = ({providerPlanning
     const [ownerList, setOwnerList] = useState<SelectProps['options']>([]);
     const [saveTip, setSaveTip] = useState<string>(defaultSaveTip);
     const [planning, setPlanning] = useState<ProviderPlanning.ProviderPlanning>(providerPlanning);
-    const priority = planning.priority !== -1 ? 'P' + planning.priority : '';
 
     const loadFeature = (productName: string) => {
         getProductFeatureList({productName: productName}, 1000, 1).then((d) => {
@@ -83,7 +67,7 @@ const ProviderPlanningDetail: React.FC<PlanningDetailProps> = ({providerPlanning
             const arr = d.items
                 .map((p) => p.productName)
                 .sort()
-                .map(n => {
+                .map((n) => {
                     return {
                         label: n,
                         value: n,
@@ -92,10 +76,10 @@ const ProviderPlanningDetail: React.FC<PlanningDetailProps> = ({providerPlanning
             setProductList(arr);
         });
 
-        loadFeature(providerPlanning.productName)
+        loadFeature(providerPlanning.productName);
 
         getUserList().then((d) => {
-            const arr = d.items.map(n => {
+            const arr = d.items.map((n) => {
                 return {
                     label: n.username,
                     value: n.username,
@@ -119,49 +103,49 @@ const ProviderPlanningDetail: React.FC<PlanningDetailProps> = ({providerPlanning
             switch (fieldName) {
                 case 'title':
                     if (updateOpts.title === val) {
-                        return
+                        return;
                     }
                     updateOpts.title = val;
                     break;
                 case 'priority':
                     if (updateOpts.priority === val) {
-                        return
+                        return;
                     }
                     updateOpts.priority = val;
                     break;
                 case 'status':
                     if (updateOpts.status === val) {
-                        return
+                        return;
                     }
                     updateOpts.status = val;
                     break;
                 case 'productName':
                     if (updateOpts.productName === val) {
-                        return
+                        return;
                     }
                     loadFeature(val);
                     updateOpts.productName = val;
                     break;
                 case 'featureId':
                     if (updateOpts.featureId === val) {
-                        return
+                        return;
                     }
                     updateOpts.featureId = val;
                     break;
                 case 'content':
                     if (updateOpts.content === val) {
-                        return
+                        return;
                     }
                     updateOpts.content = val;
                     break;
                 case 'assignee':
                     if (updateOpts.assignee === val) {
-                        return
+                        return;
                     }
                     updateOpts.assignee = val;
                     break;
             }
-            setSaveTip('* 保存中...')
+            setSaveTip('* 保存中...');
             updateProviderPlanning(planning.id, updateOpts).then((t) => {
                 setTimeout(() => setSaveTip('* 提交成功'), 1000);
                 setTimeout(() => {
@@ -174,88 +158,80 @@ const ProviderPlanningDetail: React.FC<PlanningDetailProps> = ({providerPlanning
 
     const getKbTask = (p: ProviderPlanning.ProviderPlanning) => {
         if (!p.kanboardTask) {
-            return <>未推送卡片</>
+            return <>未推送卡片</>;
         }
         const title: string = `#${p.kanboardTask.task.id} ${p.kanboardTask.task.title} (点击查询详细）`;
-        return <>
-            <a href={p.kanboardTask.task.url} target={'_blank'} rel="noreferrer" title={title}>
-                {p.kanboardTask.column.title}
-            </a>
-            <span className={'custom-label kanboard-label'}>负责人: </span>
-            {p.kanboardTask.userDto?.name}
-        </>
+        return (
+            <>
+                <a href={p.kanboardTask.task.url} target={'_blank'} rel="noreferrer" title={title}>
+                    {p.kanboardTask.column.title}
+                </a>
+                <span className={'custom-label kanboard-label'}>负责人: </span>
+                {p.kanboardTask.userDto?.name}
+            </>
+        );
     };
 
     return (
         <div className={'provider-planning'}>
-            <div className={'basic-info'}>
-                <div className={'primary-info'}>
-                    <Descriptions column={3}>
-                        <Descriptions.Item label="标题" span={2}>
-                            <EditableDes
-                                value={planning.title}
-                                onChange={onDetailChange('title')}
-                            />
-                        </Descriptions.Item>
-                        <Descriptions.Item label="优先级" span={1}>
-                            <EditableDes
-                                value={planning.priority}
-                                options={priorityOptions}
-                                onChange={onDetailChange('priority')}
-                            >
-                                {priority}
-                            </EditableDes>
-                        </Descriptions.Item>
-                        <Descriptions.Item label="所属服务" span={2}>
-                            <EditableDes
-                                value={planning.productName || ''}
-                                options={productList}
-                                onChange={onDetailChange('productName')}
-                            />
-                        </Descriptions.Item>
-                        <Descriptions.Item label="所属特性" span={1}>
-                            <EditableDes
-                                value={planning.feature?.id || ''}
-                                options={featureList}
-                                onChange={onDetailChange('featureId')}
-                            >
-                                {planning.feature?.name || ''}
-                            </EditableDes>
-                        </Descriptions.Item>
-                        <Descriptions.Item label="状态" span={2}>
-                            <EditableDes
-                                value={planning.status}
-                                options={statusOptions}
-                                onChange={onDetailChange('status')}
-                            >
-                                {getPlanningStatus(planning.status)}
-                            </EditableDes>
-                        </Descriptions.Item>
-                        <Descriptions.Item label="卡片状态" span={1}>
-                            {getKbTask(planning)}
-                        </Descriptions.Item>
-                    </Descriptions>
-                </div>
-                <div className={'secondary-info'}>
-                    <Descriptions column={1}>
-                        <Descriptions.Item label="责任人">
-                            <EditableDes
-                                value={planning.assignee || ''}
-                                options={ownerList}
-                                onChange={onDetailChange('assignee')}
-                            />
-                        </Descriptions.Item>
-                        <Descriptions.Item label="创建人">{planning.creator}</Descriptions.Item>
-                        <Descriptions.Item label="创建时间">
-                            {toShortDate(planning.created)}
-                        </Descriptions.Item>
-                    </Descriptions>
-                </div>
-            </div>
+            <Descriptions column={4}>
+                <Descriptions.Item label="所属服务" span={1}>
+                    <EditableDes
+                        value={planning.productName}
+                        options={productList}
+                        onChange={onDetailChange('productName')}
+                    />
+                </Descriptions.Item>
+                <Descriptions.Item label="所属特性" span={1}>
+                    <EditableDes
+                        value={planning.feature?.id || ''}
+                        options={featureList}
+                        onChange={onDetailChange('featureId')}
+                    >
+                        {planning.feature?.name || ''}
+                    </EditableDes>
+                </Descriptions.Item>
+                <Descriptions.Item label="优先级" span={1}>
+                    <EditableDes
+                        value={planning.priority}
+                        options={priorityOptions}
+                        onChange={onDetailChange('priority')}
+                    >
+                        <>P{planning.priority}</>
+                    </EditableDes>
+                </Descriptions.Item>
+                <Descriptions.Item label="责任人" span={1}>
+                    <EditableDes
+                        value={planning.assignee || ''}
+                        options={ownerList}
+                        onChange={onDetailChange('assignee')}
+                    />
+                </Descriptions.Item>
+                <Descriptions.Item label="标题" span={2}>
+                    <EditableDes value={planning.title} onChange={onDetailChange('title')}/>
+                </Descriptions.Item>
+                <Descriptions.Item label="待办状态" span={1}>
+                    <EditableDes
+                        value={planning.status}
+                        options={statusOptions}
+                        onChange={onDetailChange('status')}
+                    >
+                        {getTaskStatus(planning.status)}
+                    </EditableDes>
+                </Descriptions.Item>
+                <Descriptions.Item label="卡片状态" span={1}>
+                    {getKbTask(planning)}
+                </Descriptions.Item>
+            </Descriptions>
 
             <div className={'detail-info'}>
                 <div className={'primary-info'}>
-                    <div className={'label-name custom-label'}>详细内容</div>
+                    <div className={'label-name custom-label'}>
+                        <div style={{display: 'flex'}}>
+                            <div style={{flex: '1'}}>详细内容</div>
+                            <div style={{flex: '1', textAlign: 'right'}}>{saveTip}</div>
+                        </div>
+                    </div>
                     <div style={{height: 'calc(100% - 45px)'}}>
                         <Editor defaultValue={content} onChange={onDetailChange('content')}/>
                     </div>
@@ -277,7 +253,20 @@ const ProviderPlanningDetail: React.FC<PlanningDetailProps> = ({providerPlanning
                     <RelationTabs className={'relation-tabs'} planning={planning}/>
                 </div>
             </div>
-            <div className={'custom-label'}>{saveTip}</div>
+            <Descriptions column={6}>
+                <Descriptions.Item label="创建人" span={1}>
+                    {planning.creator}
+                </Descriptions.Item>
+                <Descriptions.Item label="" span={3}>
+                    <></>
+                </Descriptions.Item>
+                <Descriptions.Item label="创建时间" span={1}>
+                    {toLongDate(planning.created)}
+                </Descriptions.Item>
+                <Descriptions.Item label="更新时间" span={1}>
+                    {toLongDate(planning.updated)}
+                </Descriptions.Item>
+            </Descriptions>
         </div>
     );
 };

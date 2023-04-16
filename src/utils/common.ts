@@ -4,7 +4,7 @@ import 'moment/locale/zh-cn';
 moment.locale('zh-cn');
 
 export const toShortDate = function (date: string | undefined): string {
-    if (!date) {
+    if (!date || date === '0001-01-01T00:00:00Z') {
         return '';
     }
 
