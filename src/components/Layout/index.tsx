@@ -67,7 +67,7 @@ const LRLayout: React.FC<LRLayoutProps> = (props) => {
         setTimeout(() => {
             const h = topRef.current?.clientHeight || 0;
             if (containerRef.current) {
-                containerRef.current.style.height = 'calc(100% - ' + h + 'px)';
+                containerRef.current.style.height = 'calc(100% - ' + (h) + 'px)';
             }
         }, 500);
     }, [topRef]);
@@ -79,7 +79,7 @@ const LRLayout: React.FC<LRLayoutProps> = (props) => {
     const bread = breadcrumb ? <div style={{marginTop: '10px'}}>{breadcrumb}</div> : <></>
 
     return (
-        <div className={props.className} style={{height: 'calc(100vh - 120px)'}}>
+        <div className={props.className} style={{height: 'calc(100vh - 130px)'}}>
             <div ref={topRef}>
                 {bread}
                 <div style={{padding: '10px 0 15px 0px', background: 'transparent'}}>

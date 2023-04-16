@@ -2,27 +2,22 @@ import { getNoticeTypeName } from '@/pages/Notice';
 import { getNoticeList } from '@/services/notice/api';
 import { toShortDate } from '@/utils/common';
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'umi';
 import '../portal.less';
 
-const ServiceNewsCard: React.FC = () => {
+const ServiceNoticeCard: React.FC<{productName: string}> = ({productName}) => {
     const [noticeList, setNoticeList] = useState<Notice.Notice[]>([]);
-    const location = useLocation();
 
     useEffect(() => {
-        const params = new URLSearchParams(location.search);
-        const productName = params.get('productName') || '';
-
         getNoticeList({productName: [productName]}, 11, 1).then((data) => {
             setNoticeList(data.items);
         });
-    }, []);
+    }, [productName]);
 
     return (
         <div className={'portal-card service-news'}>
             <div className={'header'}>
-                <div className={'title'}>动态</div>
-                <span className={'more'} onClick={() => window.open('notice', '_blank')}>
+                <div className={'title'}>通知动态</div>
+                <span className={'more'} onClick={() => window.open(`/notice#/${productName}`, '_blank')}>
                     全部&gt;
                 </span>
             </div>
@@ -42,4 +37,4 @@ const ServiceNewsCard: React.FC = () => {
     );
 };
 
-export default ServiceNewsCard;
+export default ServiceNoticeCard;

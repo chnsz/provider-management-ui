@@ -1,45 +1,77 @@
-import ApiCoverage from '@/pages/Portal/components/api-coverage';
-import Health from '@/pages/Portal/components/health';
-import ProviderListCard from '@/pages/Portal/components/provider-list-card';
-import ResourcePlanCard from '@/pages/Portal/components/resource-plan-card';
-import ServiceNewsCard from '@/pages/Portal/components/service-news-card';
-import ServiceStatisticsCard from '@/pages/Portal/components/service-statistics-card';
-import { getNotice } from '@/services/notice/api';
-import React from 'react';
+import React from "react";
+import {Space, Table, Tag} from "antd";
+import './portal.less'
+import {ColumnsType} from "antd/es/table/interface";
+import ServiceSumList from "@/pages/Portal/components/service-sum-list";
 
-const Portal: React.FC = () => {
-    getNotice('1').then((d) => {
-        console.log('getNotice', d);
-    });
 
-    return (
-        <div>
-            <div style={{ height: '24px' }} />
-            <ServiceStatisticsCard />
-            <div style={{ marginTop: '24px', display: 'flex', height: '400px' }}>
-                <div style={{ width: 'calc(33.33% - 13.33px)' }}>
-                    <ApiCoverage />
+const ServiceSum: React.FC = () => {
+    return <div className={'service-sum'}>
+        <div className={'card'}>
+            <div className={'primary-desc'}>
+                <div className={'label'}>
+                    <img src="/icons/all-service.svg" alt="服务总对接率"/>
                 </div>
-                <div style={{ width: '20px' }}></div>
-                <div style={{ width: 'calc(33.33% - 13.33px)' }}>
-                    <Health />
-                </div>
-                <div style={{ width: '20px' }}></div>
-                <div style={{ width: 'calc(33.33% - 13.33px)' }}>
-                    <ServiceNewsCard />
-                </div>
+                <div className={'value'}>89.32%</div>
             </div>
-            <div style={{ marginTop: '24px', display: 'flex', height: '400px' }}>
-                <div style={{ width: 'calc(50% - 10px)' }}>
-                    <ResourcePlanCard />
+            <div className={'second-desc'}>
+                <div className={'label'}>服务总对接率</div>
+                <div className={'value'}>89 / 120</div>
+            </div>
+        </div>
+        <div className={'card'}>
+            <div className={'desc'}>
+                <div className={'primary-desc'}>
+                    <div className={'label'}>
+                        <img src="/icons/core-service.svg" alt="核心服务对接率"/>
+                    </div>
+                    <div className={'value'}>89.32%</div>
                 </div>
-                <div style={{ width: '20px' }}></div>
-                <div style={{ width: 'calc(50% - 10px)' }}>
-                    <ProviderListCard />
+                <div className={'second-desc'}>
+                    <div className={'label'}>核心服务对接率</div>
+                    <div className={'value'}>89 / 120</div>
                 </div>
             </div>
         </div>
-    );
-};
+        <div className={'card'}>
+            <div className={'desc'}>
+                <div className={'primary-desc'}>
+                    <div className={'label'}>
+                        <img src="/icons/main-service.svg" alt="核心服务对接率"/>
+                    </div>
+                    <div className={'value'}>89.32%</div>
+                </div>
+                <div className={'second-desc'}>
+                    <div className={'label'}>主力服务对接率</div>
+                    <div className={'value'}>89 / 120</div>
+                </div>
+            </div>
+        </div>
+        <div className={'card'}>
+            <div className={'desc'}>
+                <div className={'primary-desc'}>
+                    <div className={'label'}>
+                        <img src="/icons/emerging-service.svg" alt="核心服务对接率"/>
+                    </div>
+                    <div className={'value'}>89.32%</div>
+                </div>
+                <div className={'second-desc'}>
+                    <div className={'label'}>新兴服务对接率</div>
+                    <div className={'value'}>89 / 120</div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+const Portal: React.FC = () => {
+
+    return <div className={'portal'}>
+        <Space direction={'vertical'} style={{width: '100%'}} size={20}>
+            <ServiceSum/>
+            <ServiceSumList/>
+        </Space>
+    </div>
+}
 
 export default Portal;
