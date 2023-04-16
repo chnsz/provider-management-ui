@@ -14,7 +14,7 @@ import React, {useEffect, useState} from 'react';
 import './provider-planning.less';
 // @ts-ignore
 import {Scrollbars} from 'react-custom-scrollbars';
-import SearchForm, {ProviderPlanningFormProps} from "@/pages/ProviderPlanning/components/search-form";
+import SearchForm, {SearchFormProps} from "@/components/SearchForm";
 import {useLocation} from "@@/exports";
 
 const {confirm} = Modal;
@@ -36,8 +36,9 @@ const ProviderPlanning: React.FC = () => {
     const location = useLocation();
 
     let page = 1;
-    let productNameArr: string[] = []
-    let ownerArr: string[] = []
+    let productNameArr: string[] = [];
+    let ownerArr: string[] = [];
+    let statusArr: string[] = [];
 
     useEffect(() => {
         const hashArr = location.hash.split('/');
@@ -52,6 +53,7 @@ const ProviderPlanning: React.FC = () => {
         const queryParams = {
             productName: productNameArr,
             owner: ownerArr,
+            status: statusArr,
         };
         getProviderPlanningList(queryParams, 50, pageNum).then((data) => {
             if (data.items.length === 0 && pageNum > 1) {
@@ -77,9 +79,10 @@ const ProviderPlanning: React.FC = () => {
             });
     }
 
-    const onSearch = (query: ProviderPlanningFormProps) => {
-        productNameArr = query.productName
-        ownerArr = query.owner
+    const onSearch = (query: SearchFormProps) => {
+        productNameArr = query.productName;
+        ownerArr = query.owner;
+        statusArr = query.status;
         loadData(1, false);
     };
 
@@ -88,9 +91,9 @@ const ProviderPlanning: React.FC = () => {
     };
 
     const createPlanning = () => {
-        const createOpts = {
-            title: '这一个新建的 Provider 规划',
-            productName: '-',
+        const createOpts: ProviderPlanning.CreateOption = {
+            productName: '',
+            title: '新建的资源规划',
             status: 'new',
             priority: 1,
         };
@@ -112,6 +115,7 @@ const ProviderPlanning: React.FC = () => {
         confirm({
             title: '删除资源规划',
             icon: <ExclamationCircleFilled/>,
+            maskTransitionName: '',
             width: 600,
             okText: '删除',
             cancelText: '取消',
@@ -170,9 +174,13 @@ const ProviderPlanning: React.FC = () => {
         });
     }
 
-    let detailTitle = '规划详情';
-    if (selectedPlanning.id) {
-        detailTitle = '#' + selectedPlanning.id + ' ' + selectedPlanning.title;
+    const getDetailTitle = () => {
+        let detailTitle = <>任务详情</>;
+        if (selectedPlanning.id) {
+            detailTitle = <>任务详情：<span
+                className="detail-title">#{selectedPlanning.id} {selectedPlanning.title}</span></>
+        }
+        return detailTitle;
     }
 
     return (
@@ -185,7 +193,7 @@ const ProviderPlanning: React.FC = () => {
             </Header>
             <LeftSide width={window.innerWidth * 0.3} minWidth={500} style={{height: '100%'}}>
                 <div className={'custom-title side-header'}>
-                    <div className={'side-title'}>Provider 规划</div>
+                    <div className={'side-title'}>资源规划</div>
                     <div className={'side-tools-bar'}>
                         <Button type={'primary'} size={'small'} onClick={createPlanning}>
                             新建规划
@@ -208,7 +216,7 @@ const ProviderPlanning: React.FC = () => {
                 </div>
             </LeftSide>
             <Container>
-                <div className={'custom-title'}>{detailTitle}</div>
+                <div className={'custom-title'}>{getDetailTitle()}</div>
                 <div style={{padding: '20px'}}>
                     <div className={'tools-bar'}>
                         <div className={'left-bar'}>

@@ -53,6 +53,7 @@ export default {
     'menu.api-definition': 'API 定义',
     'menu.api-changes': 'API 变更',
     'menu.portal': 'Portal',
-    'menu.notice': '通知消息',
-    'menu.provider_planning': 'Provider 规划',
+    'menu.notice': '通知动态',
+    'menu.provider_planning': '资源规划',
+    'menu.task': '待办任务',
 };
