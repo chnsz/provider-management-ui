@@ -1,7 +1,9 @@
 import React, {useEffect, useState} from "react";
-import {Space, Table} from "antd";
+import {Button, Space, Table} from "antd";
 import {ColumnsType} from "antd/es/table/interface";
 import {getServiceSumList} from "@/services/portal/api";
+import {ButtonType} from "antd/es/button/buttonHelpers";
+import {getUserList} from "@/services/product/api";
 
 interface ServiceSumProps {
     productGroup: string;
@@ -19,15 +21,19 @@ const ServiceSum: React.FC<ServiceSumProps> = ({productGroup, data}) => {
             render: (v, r, i) => i + 1,
         },
         {
-            title: '服务简称',
+            title: '服务简称/名称',
             dataIndex: 'productName',
             width: '13%',
-            render: (text) => <a href={`/service#/productName/${text}`} target={'_blank'}>{text}</a>,
+            render: (val, record) =>
+                <a href={`/service#/productName/${val}`} target={'_blank'} rel="noreferrer">
+                    {val} / {record.productNameZh}
+                </a>,
         },
         {
             title: '服务分级',
             dataIndex: 'level',
             width: '6%',
+            align: 'center',
         },
         {
             title: 'API 对接率',
@@ -137,7 +143,6 @@ const ServiceSum: React.FC<ServiceSumProps> = ({productGroup, data}) => {
             width: '5%',
         },
     ];
-
     return <>
         <div className={'service-group'}>{productGroup}服务产品部</div>
         <Table
@@ -149,34 +154,91 @@ const ServiceSum: React.FC<ServiceSumProps> = ({productGroup, data}) => {
     </>
 }
 
-
-const ServiceSumList: React.FC = () => {
-    const [productList, setProductList] = useState<ServiceSumProps[]>([]);
+const SearchForm: React.FC<{ onSearch: (owner: string[]) => any }> = ({onSearch}) => {
+    const [ownerList, setOwnerList] = useState<string[]>([]);
+    const [selectedOwner, setSelectedOwner] = useState<string[]>([]);
 
     useEffect(() => {
-        getServiceSumList().then(rsp => {
+        getUserList().then((rsp) => {
+            setOwnerList(rsp.items.map((u: Product.User) => u.username));
+        });
+    }, []);
+
+    useEffect(() => {
+        if (onSearch) {
+            onSearch(selectedOwner);
+        }
+    }, [selectedOwner])
+
+    const onOwnerClick = function (name: string) {
+        return function () {
+            if (selectedOwner.includes(name)) {
+                const arr = selectedOwner.filter((n) => n !== name);
+                setSelectedOwner(arr);
+            } else {
+                setSelectedOwner([...selectedOwner, name]);
+            }
+        };
+    };
+
+    return <div style={{background: '#fff', padding: '15px', margin: '10px 0'}}>
+        <span className={'filter-label'}>按田主过滤：</span>
+        <Space>
+            {ownerList.map((t) => {
+                let type: ButtonType = selectedOwner.includes(t) ? 'primary' : 'dashed';
+
+                return (
+                    <Button key={t} size={'small'} type={type} onClick={onOwnerClick(t)}>
+                        {t}
+                    </Button>
+                );
+            })}
+            <Button size={'small'} type={'link'} onClick={() => setSelectedOwner([])}>
+                清空已选
+            </Button>
+        </Space>
+    </div>
+}
+
+const ServiceSumList: React.FC<{ onload: (data: Portal.PortalSum) => any }> = ({onload}) => {
+    const [productList, setProductList] = useState<ServiceSumProps[]>([]);
+
+    const onSearch = (ownerArr: string[]) => {
+        getServiceSumList(ownerArr).then(rsp => {
+            setProductList([]);
+            onload(rsp);
+            if (rsp.productSumList.length === 0) {
+                return;
+            }
+
             const arr: ServiceSumProps[] = [];
             let tmpArr: Portal.ProductSum[] = [];
             let productGroup: string = '';
 
-            rsp.forEach((t: Portal.ProductSum) => {
+            rsp.productSumList.forEach((t: Portal.ProductSum) => {
                 if (productGroup !== t.productGroup && productGroup !== '') {
-                    arr.push({
-                        productGroup: productGroup,
-                        data: tmpArr,
-                    });
+                    arr.push({productGroup: productGroup, data: tmpArr});
                     tmpArr = [];
                     productGroup = '';
                 }
                 productGroup = t.productGroup;
                 tmpArr.push(t);
             });
-            setProductList(arr);
+            if (tmpArr.length > 0) {
+                arr.push({productGroup: productGroup, data: tmpArr});
+            }
+
+            for (let i = 0; i < arr.length; i++) {
+                setTimeout(() => {
+                    setProductList(arr.slice(0, i + 1));
+                }, i * 10);
+            }
         });
-    }, []);
+    }
 
     return <div className={'service-list'}>
         <div className={'title'}>服务列表</div>
+        <SearchForm onSearch={onSearch}/>
         <Space direction={'vertical'} style={{width: '100%'}} size={20}>
             {
                 productList.map(p =>

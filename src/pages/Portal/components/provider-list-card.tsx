@@ -30,11 +30,14 @@ const getSupportState = (supportState: string) => {
 
 const ProviderListCard: React.FC<{ productName: string }> = ({productName}) => {
     const [data, setData] = useState<Provider.Provider[]>();
-
+    const [apiList, setApiList] = useState<Api.Detail[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const showModal = () => {
-        setIsModalOpen(true);
+    const showApiList = (record: Provider.Provider) => {
+        return ()=>{
+            setApiList(record.apiList);
+            setIsModalOpen(true);
+        }
     };
 
     const handleCancel = () => {
@@ -59,12 +62,12 @@ const ProviderListCard: React.FC<{ productName: string }> = ({productName}) => {
         {
             title: '资源类型',
             dataIndex: 'type',
-            width: '10%',
+            width: '8%',
         },
         {
             title: 'Category',
             dataIndex: 'category',
-            width: '18%',
+            width: '14%',
         },
         {
             title: '名称',
@@ -76,31 +79,43 @@ const ProviderListCard: React.FC<{ productName: string }> = ({productName}) => {
             dataIndex: 'apiList',
             width: '10%',
             align: 'center',
-            render: (apiList) => (
-                <a type="button" onClick={showModal}>
+            render: (apiList, record) => (
+                <a type="button" onClick={showApiList(record)}>
                     {(apiList || []).length}
                 </a>
             ),
         },
         {
+            title: '法电',
+            dataIndex: 'orangeCloud',
+            width: '6%',
+            align: 'center',
+        },
+        {
+            title: 'G42',
+            dataIndex: 'g42Cloud',
+            width: '6%',
+            align: 'center',
+        },
+        {
             title: '企业项目',
             dataIndex: 'epsSupport',
             align: 'center',
-            width: '10%',
+            width: '8%',
             render: getSupportState,
         },
         {
             title: '标签',
             dataIndex: 'tagSupport',
             align: 'center',
-            width: '10%',
+            width: '8%',
             render: getSupportState,
         },
         {
             title: '包周期',
             dataIndex: 'prePaidSupport',
             align: 'center',
-            width: '10%',
+            width: '8%',
             render: getSupportState,
         },
     ];
@@ -125,9 +140,9 @@ const ProviderListCard: React.FC<{ productName: string }> = ({productName}) => {
                 open={isModalOpen}
                 footer={null}
                 onCancel={handleCancel}
-                width={1000}
+                width={1600}
             >
-                <ProviderApiList/>
+                <ProviderApiList data={apiList}/>
             </Modal>
         </>
     );

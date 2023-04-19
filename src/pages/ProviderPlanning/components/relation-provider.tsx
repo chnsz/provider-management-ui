@@ -79,7 +79,7 @@ const RelationProvider: React.FC<RelationProviderProps> = ({
             title: '类型',
             dataIndex: 'providerType',
             key: 'providerType',
-            width: 100,
+            width: 120,
             align: 'center',
         },
         {
