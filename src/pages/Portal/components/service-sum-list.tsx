@@ -36,9 +36,27 @@ const ServiceSum: React.FC<ServiceSumProps> = ({productGroup, data}) => {
             align: 'center',
         },
         {
+            title: '特性覆盖率',
+            dataIndex: 'featureCoverage',
+            width: '6%',
+            align: 'center',
+        },
+        {
             title: 'API 对接率',
             dataIndex: 'apiCoverage',
-            width: '7%',
+            width: '6%',
+            align: 'center',
+        },
+        {
+            title: () => <>Provider<br/>资源数</>,
+            dataIndex: 'providerCount',
+            width: '6%',
+            align: 'center',
+        },
+        {
+            title: () => <>DataSource<br/>资源数</>,
+            dataIndex: 'dataSourceCount',
+            width: '6%',
             align: 'center',
         },
         {
@@ -65,18 +83,6 @@ const ServiceSum: React.FC<ServiceSumProps> = ({productGroup, data}) => {
             },
         },
         {
-            title: () => <>Provider<br/>资源数</>,
-            dataIndex: 'providerCount',
-            width: '6%',
-            align: 'center',
-        },
-        {
-            title: () => <>DataSource<br/>资源数</>,
-            dataIndex: 'dataSourceCount',
-            width: '6%',
-            align: 'center',
-        },
-        {
             title: '资源规划',
             dataIndex: 'planningStatusSums',
             width: '15%',
@@ -86,7 +92,7 @@ const ServiceSum: React.FC<ServiceSumProps> = ({productGroup, data}) => {
 
                 return <div className={'row'}>
                     <div className={'col'}>
-                        <div className={record.planningNew === 0 ? '' : 'red'}>{record.planningNew}</div>
+                        <div className={record.planningNew === 0 ? '' : 'orange'}>{record.planningNew}</div>
                         <div className={'custom-label'}>待处理</div>
                     </div>
                     <div className={'col'}>
@@ -94,7 +100,7 @@ const ServiceSum: React.FC<ServiceSumProps> = ({productGroup, data}) => {
                         <div className={'custom-label'}>进行中</div>
                     </div>
                     <div className={'col'}>
-                        <div className={record.planningFreeze === 0 ? '' : 'orange'}>{record.planningFreeze}</div>
+                        <div className={record.planningFreeze === 0 ? '' : 'red'}>{record.planningFreeze}</div>
                         <div className={'custom-label'}>冻结</div>
                     </div>
                     <div className={'col'}>
@@ -113,7 +119,7 @@ const ServiceSum: React.FC<ServiceSumProps> = ({productGroup, data}) => {
                 const processing = record.taskProcessing + record.taskMerging;
                 return <div className={'row'}>
                     <div className={'col'}>
-                        <div className={record.taskNew === 0 ? '' : 'red'}>{record.taskNew}</div>
+                        <div className={record.taskNew === 0 ? '' : 'orange'}>{record.taskNew}</div>
                         <div className={'custom-label'}>待处理</div>
                     </div>
                     <div className={'col'}>
@@ -121,7 +127,7 @@ const ServiceSum: React.FC<ServiceSumProps> = ({productGroup, data}) => {
                         <div className={'custom-label'}>进行中</div>
                     </div>
                     <div className={'col'}>
-                        <div className={record.taskFreeze === 0 ? '' : 'orange'}>{record.taskFreeze}</div>
+                        <div className={record.taskFreeze === 0 ? '' : 'red'}>{record.taskFreeze}</div>
                         <div className={'custom-label'}>冻结</div>
                     </div>
                     <div className={'col'}>
@@ -144,7 +150,7 @@ const ServiceSum: React.FC<ServiceSumProps> = ({productGroup, data}) => {
         },
     ];
     return <>
-        <div className={'service-group'}>{productGroup}服务产品部</div>
+        <div className={'service-group'}>{productGroup}</div>
         <Table
             columns={columns}
             dataSource={data}
