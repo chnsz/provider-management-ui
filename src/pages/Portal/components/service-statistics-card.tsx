@@ -1,5 +1,5 @@
 import {getApiPanelSum} from '@/services/portal/api';
-import {CheckCircleOutlined, CloseCircleOutlined, CloudServerOutlined} from '@ant-design/icons';
+import {CheckCircleOutlined, CloseCircleOutlined} from '@ant-design/icons';
 import {Col, Row} from 'antd';
 import React, {useEffect, useState} from 'react';
 import '../portal.less';
@@ -29,7 +29,7 @@ const defaultVal = {
     }
 };
 
-const ServiceStatisticsCard: React.FC<{productName: string}> = ({productName}) => {
+const ServiceStatisticsCard: React.FC<{ productName: string }> = ({productName}) => {
     const [item, setItem] = useState<Portal.ProductSumPanel>(defaultVal);
 
     useEffect(() => {
@@ -159,11 +159,19 @@ const ServiceStatisticsCard: React.FC<{productName: string}> = ({productName}) =
         );
     };
 
+    let fontSize = 26;
+    const nameLen = item.product.productName.length;
+    if (nameLen > 10 && nameLen < 15) {
+        fontSize = 20
+    } else if (nameLen >= 15) {
+        fontSize = 16;
+    }
+
     return (
         <div className={'service-statistics-card'}>
             <div className={'service-info'}>
                 <div className={'service-name'}>
-                    <span className={'name'}>{/* {<CloudServerOutlined/>} {item.product.productIcon}*/}{item.product.productName}</span>
+                    <span className={'name'} style={{fontSize: fontSize + 'px'}}>{item.product.productName}</span>
                 </div>
                 <div className={'service-owner'}>
                     <span className={'label'}>田主：</span>

@@ -5,7 +5,7 @@ declare namespace ProviderPlanning {
         // 标题
         title: string;
         // 特性ID
-        featureId?: string;
+        featureId?: number;
         // 详细内容
         content?: string;
         // 状态
@@ -22,7 +22,7 @@ declare namespace ProviderPlanning {
         // 关联的 Provider
         providerList?: Relation.ProviderRelation[];
         // 关联的 API
-        apiList?: Relation.ApiRelation[];
+        apiIdList?: number[];
     };
 
     type UpdateOption = {
@@ -32,6 +32,7 @@ declare namespace ProviderPlanning {
         title: string;
         // 特性ID
         featureId?: string;
+        featureName?: string;
         // 详细内容
         content?: string;
         // 状态
@@ -90,7 +91,7 @@ declare namespace ProviderPlanning {
         //优先级
         priority: number;
         // 对应看板卡片的ID
-        cardId?: string;
+        cardId?: number;
         // 负责人
         assignee?: string;
         // 创建人

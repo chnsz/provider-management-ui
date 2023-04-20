@@ -204,13 +204,21 @@ const Task: React.FC = () => {
         return taskTitle;
     }
 
+    const getProductName = ()=>{
+        const hashArr = location.hash.split('/');
+        if (hashArr.length === 2) {
+            return [hashArr[1]];
+        }
+        return [];
+    }
+
     return (
         <LRLayout className={'task'}>
             <Breadcrumb items={[{title: '首页'}, {title: '待办任务'}]}/>
             <Header>
                 {contextHolder}
                 <div style={{background: '#fff', padding: '20px 20px'}}>
-                    <SearchForm onSearch={onSearch}/>
+                    <SearchForm onSearch={onSearch} defaultValue={{productName: getProductName()}}/>
                 </div>
             </Header>
             <LeftSide width={window.innerWidth * 0.3} minWidth={500} style={{height: '100%'}}>

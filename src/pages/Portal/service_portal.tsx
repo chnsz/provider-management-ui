@@ -22,7 +22,6 @@ const Portal: React.FC = () => {
 
     useEffect(() => {
         const productName = getProductName(location.hash);
-        console.log(productName)
         setProductName(productName);
     }, [location]);
 
@@ -36,14 +35,14 @@ const Portal: React.FC = () => {
                 </div>
                 <div style={{width: '20px'}}></div>
                 <div style={{width: 'calc(33.33% - 13.33px)'}}>
-                    <FeatureCard/>
+                    <FeatureCard productName={productName}/>
                 </div>
                 <div style={{width: '20px'}}></div>
                 <div style={{width: 'calc(33.33% - 13.33px)'}}>
                     <ServiceNoticeCard productName={productName}/>
                 </div>
             </div>
-            <div style={{marginTop: '24px', display: 'flex', height: '540px'}}>
+            <div style={{marginTop: '24px', display: 'flex', height: '600px'}}>
                 <div style={{width: 'calc(50% - 10px)'}}>
                     <ProviderPlanningCard productName={productName}/>
                 </div>

@@ -80,6 +80,11 @@ declare namespace Portal {
         taskMerged: number;
         taskClosed: number;
 
+        featureCoverage: string;
+        featureCovered: number;
+        featurePartCovered: number;
+        featureNotCovered: number;
+
         providerCount: number;
         dataSourceCount: number;
     }
