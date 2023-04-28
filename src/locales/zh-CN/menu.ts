@@ -57,4 +57,5 @@ export default {
     'menu.provider_planning': '资源规划',
     'menu.task': '待办任务',
     'menu.product_feature': '特性分析',
+    'menu.provider': 'Provider 分析',
 };

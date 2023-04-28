@@ -220,7 +220,7 @@ const ProviderPlanningEditor: React.FC<PlanningDetailProps> = ({providerPlanning
                     ></Select>
                 </Descriptions.Item>
                 <Descriptions.Item label="标题" span={2}>
-                    <Input value={providerPlanning.title} onChange={onDetailChange('title')} size={'small'}
+                    <Input value={providerPlanning.title} onChange={(e) => onDetailChange('title')(e.target.value)} size={'small'}
                            style={{width: '615px'}}
                     ></Input>
                 </Descriptions.Item>
