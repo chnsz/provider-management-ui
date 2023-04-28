@@ -10,6 +10,10 @@ declare namespace ProductFeature {
         source: 'api' | 'doc' | 'manual';
         // 状态：active：活动状态，ignore：忽略
         state: 'active' | 'ignore';
+        apiCount: number,
+        apiUsed: number,
+        coverageStatus: 'covered' | 'partially_covered' | 'not_covered',
+        actualCoverage: 'covered' | 'partially_covered' | 'not_covered',
         // 创建日期
         created: string;
         // 修改日期
@@ -20,4 +24,17 @@ declare namespace ProductFeature {
         // 关联的 API
         apiList?: Relation.ApiRelation[];
     };
+
+    type UpdateOptions = {
+        productName?: string;
+        name?: string;
+        state?: string;
+        actualCoverage?: string;
+    }
+
+    type CreateOptions = {
+        productName?: string;
+        name?: string;
+        actualCoverage?: string;
+    }
 }

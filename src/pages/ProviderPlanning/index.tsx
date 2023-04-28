@@ -16,6 +16,7 @@ import './provider-planning.less';
 import {Scrollbars} from 'react-custom-scrollbars';
 import SearchForm, {SearchFormProps} from "@/components/SearchForm";
 import {useLocation} from "@@/exports";
+import DeleteBtn from "@/components/delete";
 
 const {confirm} = Modal;
 
@@ -104,42 +105,13 @@ const ProviderPlanning: React.FC = () => {
     };
 
     const deletePlanning = () => {
-        if (selectedPlanning.id === 0) {
-            notificationApi['warning']({
-                message: '操作失败',
-                description: '您还没有选择资源规划，请先选择一条资源规划',
-            });
-            return;
-        }
-
-        confirm({
-            title: '删除资源规划',
-            icon: <ExclamationCircleFilled/>,
-            maskTransitionName: '',
-            width: 600,
-            okText: '删除',
-            cancelText: '取消',
-            content: (
-                <>
-                    <div>确定要删除该资源规划吗？关联的卡片会被同步删除。</div>
-                    <div>删除后可联系管理员恢复，请谨慎操作。</div>
-                    <p>
-                        <a>
-                            #{selectedPlanning.id} {selectedPlanning.title}
-                        </a>
-                    </p>
-                </>
-            ),
-            onOk() {
-                deleteProviderPlanning(selectedPlanning.id).then(rsp => {
-                    if (rsp.affectedRow === 0) {
-                        return
-                    }
-                    const arr = providerPlanningList.filter((t) => t.id !== selectedPlanning.id);
-                    setProviderPlanningList(arr);
-                    setSelectedPlanning(defaultVal);
-                });
-            },
+        deleteProviderPlanning(selectedPlanning.id).then(rsp => {
+            if (rsp.affectedRow === 0) {
+                return
+            }
+            const arr = providerPlanningList.filter((t) => t.id !== selectedPlanning.id);
+            setProviderPlanningList(arr);
+            setSelectedPlanning(defaultVal);
         });
     };
 
@@ -183,12 +155,20 @@ const ProviderPlanning: React.FC = () => {
         return detailTitle;
     }
 
+    const getProductName = ()=>{
+        const hashArr = location.hash.split('/');
+        if (hashArr.length === 2) {
+            return [hashArr[1]];
+        }
+        return []
+    }
+
     return (
         <LRLayout className={'provider-planning'}>
             <Breadcrumb items={[{title: '首页'}, {title: '资源规划'}]}/>
             <Header>
                 <div style={{background: '#fff', padding: '20px 20px'}}>
-                    <SearchForm onSearch={onSearch}/>
+                    <SearchForm onSearch={onSearch} defaultValue={{productName: getProductName()}}/>
                 </div>
             </Header>
             <LeftSide width={window.innerWidth * 0.3} minWidth={500} style={{height: '100%'}}>
@@ -227,11 +207,21 @@ const ProviderPlanning: React.FC = () => {
                                 >
                                     推送卡片
                                 </Button>
-
-                                <Button size={'small'} danger onClick={deletePlanning}
-                                        disabled={selectedPlanning.id === 0}>
-                                    删除规划
-                                </Button>
+                                <DeleteBtn size={'small'}  text={'删除规划'} onOk={deletePlanning}
+                                           disabled={selectedPlanning.id === 0}
+                                           title={'删除资源规划'}
+                                           content={
+                                               <>
+                                                   <div>确定要删除该资源规划吗？关联的卡片会被同步删除。</div>
+                                                   <div>删除后可联系管理员恢复，请谨慎操作。</div>
+                                                   <p>
+                                                       <a>
+                                                           #{selectedPlanning.id} {selectedPlanning.title}
+                                                       </a>
+                                                   </p>
+                                               </>
+                                           }
+                                />
                                 {contextHolder}
                             </Space>
                         </div>

@@ -54,10 +54,11 @@ declare namespace Portal {
     type ProductSum = {
         productGroup: string;
         productName: string;
+        productNameZh: string;
         owner: string;
         level: string;
 
-        apiCoverage: number;
+        apiCoverage: string;
         apiCount: number;
         apiUsed: number;
         apiUseNeedAnalysis: number;
@@ -79,7 +80,25 @@ declare namespace Portal {
         taskMerged: number;
         taskClosed: number;
 
+        featureCoverage: string;
+        featureCovered: number;
+        featurePartCovered: number;
+        featureNotCovered: number;
+
         providerCount: number;
         dataSourceCount: number;
+    }
+
+    type PortalSum = {
+        productSumList: ProductSum[];
+
+        allApiCount: number;
+        allApiUsed: number;
+        coreApiCount: number;
+        coreApiUsed: number;
+        mainApiCount: number;
+        mainApiUsed: number;
+        emergingApiCount: number;
+        emergingApiUsed: number;
     }
 }

@@ -100,7 +100,7 @@ export default defineConfig({
         default: 'zh-CN',
         antd: true,
         // default true, when it is true, will use `navigator.language` overwrite default
-        baseNavigator: true,
+        baseNavigator: false,
     },
     /**
      * @name antd 插件
@@ -153,4 +153,7 @@ export default defineConfig({
         strategy: 'normal',
     },
     requestRecord: {},
+    analytics: {
+        baidu: '499780facd9feae6644480621131dd26',
+    }
 });

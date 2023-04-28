@@ -1,4 +1,4 @@
-import { request } from '@@/exports';
+import {request} from '@@/exports';
 
 const basePath = '/pms';
 
@@ -10,15 +10,16 @@ export async function getProviderHealthCheckSum() {
 }
 
 /** 查询API对接汇总数据 GET /portal/service-statistics-card-sum */
-export async function getApiPanelSum(productName:string) {
+export async function getApiPanelSum(productName: string) {
     return request<Portal.ProductSumPanel>(`${basePath}/portal/product/sum/${productName}`, {
         method: 'GET',
     });
 }
 
-export async function getServiceSumList() {
-    return request<Portal.ProductSum[]>(`${basePath}/portal/product/sum`, {
+export async function getServiceSumList(ownerArr: string[]) {
+    return request<Portal.PortalSum>(`${basePath}/portal/product/sum`, {
         method: 'GET',
+        params: {owner: ownerArr}
     });
 }
 

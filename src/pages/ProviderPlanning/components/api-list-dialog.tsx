@@ -8,22 +8,11 @@ import {ColumnsType} from 'antd/es/table/interface';
 import React, {useEffect, useState} from 'react';
 
 type ApiListDialogProp = {
-    handle?: (option: 'ok' | 'cancel', rows: ApiDialogData[], idArr: number[]) => any;
+    handle?: (option: 'ok' | 'cancel', rows: Api.Detail[], idArr: number[]) => any;
+    providerName?: string;
 };
 
-export interface ApiDialogData {
-    key: React.Key;
-    productName: string;
-    apiGroup: string;
-    name: string;
-    nameEn: string;
-    useStatus: string;
-    method: string;
-    uri: string;
-    publishStatus: string;
-}
-
-const columns: ColumnsType<ApiDialogData> = [
+const columns: ColumnsType<Api.Detail> = [
     {
         title: '服务',
         dataIndex: 'productName',
@@ -38,13 +27,13 @@ const columns: ColumnsType<ApiDialogData> = [
     },
     {
         title: 'API 名称',
-        dataIndex: 'name',
+        dataIndex: 'apiName',
         ellipsis: true,
         width: 220,
     },
     {
         title: '覆盖状态',
-        dataIndex: 'useStatus',
+        dataIndex: 'useRemark',
         width: 90,
         render: (val) => {
             switch (val) {
@@ -101,7 +90,7 @@ type FormProps = {
     useRemark: string;
 };
 
-const SearchForm: React.FC<{ onSearch: (val: FormProps) => any }> = (props) => {
+const SearchForm: React.FC<{ productName: string, onSearch: (val: FormProps) => any }> = (props) => {
     const [productNameMap, setProductNameMap] = useState<ProSchemaValueEnumObj>({});
     const [apiGroupMap, setApiGroupMap] = useState<ProSchemaValueEnumObj>({});
 
@@ -137,6 +126,7 @@ const SearchForm: React.FC<{ onSearch: (val: FormProps) => any }> = (props) => {
                 name="productName"
                 label="产品服务"
                 showSearch
+                initialValue={props.productName}
                 rules={[{required: true}]}
                 fieldProps={{
                     allowClear: false,
@@ -176,14 +166,14 @@ const SearchForm: React.FC<{ onSearch: (val: FormProps) => any }> = (props) => {
 const ApiListDialog: React.FC<ApiListDialogProp> = (props) => {
     const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-    const [selectedRows, setSelectedRows] = useState<ApiDialogData[]>([]);
-    const [data, setData] = useState<ApiDialogData[]>([]);
+    const [selectedRows, setSelectedRows] = useState<Api.Detail[]>([]);
+    const [data, setData] = useState<Api.Detail[]>([]);
     const [total, setTotal] = useState<number>(0);
     const [pageSize, setPageSize] = useState<number>(20);
     const [pageNum, setPageNum] = useState<number>(1);
     const [queryParams, setQueryParams] = useState<Api.queryListParams>({});
 
-    const onSelectChange = (newSelectedRowKeys: React.Key[], rows: ApiDialogData[]) => {
+    const onSelectChange = (newSelectedRowKeys: React.Key[], rows: Api.Detail[]) => {
         setSelectedRowKeys(newSelectedRowKeys);
         setSelectedRows(rows);
     };
@@ -201,7 +191,7 @@ const ApiListDialog: React.FC<ApiListDialogProp> = (props) => {
     const onSearch = (val: FormProps) => {
         setPageNum(1);
         setQueryParams({
-            productName: val.productName,
+            productName: val.productName || props.providerName,
             apiGroup: val.apiGroup,
             apiName: val.apiName,
             uri: val.uri,
@@ -212,20 +202,7 @@ const ApiListDialog: React.FC<ApiListDialogProp> = (props) => {
 
     useEffect(() => {
         getApiDetailList(queryParams, pageSize, pageNum).then((d) => {
-            const arr = d.items.map((t: Api.Detail) => {
-                return {
-                    key: t.id,
-                    productName: t.productName,
-                    apiGroup: t.apiGroup,
-                    name: t.apiName,
-                    nameEn: t.apiNameEn,
-                    useStatus: t.useRemark,
-                    method: t.method,
-                    uri: t.uri,
-                    publishStatus: t.publishStatus,
-                };
-            });
-            setData(arr);
+            setData(d.items);
             setTotal(d.total);
         });
     }, [pageNum, pageSize, queryParams]);
@@ -241,20 +218,23 @@ const ApiListDialog: React.FC<ApiListDialogProp> = (props) => {
                 + 新增绑定
             </Button>
             <Modal
+                transitionName={''}
+                destroyOnClose
                 title="选择要关联的 API"
-                width={1200}
+                width={1400}
                 cancelText={'取消'}
                 okText={'确定'}
                 open={isDialogOpen}
                 onOk={handle('ok')}
                 onCancel={handle('cancel')}
             >
-                <SearchForm onSearch={onSearch}/>
+                <SearchForm onSearch={onSearch} productName={props.providerName||''}/>
                 <Divider/>
                 <Table
                     rowSelection={rowSelection}
                     columns={columns}
                     dataSource={data}
+                    rowKey={(record) => record.id}
                     pagination={{
                         defaultCurrent: 1,
                         total: total,

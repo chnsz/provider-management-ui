@@ -140,4 +140,18 @@ declare namespace Api {
         publishStatus?: string;
         id?: number[];
     };
+
+    type ProviderApi = {
+        id: number;
+        type: string;
+        name: string;
+        apiId: number;
+        productGroup: string;
+        productName: string;
+        apiGroup: string;
+        apiName: string;
+        apiNameEn: string;
+        method: string;
+        uriShort: string;
+    };
 }

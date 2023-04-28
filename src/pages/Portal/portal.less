@@ -11,13 +11,13 @@
 
         .title {
             display: inline-block;
-            width: calc(100% - 50px);
+            width: calc(100% - 46px);
         }
 
         .more {
             display: inline-block;
-            width: 50px;
-            padding-right: 8px;
+            width: 46px;
+            //padding-right: 8px;
             color: rgba(0, 0, 0, 0.43);
             font-weight: normal;
             font-size: 14px;
@@ -26,9 +26,22 @@
         }
     }
 
+    .splitter {
+        display: flex;
+
+        .title {
+            display: inline-block;
+            width: calc(100% - 50px);
+        }
+        .toolbar {
+            flex: 1;
+            text-align: right;
+        }
+    }
+
     .container {
         height: calc(100% - 50px);
-        padding: 24px;
+        padding: 20px;
     }
 
     .coverage-card-percent {
@@ -112,8 +125,12 @@
 
             .name {
                 display: inline-block;
-                width: calc(100% - 45px);
+                text-align: right;
+                /*width: calc(100% - 45px);
                 overflow: hidden;
+                white-space: nowrap;
+                -o-text-overflow: ellipsis;
+                text-overflow: ellipsis;*/
             }
         }
 
@@ -221,7 +238,7 @@
         margin: 0 -10px;
 
         .card {
-            width: 33%;
+            width: 20%;
             height: 150px;
             background: white;
             margin: 0 10px;
@@ -234,11 +251,18 @@
                 border-top: 2px solid #f0f0f0;
                 padding-top: 8px;
             }
+
+            .tooltip {
+                color: rgba(0, 0, 0, 0.45);
+                text-align: right;
+                cursor: pointer;
+            }
         }
 
         .primary-desc {
             display: flex;
-            height: 90px;
+            height: 82px;
+            margin-top: -11px;
 
             .label {
                 flex: 1;
@@ -270,6 +294,7 @@
 
             .label {
                 flex: 1;
+                font-size: 14px;
             }
 
             .value {
@@ -301,6 +326,14 @@
         .custom-label {
             font-size: 10px;
             text-align: center;
+        }
+
+        .filter-label{
+            color: rgba(0, 0, 0, 0.45);
+            font-weight: normal;
+            font-size: 14px;
+            line-height: 1.5714285714285714;
+            text-align: start;
         }
 
         .row {

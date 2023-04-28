@@ -1,18 +1,40 @@
-import {Table} from 'antd';
+import {Button, Space, Table} from 'antd';
 import type {ColumnsType} from 'antd/es/table/interface';
 import React, {useEffect, useState} from 'react';
-import {getProviderPlanningList} from "@/services/provider-planning/api";
+import {createPlanningKbTask, deleteProviderPlanning, getProviderPlanningList} from "@/services/provider-planning/api";
 import {getTaskStatus} from "@/pages/Task/components/task-detail";
 import {toShortDate} from "@/utils/common";
+import AddFeaturePlanningDialog from "@/pages/ProviderPlanning/components/creation-dialog/add-feature-planning-dialog";
+import PlanningViewDialog from "@/pages/ProviderPlanning/components/creation-dialog/planning-view-dialog";
+import DeleteBtn from "@/components/delete";
 
 const ProviderPlanningCard: React.FC<{ productName: string }> = ({productName}) => {
+    const [total, setTotal] = useState<number>(0);
+    const [pageSize, setPageSize] = useState<number>(10);
+    const [pageNum, setPageNum] = useState<number>(1);
     const [list, setList] = useState<ProviderPlanning.ProviderPlanning[]>([]);
 
-    useEffect(() => {
-        getProviderPlanningList({productName: [productName]}, 10, 1).then((rsp) => {
-            setList(rsp.items);
+    const loadData = () => {
+        getProviderPlanningList({productName: [productName]}, pageSize, pageNum).then((d) => {
+            setList(d.items);
+            setTotal(d.total);
         });
-    }, [productName]);
+    };
+
+    useEffect(() => {
+        loadData()
+    }, [pageNum, pageSize]);
+
+    useEffect(loadData, [productName]);
+
+    const createKbTask = (id: number) => {
+        createPlanningKbTask(id).then(p => {
+            if (!p.kanboardTask) {
+                return
+            }
+            loadData()
+        });
+    }
 
     const columns: ColumnsType<ProviderPlanning.ProviderPlanning> = [
         {
@@ -63,22 +85,83 @@ const ProviderPlanningCard: React.FC<{ productName: string }> = ({productName}) 
             width: 100,
             render: toShortDate,
         },
+        {
+            title: '操作',
+            align: 'center',
+            width: 150,
+            render: (v, record) => {
+                return <>
+                    <PlanningViewDialog planning={record} onClosed={loadData}/>
+                    <Button
+                        size={'small'}
+                        type={'link'}
+                        disabled={record.cardId !== 0}
+                        onClick={() => createKbTask(record.id)}
+                    >
+                        推送
+                    </Button>
+                    <DeleteBtn size={'small'}
+                               type={'link'}
+                               text={'删除'}
+                               title={'删除资源规划'}
+                               content={
+                                   <>
+                                       <div>确定要删除该资源规划吗？关联的卡片会被同步删除。</div>
+                                       <div>删除后可联系管理员恢复，请谨慎操作。</div>
+                                       <p>
+                                           <a>
+                                               #{record.id} {record.title}
+                                           </a>
+                                       </p>
+                                   </>
+                               }
+                               onOk={() => {
+                                   deleteProviderPlanning(record.id).then(rsp => {
+                                       if (rsp.affectedRow === 0) {
+                                           return
+                                       }
+                                       loadData()
+                                   });
+                               }}
+                    />
+                </>
+            }
+        }
     ];
 
     return (
         <div className={'portal-card'}>
-            <div className={'header'}>
+            <div className={'header splitter'}>
                 <div className={'title'}>资源规划</div>
-                <span className={'more'} onClick={() => window.open(`/provider-planning#/${productName}`, '_blank')}>
-                    全部&gt;
-                </span>
+                <div className={'toolbar'}>
+                    <Space size={15}>
+                        <AddFeaturePlanningDialog productName={productName} onClosed={loadData}/>
+                        <span className={'more'}
+                              onClick={() => window.open(`/provider-planning#/${productName}`, '_blank')}
+                        > 更多&gt;</span>
+                    </Space>
+                </div>
             </div>
             <div className={'container'}>
                 <Table size={'small'}
                        columns={columns}
                        dataSource={list}
-                       pagination={false}
                        rowKey={(record) => record.id}
+                       pagination={{
+                           defaultCurrent: 1,
+                           total: total,
+                           size: 'default',
+                           pageSize: pageSize,
+                           current: pageNum,
+                           showTotal: (total) => `总条数：${total}`,
+                           onShowSizeChange: (current, size) => {
+                               setPageSize(size);
+                           },
+                           onChange: (page: number, size: number) => {
+                               setPageNum(page);
+                               setPageSize(size);
+                           },
+                       }}
                 />
             </div>
         </div>

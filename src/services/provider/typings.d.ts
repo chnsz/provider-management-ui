@@ -16,5 +16,6 @@ declare namespace Provider {
         updated: string;
 
         apiList: Api.Detail[];
+        providerApiList: Api.ProviderApi[];
     }
 }

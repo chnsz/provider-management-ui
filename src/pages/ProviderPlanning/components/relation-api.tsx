@@ -1,4 +1,4 @@
-import ApiListDialog, {ApiDialogData} from '@/pages/ProviderPlanning/components/api-list-dialog';
+import ApiListDialog from '@/pages/ProviderPlanning/components/api-list-dialog';
 import {getApiDetailList} from '@/services/api/api';
 import {bindProviderPlanningApi, unbindProviderPlanningApi,} from '@/services/provider-planning/api';
 import {DeleteOutlined} from '@ant-design/icons';
@@ -33,22 +33,22 @@ const RelationApi: React.FC<RelationApiProps> = ({idList, planningId, onChange})
         };
     };
 
-    const onAdd = (idList: number[], rows: ApiDialogData[]) => {
+    const onAdd = (idList: number[], rows: Api.Detail[]) => {
         const exitsData = data.map((t) => t.key);
         const apiIdList = idList.filter((t) => !exitsData.includes(t.toString()));
 
         bindProviderPlanningApi(planningId, apiIdList).then(() => {
             const arr = [...data];
             rows.forEach((a) => {
-                if (apiIdList.indexOf(parseInt(a.key.toString())) === -1) {
+                if (apiIdList.indexOf(parseInt(a.id.toString())) === -1) {
                     return;
                 }
 
                 arr.push({
-                    key: a.key.toString(),
+                    key: a.id.toString(),
                     productName: a.productName,
-                    name: a.name,
-                    nameEn: a.nameEn,
+                    name: a.apiName,
+                    nameEn: a.apiNameEn,
                     method: a.method,
                     uri: a.uri,
                 });
@@ -139,7 +139,7 @@ const RelationApi: React.FC<RelationApiProps> = ({idList, planningId, onChange})
             <div style={{padding: '12px', textAlign: 'center'}}>
                 {/*<Button size={'small'} onClick={() => setIsDialogOpen(true)}>+ 新增绑定</Button>*/}
                 <ApiListDialog
-                    handle={(option: 'ok' | 'cancel', rows: ApiDialogData[], idList: number[]) => {
+                    handle={(option: 'ok' | 'cancel', rows: Api.Detail[], idList: number[]) => {
                         if (option === 'ok') {
                             onAdd(idList, rows);
                         }

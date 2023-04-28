@@ -34,24 +34,31 @@ export default [
     {
         path: '/api/changes',
         name: 'api-changes',
+        hideInMenu: true,
         component: './api/changes/index',
+    },
+    {
+        path: '/product-feature',
+        name: 'product_feature',
+        // hideInMenu: process.env.NODE_ENV === 'production',
+        component: './ProductFeature/index',
     },
     {
         path: '/provider-planning',
         name: 'provider_planning',
-        hideInMenu: process.env.NODE_ENV === 'production',
+        // hideInMenu: process.env.NODE_ENV === 'production',
         component: './ProviderPlanning/index',
     },
     {
         path: '/task',
         name: 'task',
-        hideInMenu: process.env.NODE_ENV === 'production',
+        // hideInMenu: process.env.NODE_ENV === 'production',
         component: './Task/index',
     },
     {
         path: '/notice',
         name: 'notice',
-        hideInMenu: process.env.NODE_ENV === 'production',
+        // hideInMenu: process.env.NODE_ENV === 'production',
         component: './Notice/index',
     },
     {

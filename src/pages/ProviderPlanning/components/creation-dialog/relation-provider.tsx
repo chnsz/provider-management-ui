@@ -1,4 +1,3 @@
-import {bindProviderPlanningProvider, unbindProviderPlanningProvider,} from '@/services/provider-planning/api';
 import {DeleteOutlined} from '@ant-design/icons';
 import {Button, Input, notification, Select, Space, Table} from 'antd';
 import type {ColumnsType} from 'antd/es/table';
@@ -22,16 +21,11 @@ const options = [
 ];
 
 type RelationProviderProps = {
-    planningId: number;
     providerList: Relation.ProviderRelation[];
-    onChange: (data: DataType[]) => any;
+    onChange: (data: Relation.ProviderRelation[]) => any;
 };
 
-const RelationProvider: React.FC<RelationProviderProps> = ({
-                                                               planningId,
-                                                               providerList,
-                                                               onChange,
-                                                           }) => {
+const RelationProvider: React.FC<RelationProviderProps> = ({providerList, onChange}) => {
     const [notificationApi, contextHolder] = notification.useNotification();
 
     const [data, setData] = useState<DataType[]>([]);
@@ -40,37 +34,30 @@ const RelationProvider: React.FC<RelationProviderProps> = ({
 
     const onDelete = (row: DataType) => {
         return () => {
-            unbindProviderPlanningProvider(planningId, row.providerType, row.providerName).then(() => {
-                    const arr = data.filter((t) => t.key !== row.key);
-                    setData(arr);
-                    onChange(arr);
-                },
-            );
+            const arr = providerList
+                .filter(t => t.providerName !== row.providerName && t.providerType !== row.providerType)
+            onChange(arr);
         };
     };
 
     const onAdd = () => {
-        if (
-            data.filter((t) => t.providerName === providerName && t.providerType === providerType)
-                .length > 0
-        ) {
+        const arr = providerList
+            .filter((t) => t.providerName === providerName && t.providerType === providerType)
+        if (arr.length > 0) {
             notificationApi['error']({
                 message: '操作失败',
                 description: '重复，已存在相同类型和名称的资源',
             });
             return;
         }
-        bindProviderPlanningProvider(planningId, providerType, providerName).then(() => {
-            const arr = [...data];
-            arr.push({
-                key: providerType + '_' + providerName,
-                providerType: providerType,
-                providerName: providerName,
-            });
-            setData(arr);
-            onChange(arr);
-        });
-        setProviderType(options[0].value);
+
+        const pr: Relation.ProviderRelation = {
+            id: (providerList || []).length + 1,
+            dataType: 'provider_planning',
+            providerType: providerType,
+            providerName: providerName,
+        }
+        onChange([...providerList, pr]);
         setProviderName('');
     };
 
@@ -79,14 +66,14 @@ const RelationProvider: React.FC<RelationProviderProps> = ({
             title: '类型',
             dataIndex: 'providerType',
             key: 'providerType',
-            width: 120,
             align: 'center',
+            width: 120,
         },
         {
             title: '名称',
             dataIndex: 'providerName',
-            key: 'providerName',
             ellipsis: true,
+            key: 'providerName',
         },
         {
             key: 'action',

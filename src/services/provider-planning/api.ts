@@ -3,7 +3,7 @@ import {request} from '@@/exports';
 const basePath = '/pms';
 
 export async function createProviderPlanning(createOpts: ProviderPlanning.CreateOption) {
-    return request<ProviderPlanning.ProviderPlanning>(`${basePath}/provider-planning/`, {
+    return request<ProviderPlanning.ProviderPlanning>(`${basePath}/provider-planning`, {
         method: 'POST',
         data: createOpts,
     });

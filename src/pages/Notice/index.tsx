@@ -55,8 +55,8 @@ const setNoticeIsRead = function (
 };
 
 const Notice: React.FC = () => {
-    const [notificationApi, contextHolder] = notification.useNotification();
     const location = useLocation();
+    const [notificationApi, contextHolder] = notification.useNotification();
     const [noticeList, setNoticeList] = useState<Notice.Notice[]>([]);
     const [selectedNotice, setSelectedNotice] = useState<Notice.Notice | undefined>();
     const [ownerList, setOwnerList] = useState<string[]>([]);
@@ -157,7 +157,16 @@ const Notice: React.FC = () => {
         loadData(true, true);
     };
 
+    const getProductName = ()=>{
+        const hashArr = location.hash.split('/');
+        if (hashArr.length === 2) {
+            return [hashArr[1]];
+        }
+        return []
+    }
+
     useEffect(() => {
+        selectedService = getProductName();
         loadData(false, false);
 
         const hashArr = location.hash.split('/');
@@ -231,6 +240,7 @@ const Notice: React.FC = () => {
                                 placeholder="选择服务过滤数据"
                                 style={{width: '45%'}}
                                 options={serviceOptions}
+                                defaultValue={getProductName()}
                                 onChange={onServiceSelected}
                             />
                         </div>
