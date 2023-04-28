@@ -46,7 +46,7 @@ const ProviderPlanningDetail: React.FC<PlanningDetailProps> = ({providerPlanning
     const [planning, setPlanning] = useState<ProviderPlanning.ProviderPlanning>(providerPlanning);
 
     const loadFeature = (productName: string) => {
-        getProductFeatureList({productName: productName}, 1000, 1).then((d) => {
+        getProductFeatureList({productName: [productName]}, 1000, 1).then((d) => {
             const arr = d.items.map((t: ProductFeature.ProductFeature) => {
                 return {label: t.name, value: t.id};
             });

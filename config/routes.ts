@@ -26,32 +26,50 @@ export default [
         name: 'portal',
         component: './Portal/service_portal',
     },
-    {
+ /*   {
         path: '/api/definition',
         name: 'api-definition',
+        hideInMenu: true,
         component: './api/definition/index',
     },
     {
         path: '/api/changes',
         name: 'api-changes',
+        hideInMenu: true,
         component: './api/changes/index',
+    },*/
+    // {
+    //     path: '/api/definition',
+    //     name: 'api-analysis',
+    //     component: './api/definition/index',
+    // },
+    // {
+    //     path: '/api/changes',
+    //     name: 'provider-analysis',
+    //     component: './api/changes/index',
+    // },
+    {
+        path: '/product-feature',
+        name: 'product_feature',
+        // hideInMenu: process.env.NODE_ENV === 'production',
+        component: './ProductFeature/index',
     },
     {
         path: '/provider-planning',
         name: 'provider_planning',
-        hideInMenu: process.env.NODE_ENV === 'production',
+        // hideInMenu: process.env.NODE_ENV === 'production',
         component: './ProviderPlanning/index',
     },
     {
         path: '/task',
         name: 'task',
-        hideInMenu: process.env.NODE_ENV === 'production',
+        // hideInMenu: process.env.NODE_ENV === 'production',
         component: './Task/index',
     },
     {
         path: '/notice',
         name: 'notice',
-        hideInMenu: process.env.NODE_ENV === 'production',
+        // hideInMenu: process.env.NODE_ENV === 'production',
         component: './Notice/index',
     },
     {

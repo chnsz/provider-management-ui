@@ -10,6 +10,12 @@ export type SearchFormProps = {
     status: string[];
 };
 
+type defaultValueType = {
+    productName?: string[];
+    owner?: string[];
+    status?: string[];
+}
+
 const taskStatus: { label: string, value: string }[] = [
     {label: '未启动', value: 'new'},
     {label: '进行中', value: 'processing'},
@@ -19,12 +25,18 @@ const taskStatus: { label: string, value: string }[] = [
     {label: '已关闭', value: 'closed'},
 ];
 
-const SearchForm: React.FC<{ onSearch: (val: SearchFormProps) => any }> = (props) => {
+const SearchForm: React.FC<{
+    onSearch: (val: SearchFormProps) => any,
+    options?: string[],
+    defaultValue?: defaultValueType
+}> = (props) => {
     const [ownerList, setOwnerList] = useState<string[]>([]);
     const [serviceOptions, setServiceOptions] = useState<SelectProps['options']>([]);
     const [selectedOwner, setSelectedOwner] = useState<string[]>([]);
-    const [selectedProduct, setSelectedProduct] = useState<string[]>([]);
+    const [selectedProduct, setSelectedProduct] = useState<string[]>(props.defaultValue?.productName || []);
     const [selectedStatus, setSelectedStatus] = useState<string[]>([]);
+
+    console.log('defaultValue', props.defaultValue)
 
     useEffect(() => {
         getProductList().then((data) => {
@@ -88,53 +100,66 @@ const SearchForm: React.FC<{ onSearch: (val: SearchFormProps) => any }> = (props
         };
     };
 
+    const items = props.options || ['status', 'owner', 'product'];
+
     return (
         <Space direction="vertical" size="middle" style={{display: 'flex'}}>
-            <div>
-                <span className={'custom-label'}>按状态：</span>
-                <Space>
-                    {
-                        taskStatus.map(s => {
-                            let type: ButtonType = selectedStatus.includes(s.value) ? 'primary' : 'dashed';
+            {
+                items.includes('status') ?
+                    <div>
+                        <span className={'custom-label'}>按状态：</span>
+                        <Space>
+                            {
+                                taskStatus.map(s => {
+                                    let type: ButtonType = selectedStatus.includes(s.value) ? 'primary' : 'dashed';
 
-                            return <Button key={s.value} size={'small'} type={type} onClick={onStatusClick(s.value)}>
-                                {s.label}
+                                    return <Button key={s.value} size={'small'} type={type}
+                                                   onClick={onStatusClick(s.value)}>
+                                        {s.label}
+                                    </Button>
+                                })
+                            }
+                            <Button size={'small'} type={'link'} onClick={clearFilter('status')}>
+                                清空已选
                             </Button>
-                        })
-                    }
-                    <Button size={'small'} type={'link'} onClick={clearFilter('status')}>
-                        清空已选
-                    </Button>
-                </Space>
-            </div>
-            <div>
-                <span className={'custom-label'}>按田主：</span>
-                <Space>
-                    {ownerList.map((t) => {
-                        let type: ButtonType = selectedOwner.includes(t) ? 'primary' : 'dashed';
+                        </Space>
+                    </div> : ''
+            }
+            {
+                items.includes('owner') ?
+                    <div>
+                        <span className={'custom-label'}>按田主：</span>
+                        <Space>
+                            {ownerList.map((t) => {
+                                let type: ButtonType = selectedOwner.includes(t) ? 'primary' : 'dashed';
 
-                        return (
-                            <Button key={t} size={'small'} type={type} onClick={onOwnerClick(t)}>
-                                {t}
+                                return (
+                                    <Button key={t} size={'small'} type={type} onClick={onOwnerClick(t)}>
+                                        {t}
+                                    </Button>
+                                );
+                            })}
+                            <Button size={'small'} type={'link'} onClick={clearFilter('owner')}>
+                                清空已选
                             </Button>
-                        );
-                    })}
-                    <Button size={'small'} type={'link'} onClick={clearFilter('owner')}>
-                        清空已选
-                    </Button>
-                </Space>
-            </div>
-            <div>
-                <span className={'custom-label'}>按服务：</span>
-                <Select
-                    mode="multiple"
-                    allowClear={true}
-                    placeholder="选择服务过滤数据"
-                    style={{minWidth: '45%', maxWidth: '80%'}}
-                    options={serviceOptions}
-                    onChange={onServiceSelected}
-                />
-            </div>
+                        </Space>
+                    </div> : ''
+            }
+            {
+                items.includes('product') ?
+                    <div>
+                        <span className={'custom-label'}>按服务：</span>
+                        <Select
+                            mode="multiple"
+                            allowClear={true}
+                            placeholder="选择服务过滤数据"
+                            style={{minWidth: '45%', maxWidth: '80%'}}
+                            options={serviceOptions}
+                            defaultValue={props.defaultValue?.productName || []}
+                            onChange={onServiceSelected}
+                        />
+                    </div> : ''
+            }
         </Space>
     );
 };
