@@ -21,6 +21,11 @@ export default [
         component: './Portal/index',
     },
     {
+        path: '/provider',
+        name: 'provider',
+        component: './Provider/index',
+    },
+    {
         path: '/service',
         hideInMenu: true,
         name: 'portal',
@@ -40,25 +45,21 @@ export default [
     {
         path: '/product-feature',
         name: 'product_feature',
-        // hideInMenu: process.env.NODE_ENV === 'production',
         component: './ProductFeature/index',
     },
     {
         path: '/provider-planning',
         name: 'provider_planning',
-        // hideInMenu: process.env.NODE_ENV === 'production',
         component: './ProviderPlanning/index',
     },
     {
         path: '/task',
         name: 'task',
-        // hideInMenu: process.env.NODE_ENV === 'production',
         component: './Task/index',
     },
     {
         path: '/notice',
         name: 'notice',
-        // hideInMenu: process.env.NODE_ENV === 'production',
         component: './Notice/index',
     },
     {
