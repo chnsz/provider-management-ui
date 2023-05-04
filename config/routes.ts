@@ -31,7 +31,7 @@ export default [
         name: 'portal',
         component: './Portal/service_portal',
     },
- /*   {
+    /*   {
         path: '/api/definition',
         name: 'api-definition',
         hideInMenu: true,
@@ -62,6 +62,11 @@ export default [
         path: '/provider-planning',
         name: 'provider_planning',
         component: './ProviderPlanning/index',
+    },
+    {
+        path: '/settings',
+        name: 'settings',
+        component: './Settings/index',
     },
     {
         path: '/task',
