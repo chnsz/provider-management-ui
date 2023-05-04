@@ -1,6 +1,7 @@
 import { getApiChangeSum } from '@/services/api/api';
 import { Table, Tag } from 'antd';
 import { ColumnsType } from 'antd/es/table';
+import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 
 const ApiChangeList: React.FC = () => {
@@ -20,10 +21,10 @@ const ApiChangeList: React.FC = () => {
             title: '日期',
             dataIndex: 'lastVersionDate',
             key: 'lastVersionDate',
-            width: 180,
+            width: 120,
             render: () => {
-                const date = new Date();
-                return date.toDateString();
+                const dateTime = moment().format('YYYY-MM-DD');
+                return dateTime;
             },
         },
         {
@@ -85,7 +86,7 @@ const ApiChangeList: React.FC = () => {
 
     useEffect(() => {
         getApiChangeSum({}, apiId).then((rsp) => {
-            const ary = rsp.items.map((t: Api.ApiChange) => {
+            const array = rsp.items.map((t: Api.ApiChange) => {
                 return {
                     key: t.id,
                     apiGroup: t.apiGroup,
@@ -97,7 +98,7 @@ const ApiChangeList: React.FC = () => {
                     providers: t.providers,
                 };
             });
-            setData(ary);
+            setData(array);
             setApiId(apiId);
         });
     }, [apiId]);

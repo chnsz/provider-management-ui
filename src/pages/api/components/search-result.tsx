@@ -25,7 +25,6 @@ const SearchResult: React.FC = () => {
                     method: d.method,
                     uri: d.uri,
                     providerList: d.providerList,
-                    apiNameEn: d.apiNameEn,
                 };
             });
             setData(arr);
@@ -140,7 +139,7 @@ const SearchResult: React.FC = () => {
             title: '覆盖状态',
             dataIndex: 'useRemark',
             key: 'useRemark',
-            width: 100,
+            width: 80,
             render: (val) => {
                 switch (val) {
                     case 'used':
@@ -162,7 +161,6 @@ const SearchResult: React.FC = () => {
             dataIndex: 'providerList',
             key: 'providerList',
             width: 100,
-            align: 'center',
             render: (providerList) => {
                 if (!providerList === null) {
                     return <a href="#">{(providerList || []).length}</a>;
@@ -188,7 +186,7 @@ const SearchResult: React.FC = () => {
             title: '发布状态',
             dataIndex: 'publishStatus',
             key: 'publishStatus',
-            width: 100,
+            width: 80,
             render: (val) => {
                 switch (val) {
                     case 'online':

@@ -16,10 +16,9 @@ export default {
             target: 'http://172.16.0.16:82/',
             changeOrigin: false,
         },
-        "/pms/": {
-            // target: 'http://pms-test.huaweicloud.plus/', // @ts-nocheck
-            target: 'http://localhost:8080/', // @ts-nocheck
-            changeOrigin: true
+        '/pms/': {
+            target: 'http://pms-test.huaweicloud.plus/', // @ts-nocheck
+            changeOrigin: true,
         },
     },
 };

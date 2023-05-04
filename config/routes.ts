@@ -59,12 +59,6 @@ export default [
         component: './api/index',
     },
     {
-        path: '/api/changes',
-        name: 'api-changes',
-        hideInMenu: true,
-        component: './api/changes/index',
-    },
-    {
         path: '/api/api-change',
         name: 'api-changes',
         hideInMenu: true,

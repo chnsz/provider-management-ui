@@ -1,15 +1,14 @@
 import { getApiGroupsSum } from '@/services/api/api';
-import { BookOutlined } from '@ant-design/icons';
 import { Divider } from 'antd';
 import { useEffect, useState } from 'react';
 import '../api.less';
 
 const ApiGroup: React.FC = () => {
-    const [data, setData] = useState<ApiGroups[]>([]);
-    const [sum, setSum] = useState<number>();
-    const size = 250;
+    const [productName, setProductName] = useState<string>('ECS');
+    const [data, setData] = useState<dataType[]>([]);
     useEffect(() => {
-        getApiGroupsSum().then((rsp) => {
+        getApiGroupsSum(productName).then((rsp) => {
+            console.log('rsp :', rsp);
             const list = rsp.map((o: Api.ApiGroups) => {
                 return {
                     apiGroup: o.apiGroup,
@@ -26,21 +25,12 @@ const ApiGroup: React.FC = () => {
                         o.ignoreCount,
                 };
             });
-            list.forEach((a) => {
-                const sum = a.sum;
-                setSum(sum);
-            });
             setData(list);
+            setProductName(productName);
         });
-    }, []);
+    }, [productName]);
 
-    const getSum = () => {
-        if (sum === 0) {
-            return <>Null</>;
-        }
-    };
-
-    interface ApiGroups {
+    interface dataType {
         apiGroup: string;
         usedCount: number;
         needAnalysisCount: number;
@@ -57,35 +47,30 @@ const ApiGroup: React.FC = () => {
             {data.map((item, idx: any) => (
                 <div key={idx}>
                     <div className={'group-card'}>
-                        <div className={'whiteboard'}>
-                            <BookOutlined />
-                        </div>
+                        <div className={'whiteboard'}></div>
                         <div className={'progress-right'}>
                             <div className={'progress-header'}>{item.apiGroup}</div>
                             <div className={'progress'}>
                                 <div
                                     className={'n-used'}
-                                    style={{ width: (item.usedCount / item.sum) * size + 'px' }}
+                                    style={{ width: (item.usedCount / item.sum) * 250 }}
                                 ></div>
                                 <div
                                     className={'n-need-analysis'}
-                                    style={{
-                                        width: (item.needAnalysisCount / item.sum) * size + 'px',
-                                    }}
+                                    style={{ width: (item.needAnalysisCount / item.sum) * 250 }}
                                 ></div>
                                 <div
                                     className={'n-missing'}
-                                    style={{ width: (item.missingCount / item.sum) * size + 'px' }}
+                                    style={{ width: (item.missingCount / item.sum) * 250 }}
                                 ></div>
                                 <div
                                     className={'n-planning'}
-                                    style={{ width: (item.planningCount / item.sum) * size + 'px' }}
+                                    style={{ width: (item.planningCount / item.sum) * 250 }}
                                 ></div>
                                 <div
                                     className={'n-ignore'}
-                                    style={{ width: (item.ignoreCount / item.sum) * size + 'px' }}
+                                    style={{ width: (item.ignoreCount / item.sum) * 250 }}
                                 ></div>
-                                {getSum()}
                             </div>
                         </div>
                     </div>
