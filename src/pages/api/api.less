@@ -1,0 +1,112 @@
+.api-card {
+    width: 100%;
+    padding: 15px 16px;
+    font-size: 16px;
+    background: #ffffff;
+    border-bottom: 1px solid #eaeaea;
+
+    .api-list {
+        display: flex;
+    }
+
+    .api-input {
+        width: 160px;
+    }
+
+    .api-group {
+        margin-left: 36px;
+    }
+
+    .api-button {
+        margin-left: 50%;
+    }
+
+    .group-card {
+        display: flex;
+        width: 275px;
+        margin-top: 20px;
+
+        .whiteboard {
+            width: 10px;
+            height: 15px;
+            margin-top: 6px;
+            border: 1px solid #5f5f5f;
+        }
+
+        .progress-right {
+            margin-left: 12px;
+        }
+
+        .progress-header {
+            color: #5f5f5f;
+            font-size: 12px;
+        }
+
+        .progress {
+            display: flex;
+            width: 250px;
+            margin-top: 5px;
+
+            .n-used {
+                height: 4px;
+                background: #1890ff;
+                border: 1px solid #1890ff;
+                border-radius: 10px 0 0 10px;
+            }
+
+            .n-need-analysis {
+                height: 4px;
+                background: #fad337;
+                border: 1px solid #fad337;
+            }
+
+            .n-missing {
+                height: 4px;
+                background: #52c41a;
+                border: 1px solid #52c41a;
+            }
+
+            .n-planning {
+                height: 4px;
+                background: #36cbcb;
+                border: 1px solid#36cbcb;
+            }
+
+            .n-ignore {
+                height: 4px;
+                background: #975fe4;
+                border: 1px solid #975fe4;
+                border-radius: 0 10px 10px 0;
+            }
+        }
+    }
+
+    .group-card:hover {
+        background: rgb(204 204 204 / 36%);
+        border-color: #fff;
+        border-style: solid;
+        border-width: 0 1px;
+        border-bottom: 1px solid whitesmoke;
+        cursor: pointer;
+    }
+}
+
+.search-header {
+    color: #272727;
+    font-weight: bold;
+}
+
+.search-plan {
+    margin-top: 30px;
+    margin-left: 5px;
+
+    .search-update {
+        width: 120px;
+        margin-left: 12px;
+    }
+}
+
+.bread-crumbs {
+    height: 60px;
+    background-color: #f5f5f5;
+}
