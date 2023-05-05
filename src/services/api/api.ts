@@ -18,7 +18,7 @@ export async function getApiListSum(
 
     return request<Global.List<Api.ApiList[]>>(`${servicePath}/api/list/${limit}/${offset}`, {
         method: 'GET',
-        params: { ...queryParams },
+        params: queryParams,
     });
 }
 
@@ -39,8 +39,8 @@ export async function getApiChangeSum(
 }
 
 /** 查询api分组列表 Get /api/groups/list */
-export async function getApiGroupsSum(productName: string) {
-    return request<Api.ApiGroups[]>(`${servicePath}/api/groups/list/?productName=${productName}`, {
+export async function getApiGroupsSum() {
+    return request<Api.ApiGroups[]>(`${servicePath}/api/groups/list/?productName=ECS`, {
         method: 'GET',
     });
 }

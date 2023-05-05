@@ -90,39 +90,15 @@ declare namespace Api {
     type ApiGroups = {
         // API分组名称
         apiGroup: string;
-        // API名称
-        apiName: string;
-        // API英文名称
-        apiNameEn: string;
-        // 创建时间
-        created: string;
-        // 定义
-        definition: string;
-        // 主键
-        id: number;
-        // 最后同步日期
-        lastSyncDate: string;
-        // 方法
-        method: string;
-        // 服务类别
-        productGroup: string;
-        // 产品名称
-        productName: string;
-        providerList: Provider[];
-        // 发布状态
-        publishStatus: 'online' | 'offline' | 'unpublished';
-        // 更新时间
-        updated: string;
-        // URI
-        uri: string;
-        // 无惨 URI
-        uriShort: string;
-        // 使用状态
-        useRemark: used;
+        // 已使用
         usedCount: number;
+        // 待分析
         needAnalysisCount: number;
+        // 规划中
         planningCount: number;
+        // 缺少API
         missingCount: number;
+        // 不适合
         ignoreCount: number;
     };
 }

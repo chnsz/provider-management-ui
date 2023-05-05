@@ -25,6 +25,7 @@ const SearchResult: React.FC = () => {
                     method: d.method,
                     uri: d.uri,
                     providerList: d.providerList,
+                    apiNameEn: d.apiNameEn,
                 };
             });
             setData(arr);
@@ -92,11 +93,12 @@ const SearchResult: React.FC = () => {
         productName: string;
         apiGroup: string;
         apiName: string;
-        useRemark: any;
+        useRemark: 'used' | 'need_analysis' | 'ignore' | 'missing_api' | 'planning';
         method: string;
         providerList: any;
         uri: string;
-        publishStatus: any;
+        apiNameEn: string;
+        publishStatus: 'online' | 'offline' | 'unpublished';
     }
 
     const showModal = () => {
@@ -118,7 +120,7 @@ const SearchResult: React.FC = () => {
             title: '服务',
             dataIndex: 'productName',
             key: 'productName',
-            width: 80,
+            width: 95,
         },
         {
             title: 'API分组',
@@ -138,7 +140,7 @@ const SearchResult: React.FC = () => {
             title: '覆盖状态',
             dataIndex: 'useRemark',
             key: 'useRemark',
-            width: 80,
+            width: 100,
             render: (val) => {
                 switch (val) {
                     case 'used':
@@ -160,9 +162,10 @@ const SearchResult: React.FC = () => {
             dataIndex: 'providerList',
             key: 'providerList',
             width: 100,
+            align: 'center',
             render: (providerList) => {
                 if (!providerList === null) {
-                    return <a href="#">{providerList.length}</a>;
+                    return <a href="#">{(providerList || []).length}</a>;
                 } else {
                     return <a href="#">0</a>;
                 }
@@ -185,7 +188,7 @@ const SearchResult: React.FC = () => {
             title: '发布状态',
             dataIndex: 'publishStatus',
             key: 'publishStatus',
-            width: 80,
+            width: 100,
             render: (val) => {
                 switch (val) {
                     case 'online':
@@ -203,9 +206,9 @@ const SearchResult: React.FC = () => {
             dataIndex: 'operate',
             key: 'operate',
             width: 200,
-            render: () => {
+            render: (v, row) => {
                 const title = '（点击跳转 API Explorer）';
-                const href = `https://apiexplorer.developer.huaweicloud.com/apiexplorer/doc?product=API Explorer`;
+                const href = `https://apiexplorer.developer.huaweicloud.com/apiexplorer/doc?product=${row.productName}&api=${row.apiNameEn}`;
                 return (
                     <div>
                         <a type="button" onClick={showModal}>
@@ -223,7 +226,6 @@ const SearchResult: React.FC = () => {
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
     const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-        console.log('selectedRowKeys changed: ', newSelectedRowKeys);
         setSelectedRowKeys(newSelectedRowKeys);
     };
 

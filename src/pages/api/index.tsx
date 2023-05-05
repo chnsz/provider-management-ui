@@ -26,12 +26,12 @@ const Api: React.FC = () => {
             <Row>
                 <ApiList />
             </Row>
-            <div style={{ height: '24px' }} />
+            <div style={{ height: '20px' }} />
             <div style={{ display: 'flex' }}>
                 <div>
                     <ApiGroup />
                 </div>
-                <div style={{ width: '24px' }} />
+                <div style={{ width: '20px' }} />
                 <div>
                     <SearchResult />
                 </div>
