@@ -1,20 +1,20 @@
 import SearchBox from '@/pages/api/definition/search-box';
-import {getApiDefinition, getMenu} from '@/services/api';
-import {ProDescriptions} from '@ant-design/pro-components';
-import {useEmotionCss} from '@ant-design/use-emotion-css';
-import {Col, Menu, MenuProps, Row, theme} from 'antd';
-import {ItemType} from 'antd/es/menu/hooks/useItems';
-import {SelectInfo} from 'rc-menu/es/interface';
-import {useEffect, useState} from 'react';
+import { getApiDefinition, getMenu } from '@/services/api';
+import { ProDescriptions } from '@ant-design/pro-components';
+import { useEmotionCss } from '@ant-design/use-emotion-css';
+import { Col, Menu, MenuProps, Row, theme } from 'antd';
+import { ItemType } from 'antd/es/menu/hooks/useItems';
+import { SelectInfo } from 'rc-menu/es/interface';
+import { useEffect, useState } from 'react';
 // @ts-ignore
-import {Scrollbars} from 'react-custom-scrollbars';
+import { Scrollbars } from 'react-custom-scrollbars';
 
 let menu: any[] = [];
 (async () => await getMenu('menu-api.json'))().then((d) => (menu = d));
 
 export default () => {
     const {
-        token: {colorBgContainer},
+        token: { colorBgContainer },
     } = theme.useToken();
 
     const [showGuider, setShowGuider] = useState<boolean>(true);
@@ -90,19 +90,19 @@ export default () => {
     };
 
     const containerClassName = useEmotionCss(() => {
-        return {height: 'calc(100vh - 149px)', marginTop: '24px', background: '#f5f5f5'};
+        return { height: 'calc(100vh - 149px)', marginTop: '24px', background: '#f5f5f5' };
     });
 
     const menuClassName = useEmotionCss(() => {
-        return {height: 'calc(100% - 120px)', background: '#fff'};
+        return { height: 'calc(100% - 120px)', background: '#fff' };
     });
 
     return (
         <Row className={containerClassName}>
-            <Col span={3} style={{paddingRight: '24px'}}>
-                <div style={{padding: '12px 0'}}>
-                    <h3 style={{marginLeft: '12px'}}>搜索服务</h3>
-                    <SearchBox onSelect={onSearch}/>
+            <Col span={3} style={{ paddingRight: '24px' }}>
+                <div style={{ padding: '12px 0' }}>
+                    <h3 style={{ marginLeft: '12px' }}>搜索服务</h3>
+                    <SearchBox onSelect={onSearch} />
                 </div>
                 <div className={menuClassName}>
                     <Scrollbars>
@@ -110,7 +110,7 @@ export default () => {
                             mode="inline"
                             openKeys={openKeys}
                             selectedKeys={selectedKeys}
-                            style={{borderRight: 0}}
+                            style={{ borderRight: 0 }}
                             items={menuItem}
                             onSelect={onSelect}
                             onOpenChange={onOpenChange}
@@ -118,11 +118,11 @@ export default () => {
                     </Scrollbars>
                 </div>
             </Col>
-            <Col span={21} style={{background: colorBgContainer, padding: '24px'}}>
+            <Col span={21} style={{ background: colorBgContainer, padding: '24px' }}>
                 {showGuider ? (
-                    <div style={{textAlign: 'center', marginTop: '48px'}}>
+                    <div style={{ textAlign: 'center', marginTop: '48px' }}>
                         <h2>操作说明</h2>
-                        <img src="/images/guider.png" width={'1108px'}/>
+                        <img src="/images/guider.png" width={'1108px'} />
                     </div>
                 ) : (
                     <Scrollbars>
@@ -142,7 +142,7 @@ export default () => {
 
                             <ProDescriptions.Item span={16} label="在线调试" valueType="text">
                                 <a
-                                    href={`https://console.huaweicloud.com/apiexplorer/#/apidebug/${serviceName}/doc?api=${apiNameEn}`}
+                                    href={`https://console.huaweicloud.com/apiexplorer/#/openapi/${serviceName}/doc?api=${apiNameEn}`}
                                     target={'_blank'}
                                     rel={'noopener noreferrer'}
                                 >
@@ -154,7 +154,7 @@ export default () => {
                                 valueType="code"
                                 copyable
                                 span={16}
-                                contentStyle={{width: '100vh', fontSize: '16px'}}
+                                contentStyle={{ width: '100vh', fontSize: '16px' }}
                             >
                                 {content}
                             </ProDescriptions.Item>
