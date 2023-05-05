@@ -1,7 +1,6 @@
 import { getApiChangeSum } from '@/services/api/api';
 import { Table, Tag } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 
 const ApiChangeList: React.FC = () => {
@@ -21,10 +20,10 @@ const ApiChangeList: React.FC = () => {
             title: '日期',
             dataIndex: 'lastVersionDate',
             key: 'lastVersionDate',
-            width: 120,
+            width: 180,
             render: () => {
-                const dateTime = moment().format('YYYY-MM-DD');
-                return dateTime;
+                const date = new Date();
+                return date.toDateString();
             },
         },
         {
@@ -70,11 +69,13 @@ const ApiChangeList: React.FC = () => {
             title: '资源信息',
             dataIndex: 'providers',
             key: 'providers',
-            // render: (providers) => (
-            //         <a href="#">{providers}</a>
-            // ),
-            render: (providers) => {
-                return <a href="#">{JSON.parse(providers)}</a>;
+            render: (v, row) => {
+                const str = row.providers;
+                const arr = str.replace(/[[\]']+/g, '').split(',');
+                const nodes = (arr as string[]).map((node, index) => {
+                    return <div key={index}>{node}</div>;
+                });
+                return <div>{nodes}</div>;
             },
         },
     ];
@@ -84,7 +85,7 @@ const ApiChangeList: React.FC = () => {
 
     useEffect(() => {
         getApiChangeSum({}, apiId).then((rsp) => {
-            const arary = rsp.items.map((t: Api.ApiChange) => {
+            const ary = rsp.items.map((t: Api.ApiChange) => {
                 return {
                     key: t.id,
                     apiGroup: t.apiGroup,
@@ -96,7 +97,7 @@ const ApiChangeList: React.FC = () => {
                     providers: t.providers,
                 };
             });
-            setData(arary);
+            setData(ary);
             setApiId(apiId);
         });
     }, [apiId]);
