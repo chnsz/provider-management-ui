@@ -1,4 +1,5 @@
-import { getApiChangeSum } from '@/services/api/api';
+import { getApiChangeHistory } from '@/services/api/api';
+import { toShortDate } from '@/utils/common';
 import { Table, Tag } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import React, { useEffect, useState } from 'react';
@@ -20,11 +21,8 @@ const ApiChangeList: React.FC = () => {
             title: '日期',
             dataIndex: 'lastVersionDate',
             key: 'lastVersionDate',
-            width: 180,
-            render: () => {
-                const date = new Date();
-                return date.toDateString();
-            },
+            width: 120,
+            render: toShortDate,
         },
         {
             title: '状态',
@@ -69,9 +67,11 @@ const ApiChangeList: React.FC = () => {
             title: '资源信息',
             dataIndex: 'providers',
             key: 'providers',
-            render: (v, row) => {
-                const str = row.providers;
-                const arr = str.replace(/[[\]']+/g, '').split(',');
+            render: (v) => {
+                if (v === 'null') {
+                    return '';
+                }
+                const arr = JSON.parse(v);
                 const nodes = (arr as string[]).map((node, index) => {
                     return <div key={index}>{node}</div>;
                 });
@@ -81,11 +81,11 @@ const ApiChangeList: React.FC = () => {
     ];
 
     const [data, setData] = useState<ApiChange[]>([]);
-    const [apiId, setApiId] = useState<number>(0);
+    const [id, setId] = useState<number>(0);
 
     useEffect(() => {
-        getApiChangeSum({}, apiId).then((rsp) => {
-            const ary = rsp.items.map((t: Api.ApiChange) => {
+        getApiChangeHistory(id).then((rsp) => {
+            const ary = rsp.items.map((t: Api.ChangeHistory) => {
                 return {
                     key: t.id,
                     apiGroup: t.apiGroup,
@@ -98,9 +98,9 @@ const ApiChangeList: React.FC = () => {
                 };
             });
             setData(ary);
-            setApiId(apiId);
+            setId(id);
         });
-    }, [apiId]);
+    }, [id]);
 
     return (
         <>

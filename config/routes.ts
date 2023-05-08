@@ -18,31 +18,71 @@ export default [
     {
         path: '/home',
         name: 'home',
-        component: './home',
-        // component: '../layouts/BaseLayout',
-        // 不展示顶栏
-        // headerRender: false,
-        // // 不展示页脚
-        // footerRender: false,
-        // // 不展示菜单
-        // menuRender: false,
-        // // 不展示菜单顶栏
-        // menuHeaderRender: false,
-    },
-    {
-        path: '/portal',
-        name: 'portal',
         component: './Portal/index',
     },
+    {
+        path: '/provider',
+        name: 'provider',
+        component: './Provider/index',
+    },
+    {
+        path: '/service',
+        hideInMenu: true,
+        name: 'portal',
+        component: './Portal/service_portal',
+    },
+    /*   {
+           path: '/api/definition',
+           name: 'api-definition',
+           hideInMenu: true,
+           component: './api/definition/index',
+       },
+       {
+           path: '/api/changes',
+           name: 'api-changes',
+           hideInMenu: true,
+           component: './api/changes/index',
+       },*/
+    // {
+    //     path: '/api/definition',
+    //     name: 'api-analysis',
+    //     component: './api/definition/index',
+    // },
+    // {
+    //     path: '/api/changes',
+    //     name: 'provider-analysis',
+    //     component: './api/changes/index',
+    // },
     {
         path: '/api/definition',
         name: 'api-definition',
         component: './api/index',
     },
     {
-        path: '/api/changes',
+        path: '/api/api-change',
         name: 'api-changes',
-        component: './api/changes/index',
+        hideInMenu: true,
+        component: './api/api-change',
+    },
+    {
+        path: '/product-feature',
+        name: 'product_feature',
+        component: './ProductFeature/index',
+    },
+    {
+        path: '/provider-planning',
+        name: 'provider_planning',
+        component: './ProviderPlanning/index',
+    },
+    {
+        path: '/task',
+        name: 'task',
+        component: './Task/index',
+    },
+    {
+        path: '/notice',
+        name: 'notice',
+        component: './Notice/index',
     },
     {
         path: '*',

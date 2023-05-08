@@ -1,6 +1,7 @@
-﻿import type {RequestOptions} from '@@/plugin-request/request';
-import type {RequestConfig} from '@umijs/max';
-import {message, notification} from 'antd';
+﻿import type { RequestOptions } from '@@/plugin-request/request';
+import type { RequestConfig } from '@umijs/max';
+import { message, notification } from 'antd';
+import * as queryString from 'querystring';
 
 // 错误处理方案： 错误类型
 enum ErrorShowType {
@@ -13,11 +14,9 @@ enum ErrorShowType {
 
 // 与后端约定的响应数据格式
 interface ResponseStructure {
-    success: boolean;
-    data: any;
-    errorCode?: number;
-    errorMessage?: string;
-    showType?: ErrorShowType;
+    code: number;
+    data?: any;
+    errorMsg?: string;
 }
 
 /**
@@ -30,12 +29,12 @@ export const errorConfig: RequestConfig = {
     errorConfig: {
         // 错误抛出
         errorThrower: (res) => {
-            const {success, data, errorCode, errorMessage, showType} =
-                res as unknown as ResponseStructure;
-            if (!success) {
-                const error: any = new Error(errorMessage);
+            const { code, data, errorMsg } = res as unknown as ResponseStructure;
+            if (code !== 200) {
+                const error: any = new Error(errorMsg);
                 error.name = 'BizError';
-                error.info = {errorCode, errorMessage, showType, data};
+                const showType = ErrorShowType.ERROR_MESSAGE;
+                error.info = { code, errorMsg, showType, data };
                 throw error; // 抛出自制的错误
             }
         },
@@ -46,52 +45,36 @@ export const errorConfig: RequestConfig = {
             if (error.name === 'BizError') {
                 const errorInfo: ResponseStructure | undefined = error.info;
                 if (errorInfo) {
-                    const {errorMessage, errorCode} = errorInfo;
-                    switch (errorInfo.showType) {
-                        case ErrorShowType.SILENT:
-                            // do nothing
-                            break;
-                        case ErrorShowType.WARN_MESSAGE:
-                            message.warning(errorMessage);
-                            break;
-                        case ErrorShowType.ERROR_MESSAGE:
-                            message.error(errorMessage);
-                            break;
-                        case ErrorShowType.NOTIFICATION:
-                            notification.open({
-                                description: errorMessage,
-                                message: errorCode,
-                            });
-                            break;
-                        case ErrorShowType.REDIRECT:
-                            // TODO: redirect
-                            break;
-                        default:
-                            message.error(errorMessage);
-                    }
+                    message.error(errorInfo.errorMsg, 5);
                 }
             } else if (error.response) {
                 // Axios 的错误
                 // 请求成功发出且服务器也响应了状态码，但状态代码超出了 2xx 的范围
-                message.error(`Response status:${error.response.status}`);
+                message.error(`Response status:${error.response.status}`, 5);
             } else if (error.request) {
                 // 请求已经成功发起，但没有收到响应
                 // \`error.request\` 在浏览器中是 XMLHttpRequest 的实例，
                 // 而在node.js中是 http.ClientRequest 的实例
-                message.error('None response! Please retry.');
+                message.error('None response! Please retry.', 5);
             } else {
                 // 发送请求时出了点问题
-                message.error('Request error, please retry.');
+                message.error('Request error, please retry.', 5);
             }
         },
     },
-
+    paramsSerializer(params) {
+        return queryString.stringify(params);
+    },
     // 请求拦截器
     requestInterceptors: [
         (config: RequestOptions) => {
             // 拦截请求配置，进行个性化处理。
-            const url = config?.url?.concat('?token = 123');
-            return {...config, url};
+            // config.paramsSerializer = function(params) {
+            //     return qs.stringify(params, { arrayFormat: 'repeat' });
+            // };
+            // const url = config?.url?.concat('?token = 123');
+            const url = config?.url;
+            return { ...config, url };
         },
     ],
 
@@ -99,10 +82,17 @@ export const errorConfig: RequestConfig = {
     responseInterceptors: [
         (response) => {
             // 拦截响应数据，进行个性化处理
-            const {data} = response as unknown as ResponseStructure;
+            const { data } = response as unknown as ResponseStructure;
 
-            if (data?.success === false) {
-                message.error('请求失败！');
+            if (data && data.code && data.code !== 200) {
+                // message.error('操作失败：\n' + data.errorMsg, 5);
+                notification.open({
+                    message: '操作失败',
+                    description: data.errorMsg,
+                });
+            }
+            if (data.data) {
+                response.data = data.data;
             }
             return response;
         },

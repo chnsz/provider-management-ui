@@ -1,19 +1,19 @@
 import ApiChangeList from '@/pages/api/components/api-change-list';
-import { getApiListSum } from '@/services/api/api';
+import { getApiDetailList } from '@/services/api/api';
 import { Button, Modal, Select, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import React, { useEffect, useState } from 'react';
 
 const SearchResult: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [data, setData] = useState<DataType[]>([]);
+    const [data, setData] = useState<Detail[]>([]);
     const [total, setTotal] = useState<number>(0);
     const [pageSize, setPageSize] = useState<number>(20);
     const [pageNum, setPageNum] = useState<number>(1);
 
     useEffect(() => {
-        getApiListSum({}, pageSize, pageNum).then((rsp) => {
-            const arr = rsp.items.map((d: Api.ApiList) => {
+        getApiDetailList({}, pageSize, pageNum).then((rsp) => {
+            const arr = rsp.items.map((d: Api.Detail) => {
                 return {
                     key: '' + d.id,
                     id: d.id,
@@ -87,18 +87,18 @@ const SearchResult: React.FC = () => {
         );
     };
 
-    interface DataType {
+    interface Detail {
         key: React.Key;
         id: number;
         productName: string;
         apiGroup: string;
         apiName: string;
-        useRemark: 'used' | 'need_analysis' | 'ignore' | 'missing_api' | 'planning';
+        useRemark: string;
         method: string;
         providerList: any;
         uri: string;
         apiNameEn: string;
-        publishStatus: 'online' | 'offline' | 'unpublished';
+        publishStatus: string;
     }
 
     const showModal = () => {
@@ -109,7 +109,7 @@ const SearchResult: React.FC = () => {
         setIsModalOpen(false);
     };
 
-    const columns: ColumnsType<DataType> = [
+    const columns: ColumnsType<Detail> = [
         {
             title: '序号',
             dataIndex: 'id',

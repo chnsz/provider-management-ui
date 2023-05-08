@@ -1,12 +1,4 @@
 declare namespace Portal {
-    type ApiCoverage = {
-        covered: number;
-        planned: number;
-        notAnalyzed: number;
-        failing: number;
-        notSuitable: number;
-    };
-
     type ProviderHealthCheckSum = {
         resource: {
             success: number;
@@ -22,27 +14,29 @@ declare namespace Portal {
 
     type ProductSumPanel = {
         product: {
-            product_img: string;
-            product_short: string;
+            productIcon: string;
+            productName: string;
             owner: string;
         };
-        api_sum: {
+        apiSum: {
             total: number;
             used: number;
-            planed: number;
-            need_publish: number;
-            not_analyzed: number;
-            not_suitable: number;
-            offline_used: number;
+            need_analysis: number;
+            ignore: number;
+            missing_api: number;
+            planning: number;
             offline: number;
+            offline_in_use: number;
             unpublished: number;
         };
         provider: {
             total: number;
             resource: number;
-            data_source: number;
+            dataSource: number;
+            resource_deprecated: number;
+            datasource_deprecated: number;
+            pre_paid_support: number;
             tag_support: boolean;
-            pre_paid_support: boolean;
             eps_support: boolean;
         };
     };
@@ -57,21 +51,54 @@ declare namespace Portal {
         operate: string;
     };
 
-    type ServiceNews = {
-        title: string;
-        created: string;
-    };
+    type ProductSum = {
+        productGroup: string;
+        productName: string;
+        productNameZh: string;
+        owner: string;
+        level: string;
 
-    type ProviderCar = {
-        key: number;
-        title: string;
-        resourceType: string;
+        apiCoverage: string;
         apiCount: number;
-        name: string;
-        flexible_engine_status: string;
-        g42_status: string;
-        flexible_engine_param: string;
-        g42_status_param: string;
-        eps_support: string;
-    };
+        apiUsed: number;
+        apiUseNeedAnalysis: number;
+        apiUseIgnore: number;
+        apiUseMissingApi: number;
+        apiUsePlanning: number;
+
+        planningNew: number;
+        planningFreeze: number;
+        planningProcessing: number;
+        planningMerging: number;
+        planningMerged: number;
+        planningClosed: number;
+
+        taskNew: number;
+        taskFreeze: number;
+        taskProcessing: number;
+        taskMerging: number;
+        taskMerged: number;
+        taskClosed: number;
+
+        featureCoverage: string;
+        featureCovered: number;
+        featurePartCovered: number;
+        featureNotCovered: number;
+
+        providerCount: number;
+        dataSourceCount: number;
+    }
+
+    type PortalSum = {
+        productSumList: ProductSum[];
+
+        allApiCount: number;
+        allApiUsed: number;
+        coreApiCount: number;
+        coreApiUsed: number;
+        mainApiCount: number;
+        mainApiUsed: number;
+        emergingApiCount: number;
+        emergingApiUsed: number;
+    }
 }

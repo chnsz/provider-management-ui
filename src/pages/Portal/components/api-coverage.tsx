@@ -1,49 +1,41 @@
-import { getApiCoverageSum } from '@/services/portal/api';
+import {getApiPanelSum} from '@/services/portal/api';
 import ReactEcharts from 'echarts-for-react';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import '../portal.less';
 
-const ApiCoverage: React.FC = () => {
-    const [data, setData] = useState<any[]>([]);
-    const [coveredRate, setCoveredRate] = useState<number>(0);
-    let covereCount = 0;
-    let totalCount = 0;
+const defaultVal = {
+    apiSum: {
+        ignore: 0,
+        missing_api: 0,
+        need_analysis: 0,
+        offline: 0,
+        offline_in_use: 0,
+        planning: 0,
+        total: 0,
+        used: 0,
+        unpublished: 0
+    },
+    product: {owner: "", productIcon: "", productName: ""},
+    provider: {
+        dataSource: 0,
+        datasource_deprecated: 0,
+        eps_support: false,
+        pre_paid_support: 0,
+        resource: 0,
+        resource_deprecated: 0,
+        tag_support: false,
+        total: 0
+    }
+};
+
+const ApiCoverage: React.FC<{ productName: string }> = ({productName}) => {
+    const [data, setData] = useState<Portal.ProductSumPanel>(defaultVal);
+
     useEffect(() => {
-        getApiCoverageSum().then((cover) => {
-            setData([
-                {
-                    name: '已对接',
-                    value: cover.covered,
-                },
-                {
-                    name: '规划中',
-                    value: cover.planned,
-                },
-                {
-                    name: '待分析',
-                    value: cover.notAnalyzed,
-                },
-                {
-                    name: '缺   失',
-                    value: cover.failing,
-                },
-                {
-                    name: '不合适',
-                    value: cover.notSuitable,
-                },
-            ]);
-            covereCount = cover.covered;
-            totalCount =
-                cover.covered +
-                cover.planned +
-                cover.notAnalyzed +
-                cover.failing +
-                cover.notSuitable;
-            if (covereCount > 0 && totalCount > 0) {
-                setCoveredRate(covereCount / totalCount);
-            }
+        getApiPanelSum(productName).then((data) => {
+            setData(data);
         });
-    }, []);
+    }, [productName]);
 
     function toPercent(point: number) {
         let str = Number(point * 100).toFixed(2);
@@ -55,45 +47,42 @@ const ApiCoverage: React.FC = () => {
         tooltip: {
             trigger: 'item',
         },
-        color: ['#5470c6', '#36cbcb', '#fac858', '#ee6666', '#975fe4'],
         legend: {
-            top: '20%',
-            left: '60%',
+            top: '60',
+            left: '58%',
             orient: 'vertical',
             icon: 'circle',
             textStyle: {
+                lineHeight: 22,
                 rich: {
-                    orgname: {
+                    name: {
                         color: '#5a5a5a',
                         width: 50,
+                        fontSize: 16,
                     },
-                    dpercent: {
+                    percent: {
                         color: '#929292',
+                        fontSize: 16,
                         width: 50,
+                        padding: [0, 0, 0, 35],
                     },
                     value: {
                         color: '#5a5a5a',
+                        fontSize: 16,
                         width: 50,
+                        padding: [0, 0, 0, 35],
                     },
                 },
             },
-            formatter: function (name: string) {
-                let total = 0;
-                for (let i = 0; i < option.series[0].data.length; i++) {
-                    total += option.series[0].data[i].value;
-                }
-                for (let i = 0; i < option.series[0].data.length; i++) {
-                    let dpercent =
-                        ((option.series[0].data[i].value / total) * 100).toFixed(2) + '%';
-                    if (option.series[0].data[i].name === name) {
-                        const arr = [
-                            `{orgname|${name}}`,
-                            `{dpercent|${dpercent}}`,
-                            `{value|${option.series[0].data[i].value}}`,
-                        ];
-                        return arr.join('    ');
-                    }
-                }
+            formatter: (name: string) => {
+                const item = option.series[0].data.filter(d => d.name === name)[0];
+                let percent =((item.value / data.apiSum.total) * 100).toFixed(2) + '%';
+                const arr = [
+                    `{name|${name}}`,
+                    `{percent|${percent}}`,
+                    `{value|${item.value}}`,
+                ];
+                return arr.join('');
             },
         },
         series: [
@@ -101,7 +90,7 @@ const ApiCoverage: React.FC = () => {
                 type: 'pie',
                 radius: ['40%', '70%'],
                 avoidLabelOverlap: false,
-                center: ['30%', '38%'],
+                center: ['160', '140'],
                 itemStyle: {
                     borderRadius: 10,
                     borderColor: '#fff',
@@ -122,16 +111,49 @@ const ApiCoverage: React.FC = () => {
                 labelLine: {
                     show: false,
                 },
-                data: data,
+                data: [
+                    {name: '已对接', value: data.apiSum.used, itemStyle: {color: '#5470c6'}},
+                    {name: '规划中', value: data.apiSum.planning, itemStyle: {color: '#36cbcb'}},
+                    {name: '待分析', value: data.apiSum.need_analysis, itemStyle: {color: '#fac858'}},
+                    {name: '缺   失', value: data.apiSum.missing_api, itemStyle: {color: '#ee6666'}},
+                    {name: '不合适', value: data.apiSum.ignore, itemStyle: {color: '#975fe4'}},
+                ],
             },
         ],
+        graphic: [
+            {
+                type: 'text',
+                left: '112',
+                top: '110',
+                style: {
+                    text: [
+                        '{label|对接率}',
+                        '{value|' + toPercent(data.apiSum.used / data.apiSum.total) + '}'
+                    ].join('\n'),
+                    rich: {
+                        label: {
+                            fontSize: 16,
+                            padding: [0, 0, 5, 22],
+                            fill: '#929292',
+                            lineHeight: 40
+                        },
+                        value: {
+                            fontSize: 30,
+                            fill: '#272727',
+                            fontWeight: 'bold',
+                            lineHeight: 20
+                        }
+                    }
+                }
+            }
+        ]
     };
     return (
         <div className={'portal-card'}>
             <div className={'header'}>API对接</div>
             <div className={'container'}>
-                <ReactEcharts option={option} />
-                <div className={'coverage-card-percent'}>对接率： {toPercent(coveredRate)}</div>
+                <ReactEcharts option={option}/>
+                {/*<div className={'coverage-card-percent'}>对接率： {toPercent(data.apiSum.used / data.apiSum.total)}</div>*/}
             </div>
         </div>
     );

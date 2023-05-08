@@ -1,0 +1,153 @@
+.provider-planning {
+    min-height: 800px;
+
+    .side-header {
+        display: flex;
+
+        .side-title {
+            width: 120px;
+        }
+
+        .side-tools-bar {
+            width: calc(100% - 120px);
+            font-weight: normal;
+            text-align: right;
+        }
+    }
+
+    .list {
+        height: calc(100% - 100px);
+    }
+
+    .items {
+        display: flex;
+        padding: 10px 15px;
+        color: rgba(0, 0, 0, 0.45);
+        text-align: center;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+
+        .value {
+            color: rgba(0, 0, 0, 0.88);
+        }
+
+        .item-col > div:first-child {
+            margin-bottom: 5px;
+        }
+
+        .title-col {
+            width: calc(100% - 320px);
+            text-align: left;
+
+            .title {
+                overflow: hidden;
+                color: rgba(0, 0, 0, 0.85);
+                white-space: nowrap;
+                -o-text-overflow: ellipsis;
+                text-overflow: ellipsis;
+            }
+        }
+
+        .owner-col {
+            width: 90px;
+        }
+
+        .date-col {
+            width: 80px;
+            text-align: right;
+        }
+
+        .status-col {
+            width: 90px;
+        }
+
+        .priority-col {
+            width: 60px;
+        }
+    }
+
+    .items:hover,
+    .selected {
+        background: rgba(204, 204, 204, 0.36);
+        cursor: pointer;
+    }
+
+    .selected {
+        background: rgb(204 204 204 / 56%) !important;
+    }
+
+
+    .label-name {
+        display: block;
+        padding: 10px 0;
+    }
+
+    .detail-info {
+        display: flex;
+        height: 600px;
+
+        .primary-info {
+            width: 67%;
+            height: 100%;
+            padding-right: 10px;
+            overflow-y: hidden;
+        }
+
+        .secondary-info {
+            width: 33%;
+            padding-left: 10px;
+        }
+
+        .relation-tabs {
+            height: calc(100% - 46px);
+            padding: 0 15px;
+            border: 1px solid #d1d5da;
+        }
+    }
+
+    .relation-info {
+        display: flex;
+        margin-top: 10px;
+
+        .primary-info {
+            flex: 1;
+            padding-right: 20px;
+        }
+
+        .secondary-info {
+            flex: 1;
+            padding-left: 10px;
+        }
+    }
+
+    .load-more {
+        padding: 15px 0;
+        text-align: center;
+    }
+
+    .tools-bar {
+        display: flex;
+        margin-bottom: 15px;
+
+        .left-bar {
+            flex: 1;
+        }
+
+        .right-bar {
+            flex: 1;
+            text-align: right;
+        }
+    }
+
+    .detail-title {
+        display: inline-block;
+        font-weight: normal;
+        font-size: 14px;
+        margin-top: 2px;
+    }
+
+    .kanboard-label {
+        display: inline-block;
+        margin-left: 45px;
+        padding-right: 8px;
+    }
+}

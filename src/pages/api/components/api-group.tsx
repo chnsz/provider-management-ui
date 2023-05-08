@@ -1,4 +1,4 @@
-import { getApiGroupsSum } from '@/services/api/api';
+import { getApiGroupList } from '@/services/api/api';
 import { BookOutlined } from '@ant-design/icons';
 import { Divider } from 'antd';
 import { useEffect, useState } from 'react';
@@ -7,10 +7,12 @@ import '../api.less';
 const ApiGroup: React.FC = () => {
     const [data, setData] = useState<ApiGroups[]>([]);
     const [sum, setSum] = useState<number>();
+    const URL = 'http://localhost:8001/service#/productName/ECS';
+    const hashArr = URL.split('/');
     const size = 250;
     useEffect(() => {
-        getApiGroupsSum().then((rsp) => {
-            const list = rsp.map((o: Api.ApiGroups) => {
+        getApiGroupList(hashArr[5]).then((rsp) => {
+            const list = rsp.map((o: Api.Group) => {
                 return {
                     apiGroup: o.apiGroup,
                     usedCount: o.usedCount,
@@ -32,7 +34,7 @@ const ApiGroup: React.FC = () => {
             });
             setData(list);
         });
-    }, []);
+    }, [hashArr[5]]);
 
     const getSum = () => {
         if (sum === 0) {

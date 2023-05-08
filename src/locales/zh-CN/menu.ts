@@ -50,7 +50,12 @@ export default {
     'menu.editor.koni': '拓扑编辑器',
 
     'menu.home': '首页',
-    'menu.api-definition': 'API 定义',
-    'menu.api-changes': 'API 变更',
+    'menu.api-analysis': 'API 分析',
+    'menu.provider-analysis': 'Provider 分析',
     'menu.portal': 'Portal',
+    'menu.notice': '通知动态',
+    'menu.provider_planning': '资源规划',
+    'menu.task': '待办任务',
+    'menu.product_feature': '特性分析',
+    'menu.provider': 'Provider 分析',
 };
