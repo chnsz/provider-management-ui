@@ -1,4 +1,5 @@
 import { getApiChangeHistory } from '@/services/api/api';
+import { toShortDate } from '@/utils/common';
 import { Table, Tag } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import React, { useEffect, useState } from 'react';
@@ -21,10 +22,7 @@ const ApiChangeList: React.FC = () => {
             dataIndex: 'lastVersionDate',
             key: 'lastVersionDate',
             width: 120,
-            render: () => {
-                const dateTime = moment().format('YYYY-MM-DD');
-                return dateTime;
-            },
+            render: toShortDate,
         },
         {
             title: '状态',
@@ -69,9 +67,11 @@ const ApiChangeList: React.FC = () => {
             title: '资源信息',
             dataIndex: 'providers',
             key: 'providers',
-            render: (v, row) => {
-                const str = row.providers;
-                const arr = str.replace(/[[\]']+/g, '').split(',');
+            render: (v) => {
+                if (v === 'null') {
+                    return '';
+                }
+                const arr = JSON.parse(v);
                 const nodes = (arr as string[]).map((node, index) => {
                     return <div key={index}>{node}</div>;
                 });
