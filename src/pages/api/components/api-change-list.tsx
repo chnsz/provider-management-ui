@@ -1,7 +1,6 @@
-import { getApiChangeSum } from '@/services/api/api';
+import { getApiChangeHistory } from '@/services/api/api';
 import { Table, Tag } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 
 const ApiChangeList: React.FC = () => {
@@ -82,11 +81,11 @@ const ApiChangeList: React.FC = () => {
     ];
 
     const [data, setData] = useState<ApiChange[]>([]);
-    const [apiId, setApiId] = useState<number>(0);
+    const [id, setId] = useState<number>(0);
 
     useEffect(() => {
-        getApiChangeSum({}, apiId).then((rsp) => {
-            const array = rsp.items.map((t: Api.ApiChange) => {
+        getApiChangeHistory(id).then((rsp) => {
+            const ary = rsp.items.map((t: Api.ChangeHistory) => {
                 return {
                     key: t.id,
                     apiGroup: t.apiGroup,
@@ -98,10 +97,10 @@ const ApiChangeList: React.FC = () => {
                     providers: t.providers,
                 };
             });
-            setData(array);
-            setApiId(apiId);
+            setData(ary);
+            setId(id);
         });
-    }, [apiId]);
+    }, [id]);
 
     return (
         <>

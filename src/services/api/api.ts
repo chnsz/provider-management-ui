@@ -72,3 +72,9 @@ export async function getApiChangeDetail(id: number | string) {
         method: 'GET',
     });
 }
+
+export async function getApiChangeHistory(id: number | string) {
+    return request<Global.List<Api.ChangeHistory[]>>(`${basePath}/api/${id}/change-history`, {
+        method: 'GET',
+    });
+}

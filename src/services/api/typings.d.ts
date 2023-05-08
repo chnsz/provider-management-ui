@@ -171,4 +171,24 @@ declare namespace Api {
         remark: string;
         diffContent: string;
     };
+
+    type ChangeHistory = {
+        affectStatus: string;
+        apiGroup: string;
+        apiId: integer;
+        apiName: string;
+        apiNameEn: string;
+        created: string;
+        diffContent: string;
+        id: integer;
+        lastVersionDate: string;
+        method: string;
+        productGroup: string;
+        productName: string;
+        providers: string;
+        remark: string;
+        updated: string;
+        uri: string;
+        uriShort: string;
+    };
 }
