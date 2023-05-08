@@ -48,7 +48,7 @@ const ApiChangeView: React.FC<{
                         target={'_blank'}
                         rel={'noopener noreferrer'}
                     >
-                        API Explorer
+                        API Explorerl
                     </a>
                 </ProDescriptions.Item>
             </ProDescriptions>
