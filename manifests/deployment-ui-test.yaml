@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pms-test
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: pms-test
+  name: provider-management-ui
+spec:
+  selector:
+    matchLabels:
+      app: pms-ui
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: pms-ui
+    spec:
+      containers:
+        - name: pms
+          imagePullPolicy: Always
+          image: docker.io/chengxiangdong/pms-ui:v0.1.0
+          ports:
+            - containerPort: 80
+              name: pms-ui
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: pms-test
+  name: pms-ui-service-ex
+spec:
+  selector:
+    app: pms-ui
+  type: NodePort
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30110
