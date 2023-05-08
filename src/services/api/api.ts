@@ -66,3 +66,9 @@ export async function getApiGroupList(productName: string) {
         params: { productName: productName },
     });
 }
+
+export async function getApiChangeDetail(id: number | string) {
+    return request<Api.ChangeDetail>(`${basePath}/api/change-detail/${id}`, {
+        method: 'GET',
+    });
+}

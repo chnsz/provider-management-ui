@@ -31,6 +31,28 @@ export default [
         name: 'portal',
         component: './Portal/service_portal',
     },
+    /*   {
+           path: '/api/definition',
+           name: 'api-definition',
+           hideInMenu: true,
+           component: './api/definition/index',
+       },
+       {
+           path: '/api/changes',
+           name: 'api-changes',
+           hideInMenu: true,
+           component: './api/changes/index',
+       },*/
+    // {
+    //     path: '/api/definition',
+    //     name: 'api-analysis',
+    //     component: './api/definition/index',
+    // },
+    // {
+    //     path: '/api/changes',
+    //     name: 'provider-analysis',
+    //     component: './api/changes/index',
+    // },
     {
         path: '/api/definition',
         name: 'api-definition',
@@ -41,6 +63,12 @@ export default [
         name: 'api-changes',
         hideInMenu: true,
         component: './api/changes/index',
+    },
+    {
+        path: '/api/api-change',
+        name: 'api-changes',
+        hideInMenu: true,
+        component: './api/api-change',
     },
     {
         path: '/product-feature',

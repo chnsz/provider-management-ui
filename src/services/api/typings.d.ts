@@ -154,4 +154,21 @@ declare namespace Api {
         method: string;
         uriShort: string;
     };
+
+    type ChangeDetail = {
+        id: number;
+        apiId: number;
+        productName: string;
+        productGroup: string;
+        apiGroup: string;
+        apiName: string;
+        apiNameEn: string;
+        method: string;
+        uri: string;
+        uriShort: string;
+        providers: string;
+        affectStatus: string;
+        remark: string;
+        diffContent: string;
+    };
 }
