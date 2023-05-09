@@ -58,4 +58,5 @@ export default {
     'menu.task': '待办任务',
     'menu.product_feature': '特性分析',
     'menu.provider': 'Provider 分析',
+    'menu.settings': '系统配置',
 };

@@ -75,6 +75,11 @@ export default [
         component: './ProviderPlanning/index',
     },
     {
+        path: '/settings',
+        name: 'settings',
+        component: './Settings/index',
+    },
+    {
         path: '/task',
         name: 'task',
         component: './Task/index',
