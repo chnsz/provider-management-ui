@@ -1,11 +1,11 @@
-import React from "react";
-import SearchForm from "@/components/SearchForm";
-import { createFromIconfontCN } from '@ant-design/icons';
-import {Breadcrumb, Table} from "antd";
-import './provider.less'
-import {ColumnsType} from "antd/es/table/interface";
-import {SafetyCertificateOutlined} from "@ant-design/icons";
+import SearchForm from '@/components/SearchForm';
+import { createFromIconfontCN, SafetyCertificateOutlined } from '@ant-design/icons';
+import { Breadcrumb, Switch, Table } from 'antd';
+import { ColumnsType } from 'antd/es/table/interface';
+import React from 'react';
+import './provider.less';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const IconFont = createFromIconfontCN({
     scriptUrl: [
         '//at.alicdn.com/t/font_1788044_0dwu4guekcwr.js', // icon-javascript, icon-java, icon-shoppingcart (overridden)
@@ -15,15 +15,19 @@ const IconFont = createFromIconfontCN({
 });
 
 const ProviderList: React.FC = () => {
+    const onChange = (checked: boolean) => {
+        console.log(`switch to ${checked}`);
+    };
 
     interface DataType {
         key: string;
-        providerType: string,
-        providerName: string,
+        providerType: string;
+        providerName: string;
         owner: string;
         prePaidSupport: string;
         tagSupport: string;
         epsSupport: string;
+        utCoverage: string;
         prScore: number;
         utScore: number;
         bugScore: number;
@@ -40,11 +44,25 @@ const ProviderList: React.FC = () => {
             dataIndex: 'providerName',
             width: '14%',
             render: (text, record) => {
-                if(record.key === '1'){
+                if (record.key === '1') {
                     // return <><SafetyCertificateOutlined style={{color: '#389e0d', fontSize: '18px', marginRight: '5px'}}/><a>{text}</a></>
-                    return <><SafetyCertificateOutlined style={{color: '#389e0d', fontSize: '18px', marginRight: '5px'}}/><a>{text}</a></>
+                    return (
+                        <>
+                            <SafetyCertificateOutlined
+                                style={{ color: '#389e0d', fontSize: '18px', marginRight: '5px' }}
+                            />
+                            <a>{text}</a>
+                        </>
+                    );
                 }
-                return <><span style={{color: '#389e0d', fontSize: '18px', marginRight: '5px'}}>&nbsp;&nbsp;&nbsp;&nbsp;</span><a>{text}</a></>
+                return (
+                    <>
+                        <span style={{ color: '#389e0d', fontSize: '18px', marginRight: '5px' }}>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                        </span>
+                        <a>{text}</a>
+                    </>
+                );
             },
         },
         {
@@ -56,16 +74,81 @@ const ProviderList: React.FC = () => {
             title: '包周期',
             width: '7%',
             dataIndex: 'prePaidSupport',
+            render: (text, record) => {
+                if (record.prePaidSupport === '支持') {
+                    return (
+                        <>
+                            <Switch defaultChecked onChange={onChange} />
+                        </>
+                    );
+                } else {
+                    return (
+                        <>
+                            <Switch />
+                        </>
+                    );
+                }
+            },
         },
         {
             title: '标签',
             width: '7%',
             dataIndex: 'tagSupport',
+            render: (text, record) => {
+                if (record.tagSupport === '支持') {
+                    return (
+                        <>
+                            <Switch defaultChecked onChange={onChange} />
+                        </>
+                    );
+                } else {
+                    return (
+                        <>
+                            <Switch />
+                        </>
+                    );
+                }
+            },
         },
         {
             title: '企业项目',
             width: '7%',
             dataIndex: 'epsSupport',
+            render: (text, record) => {
+                if (record.epsSupport === '支持') {
+                    return (
+                        <>
+                            <Switch defaultChecked onChange={onChange} />
+                        </>
+                    );
+                } else {
+                    return (
+                        <>
+                            <Switch />
+                        </>
+                    );
+                }
+            },
+        },
+        {
+            title: 'UT 覆盖率',
+            width: '7%',
+            dataIndex: 'utCoverage',
+            render: (text, record) => {
+                if (record.utCoverage === '已送检') {
+                    return (
+                        <>
+                            <Switch defaultChecked onChange={onChange} />
+                        </>
+                    );
+                } else {
+                    return (
+                        <>
+                            <Switch />
+                        </>
+                    );
+                }
+            },
         },
         {
             title: '质量守护',
@@ -86,9 +169,9 @@ const ProviderList: React.FC = () => {
             title: '总分',
             width: '7%',
             dataIndex: 'bugScore',
-            render: (v, record)=>{
-                return record.bugScore + record.prScore + record.utScore
-            }
+            render: (v, record) => {
+                return record.bugScore + record.prScore + record.utScore;
+            },
         },
     ];
 
@@ -101,6 +184,7 @@ const ProviderList: React.FC = () => {
             prePaidSupport: '支持',
             tagSupport: '支持',
             epsSupport: '不支持',
+            utCoverage: '已送检',
             prScore: 17,
             utScore: -3,
             bugScore: 0,
@@ -113,6 +197,7 @@ const ProviderList: React.FC = () => {
             prePaidSupport: '支持',
             tagSupport: '支持',
             epsSupport: '不支持',
+            utCoverage: '已送检',
             prScore: 10,
             utScore: 0,
             bugScore: 0,
@@ -125,33 +210,34 @@ const ProviderList: React.FC = () => {
             prePaidSupport: '支持',
             tagSupport: '支持',
             epsSupport: '不支持',
+            utCoverage: '未送检',
             prScore: 12,
             utScore: -2,
             bugScore: -3,
         },
     ];
 
-    return <Table columns={columns} dataSource={data} size={'middle'} pagination={false}/>
-}
+    return <Table columns={columns} dataSource={data} size={'middle'} pagination={false} />;
+};
 
 const Provider: React.FC = () => {
-
-    return <div className={'provider'}>
-        <Breadcrumb
-            items={[{title: '首页'}, {title: 'Provider 分析'}]}
-            style={{margin: '10px 0'}}
-        />
-        <div className={'header'}>
-            <SearchForm onSearch={() => {
-            }} options={['owner']}/>
-        </div>
-        <div style={{background: '#fff', marginTop: '15px'}}>
-            <div className={'custom-title'}>资源列表</div>
-            <div className={'provider-list'}>
-                <ProviderList/>
+    return (
+        <div className={'provider'}>
+            <Breadcrumb
+                items={[{ title: '首页' }, { title: 'Provider 分析' }]}
+                style={{ margin: '10px 0' }}
+            />
+            <div className={'header'}>
+                <SearchForm onSearch={() => {}} options={['owner']} />
+            </div>
+            <div style={{ background: '#fff', marginTop: '15px' }}>
+                <div className={'custom-title'}>资源列表</div>
+                <div className={'provider-list'}>
+                    <ProviderList />
+                </div>
             </div>
         </div>
-    </div>
-}
+    );
+};
 
 export default Provider;
