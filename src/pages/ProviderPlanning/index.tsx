@@ -20,7 +20,7 @@ import DeleteBtn from "@/components/delete";
 
 const {confirm} = Modal;
 
-const defaultVal = {
+export const defaultVal = {
     created: '',
     id: 0,
     priority: -1,

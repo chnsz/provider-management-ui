@@ -1,14 +1,17 @@
 import React, {useEffect, useState} from "react";
 import {Button, Modal} from "antd";
 import ProviderPlanningDetail from "@/pages/ProviderPlanning/components/provider-planning-detail";
+import {defaultVal} from "@/pages/ProviderPlanning";
 
 const PlanningViewDialog: React.FC<{
     planning: ProviderPlanning.ProviderPlanning,
     onClosed?: () => any
 }> = (props) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [planning, setPlanning] = useState<ProviderPlanning.ProviderPlanning>(defaultVal);
 
     useEffect(() => {
+        setPlanning(props.planning)
     }, []);
 
     const showModal = () => {
@@ -23,7 +26,7 @@ const PlanningViewDialog: React.FC<{
     };
 
     const onDetailChange = (detail: ProviderPlanning.ProviderPlanning) => {
-        console.log('detail', detail);
+        setPlanning(detail);
     }
 
     return (
@@ -40,7 +43,7 @@ const PlanningViewDialog: React.FC<{
                    ]}
             >
                 <ProviderPlanningDetail
-                    providerPlanning={props.planning}
+                    providerPlanning={planning}
                     onChange={onDetailChange}
                 />
             </Modal>
