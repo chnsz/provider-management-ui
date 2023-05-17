@@ -45,6 +45,12 @@ export async function deleteTask(id: number) {
     });
 }
 
+export async function changeTaskStatus(id: number, status: string) {
+    return request<{ affectedRow: number }>(`${basePath}/task/status/${id}/${status}`, {
+        method: 'PATCH',
+    });
+}
+
 export async function createTaskKbTask(id: number) {
     return request<Task.Task>(`${basePath}/task/kanboard-task/${id}`, {method: 'PUT'});
 }

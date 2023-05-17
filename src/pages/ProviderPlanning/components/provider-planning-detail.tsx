@@ -228,7 +228,7 @@ const ProviderPlanningDetail: React.FC<PlanningDetailProps> = ({providerPlanning
                 <div className={'primary-info'}>
                     <div className={'label-name custom-label'}>
                         <div style={{display: 'flex'}}>
-                            <div style={{flex: '1'}}>详细内容</div>
+                            <div style={{flex: '1'}}>详细内容{content}</div>
                             <div style={{flex: '1', textAlign: 'right'}}>{saveTip}</div>
                         </div>
                     </div>

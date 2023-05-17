@@ -1,7 +1,15 @@
 import LRLayout, {Container, Header, LeftSide} from '@/components/Layout';
 import SideList from '@/pages/Task/components/side-list';
 import TaskDetail from '@/pages/Task/components/task-detail';
-import {createTask, createTaskKbTask, deleteTask, getTask, getTaskList, updateTask,} from '@/services/task/api';
+import {
+    changeTaskStatus,
+    createTask,
+    createTaskKbTask,
+    deleteTask,
+    getTask,
+    getTaskList,
+    updateTask,
+} from '@/services/task/api';
 import {useLocation} from '@@/exports';
 import {ExclamationCircleFilled, SendOutlined} from '@ant-design/icons';
 import {Breadcrumb, Button, Modal, notification, Space} from 'antd';
@@ -178,6 +186,34 @@ const Task: React.FC = () => {
         });
     };
 
+    const closeTask = () => {
+        if (task.id === 0) {
+            notificationApi['warning']({
+                message: '操作失败',
+                description: '您还没有选择待办任务',
+            });
+            return;
+        }
+
+        changeTaskStatus(task.id, 'closed').then(() => {
+            notificationApi['info']({
+                message: '成功',
+                description: '任务已关闭',
+            });
+            const newTask = task;
+            newTask.status = 'closed';
+            setTask(newTask);
+
+            const newList = taskList.map(t => {
+                if (t.id === task.id) {
+                    t.status = 'closed'
+                }
+                return t
+            });
+            setTaskList(newList);
+        });
+    }
+
     const createNew = () => {
         createTask({
             title: defaultTaskTitle,
@@ -204,7 +240,7 @@ const Task: React.FC = () => {
         return taskTitle;
     }
 
-    const getProductName = ()=>{
+    const getProductName = () => {
         const hashArr = location.hash.split('/');
         if (hashArr.length === 2) {
             return [hashArr[1]];
@@ -255,7 +291,14 @@ const Task: React.FC = () => {
                             >
                                 推送卡片
                             </Button>
-
+                            <Button
+                                type="primary"
+                                size={'small'}
+                                onClick={closeTask}
+                                disabled={task.id === 0 || task.status === 'closed'}
+                            >
+                                关闭任务
+                            </Button>
                             <Button
                                 size={'small'}
                                 danger

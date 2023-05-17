@@ -50,6 +50,8 @@ export default {
     'menu.editor.koni': '拓扑编辑器',
 
     'menu.home': '首页',
+    'menu.api-definition': 'API 分析',
+    'menu.api-changes': 'API 变更查询',
     'menu.api-analysis': 'API 分析',
     'menu.provider-analysis': 'Provider 分析',
     'menu.portal': 'Portal',
