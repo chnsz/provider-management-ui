@@ -1,40 +1,17 @@
-import ApiGroup from '@/pages/api/components/api-group';
-import ApiList from '@/pages/api/components/api-list';
-import SearchResult from '@/pages/api/components/search-result';
-import { Breadcrumb, Row } from 'antd';
+import ApiSearchList from '@/pages/api/components/api-search-list';
+import { Breadcrumb } from 'antd';
 import React from 'react';
+import './api.less';
 
 const Api: React.FC = () => {
     return (
         <>
-            <div className={'bread-crumbs'}>
-                <Breadcrumb
-                    style={{ marginTop: '20px' }}
-                    items={[
-                        {
-                            title: '首页',
-                        },
-                        {
-                            title: <a href="">资源管理</a>,
-                        },
-                        {
-                            title: <a href="">API</a>,
-                        },
-                    ]}
-                />
-            </div>
-            <Row>
-                <ApiList />
-            </Row>
-            <div style={{ height: '20px' }} />
-            <div style={{ display: 'flex' }}>
-                <div>
-                    <ApiGroup />
-                </div>
-                <div style={{ width: '20px' }} />
-                <div>
-                    <SearchResult />
-                </div>
+            <Breadcrumb
+                items={[{ title: '首页' }, { title: '资源管理' }]}
+                style={{ margin: '10px 0' }}
+            />
+            <div>
+                <ApiSearchList />
             </div>
         </>
     );

@@ -4,7 +4,10 @@ import { Table, Tag } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import React, { useEffect, useState } from 'react';
 
-const ApiChangeList: React.FC = () => {
+type changeId = {
+    id: any;
+};
+const ApiChangeList: React.FC<changeId> = ({ id }) => {
     interface ApiChange {
         key: React.Key;
         lastVersionDate: string;
@@ -81,8 +84,6 @@ const ApiChangeList: React.FC = () => {
     ];
 
     const [data, setData] = useState<ApiChange[]>([]);
-    const [id, setId] = useState<number>(0);
-
     useEffect(() => {
         getApiChangeHistory(id).then((rsp) => {
             const ary = rsp.items.map((t: Api.ChangeHistory) => {
@@ -98,7 +99,6 @@ const ApiChangeList: React.FC = () => {
                 };
             });
             setData(ary);
-            setId(id);
         });
     }, [id]);
 
