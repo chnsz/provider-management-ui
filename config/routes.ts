@@ -56,6 +56,7 @@ export default [
     {
         path: '/api/definition',
         name: 'api-definition',
+        hideInMenu: true,
         component: './api/index',
     },
     {
@@ -67,6 +68,7 @@ export default [
     {
         path: '/product-feature',
         name: 'product_feature',
+        hideInMenu: true,
         component: './ProductFeature/index',
     },
     {
@@ -77,6 +79,7 @@ export default [
     {
         path: '/settings',
         name: 'settings',
+        hideInMenu: true,
         component: './Settings/index',
     },
     {

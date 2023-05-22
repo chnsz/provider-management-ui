@@ -1,8 +1,18 @@
 import SearchForm from '@/components/SearchForm';
+import Introduction from '@/pages/Provider/introduction-dialog';
+import PrListDialog from '@/pages/Provider/pr_list_dialog';
+import {
+    changeEpsSupport,
+    changePrePaidSupport,
+    changeQualityStatus,
+    changeTagSupport,
+    changeUtFlag,
+    getProviderScoreList,
+} from '@/services/provider/api';
 import { createFromIconfontCN, SafetyCertificateOutlined } from '@ant-design/icons';
 import { Breadcrumb, Switch, Table } from 'antd';
 import { ColumnsType } from 'antd/es/table/interface';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './provider.less';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -14,53 +24,88 @@ const IconFont = createFromIconfontCN({
     ],
 });
 
-const ProviderList: React.FC = () => {
-    const onChange = (checked: boolean) => {
-        console.log(`switch to ${checked}`);
+const ProviderList: React.FC<{ owners: string[] }> = ({ owners }) => {
+    const [data, setData] = useState<Provider.ProviderScoreDto[]>([]);
+
+    const onChange = (type: string, record: Provider.ProviderScoreDto) => {
+        return (checked: boolean) => {
+            switch (type) {
+                case 'prePaidSupport':
+                    changePrePaidSupport(record.id, checked ? 'true' : 'false');
+                    return;
+                case 'epsSupport':
+                    changeEpsSupport(record.id, checked ? 'true' : 'false');
+                    return;
+                case 'tagSupport':
+                    changeTagSupport(record.id, checked ? 'true' : 'false');
+                    return;
+                case 'utFlag':
+                    changeUtFlag(record.id, checked ? 'full_coverage' : '-');
+                    return;
+            }
+        };
     };
 
-    interface DataType {
-        key: string;
-        providerType: string;
-        providerName: string;
-        owner: string;
-        prePaidSupport: string;
-        tagSupport: string;
-        epsSupport: string;
-        utCoverage: string;
-        prScore: number;
-        utScore: number;
-        bugScore: number;
-    }
+    const onChangeQualityStatus = (record: Provider.ProviderScoreDto) => {
+        return () => {
+            const state = record.qualityStatus === 'checked' ? 'unchecked' : 'checked';
+            changeQualityStatus(record.id, state).then((d) => {
+                if (d.affectedRow) {
+                    const arr = data.map((t) => {
+                        if (t.id === record.id) {
+                            t.qualityStatus = state;
+                        }
+                        return t;
+                    });
+                    setData(arr);
+                }
+            });
+        };
+    };
 
-    const columns: ColumnsType<DataType> = [
+    useEffect(() => {
+        getProviderScoreList(owners, '', '').then((data) => {
+            if (data.items.length === 0) {
+                setData([]);
+                return;
+            }
+            setData(data.items.slice(0, 100));
+        });
+    }, [owners]);
+
+    const columns: ColumnsType<Provider.ProviderScoreDto> = [
         {
             title: '资源类型',
-            dataIndex: 'providerType',
+            dataIndex: 'type',
             width: '6%',
         },
         {
             title: <>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;资源名称</>,
-            dataIndex: 'providerName',
+            dataIndex: 'name',
             width: '14%',
             render: (text, record) => {
-                if (record.key === '1') {
-                    // return <><SafetyCertificateOutlined style={{color: '#389e0d', fontSize: '18px', marginRight: '5px'}}/><a>{text}</a></>
-                    return (
-                        <>
-                            <SafetyCertificateOutlined
-                                style={{ color: '#389e0d', fontSize: '18px', marginRight: '5px' }}
-                            />
-                            <a>{text}</a>
-                        </>
-                    );
-                }
+                const resourceType = record.type === 'Resource' ? 'resources' : 'data-sources';
+                const resourceName = record.name.replace('huaweicloud_', '');
+
+                const color = record.qualityStatus === 'checked' ? '#389e0d' : 'rgb(223 223 223)';
                 return (
                     <>
-                        <span style={{ color: '#389e0d', fontSize: '18px', marginRight: '5px' }}>
-                            &nbsp;&nbsp;&nbsp;&nbsp;
-                        </span>
-                        <a>{text}</a>
+                        <SafetyCertificateOutlined
+                            style={{
+                                color: color,
+                                fontSize: '18px',
+                                marginRight: '5px',
+                                cursor: 'point',
+                            }}
+                            onClick={onChangeQualityStatus(record)}
+                        />
+                        <a
+                            href={`https://registry.terraform.io/providers/huaweicloud/huaweicloud/latest/docs/${resourceType}/${resourceName}`}
+                            target={'_blank'}
+                            rel="noreferrer"
+                        >
+                            {text}
+                        </a>
                     </>
                 );
             },
@@ -75,19 +120,14 @@ const ProviderList: React.FC = () => {
             width: '7%',
             dataIndex: 'prePaidSupport',
             render: (text, record) => {
-                if (record.prePaidSupport === '支持') {
-                    return (
-                        <>
-                            <Switch defaultChecked onChange={onChange} />
-                        </>
-                    );
-                } else {
-                    return (
-                        <>
-                            <Switch />
-                        </>
-                    );
-                }
+                return (
+                    <>
+                        <Switch
+                            defaultChecked={record.prePaidSupport === 'true'}
+                            onChange={onChange('prePaidSupport', record)}
+                        />
+                    </>
+                );
             },
         },
         {
@@ -95,19 +135,14 @@ const ProviderList: React.FC = () => {
             width: '7%',
             dataIndex: 'tagSupport',
             render: (text, record) => {
-                if (record.tagSupport === '支持') {
-                    return (
-                        <>
-                            <Switch defaultChecked onChange={onChange} />
-                        </>
-                    );
-                } else {
-                    return (
-                        <>
-                            <Switch />
-                        </>
-                    );
-                }
+                return (
+                    <>
+                        <Switch
+                            defaultChecked={record.tagSupport === 'true'}
+                            onChange={onChange('tagSupport', record)}
+                        />
+                    </>
+                );
             },
         },
         {
@@ -115,112 +150,84 @@ const ProviderList: React.FC = () => {
             width: '7%',
             dataIndex: 'epsSupport',
             render: (text, record) => {
-                if (record.epsSupport === '支持') {
-                    return (
-                        <>
-                            <Switch defaultChecked onChange={onChange} />
-                        </>
-                    );
-                } else {
-                    return (
-                        <>
-                            <Switch />
-                        </>
-                    );
-                }
+                return (
+                    <>
+                        <Switch
+                            defaultChecked={record.epsSupport === 'true'}
+                            onChange={onChange('epsSupport', record)}
+                        />
+                    </>
+                );
             },
         },
         {
-            title: 'UT 覆盖率',
+            title: 'UT 覆盖率（%）',
             width: '7%',
             dataIndex: 'utCoverage',
             render: (text, record) => {
-                if (record.utCoverage === '已送检') {
-                    return (
-                        <>
-                            <Switch defaultChecked onChange={onChange} />
-                        </>
-                    );
-                } else {
-                    return (
-                        <>
-                            <Switch />
-                        </>
-                    );
-                }
+                return (
+                    <>
+                        <Switch
+                            defaultChecked={record.utFlag === 'full_coverage'}
+                            checkedChildren={text}
+                            unCheckedChildren={text}
+                            onChange={onChange('utFlag', record)}
+                        />
+                    </>
+                );
             },
         },
         {
             title: '质量守护',
             width: '7%',
             dataIndex: 'prScore',
+            align: 'center',
+            render: (v, row) => (
+                <PrListDialog
+                    val={v}
+                    owner={row.owner}
+                    providerType={row.type}
+                    providerName={row.name}
+                />
+            ),
         },
         {
             title: 'UT 分值',
             width: '7%',
             dataIndex: 'utScore',
+            align: 'center',
+            render: (v) => v || 0,
         },
         {
             title: 'Bug',
             width: '7%',
             dataIndex: 'bugScore',
+            align: 'center',
+            render: (v) => v || 0,
         },
         {
             title: '总分',
             width: '7%',
-            dataIndex: 'bugScore',
-            render: (v, record) => {
-                return record.bugScore + record.prScore + record.utScore;
-            },
+            dataIndex: 'totalScore',
+            align: 'center',
+            render: (v) => v || 0,
         },
     ];
 
-    const data: DataType[] = [
-        {
-            key: '1',
-            providerType: 'Resource',
-            providerName: 'huaweicloud_elb_listener',
-            owner: '侯鹏',
-            prePaidSupport: '支持',
-            tagSupport: '支持',
-            epsSupport: '不支持',
-            utCoverage: '已送检',
-            prScore: 17,
-            utScore: -3,
-            bugScore: 0,
-        },
-        {
-            key: '2',
-            providerType: 'Resource',
-            providerName: 'huaweicloud_lb_listener',
-            owner: '侯鹏',
-            prePaidSupport: '支持',
-            tagSupport: '支持',
-            epsSupport: '不支持',
-            utCoverage: '已送检',
-            prScore: 10,
-            utScore: 0,
-            bugScore: 0,
-        },
-        {
-            key: '3',
-            providerType: 'Resource',
-            providerName: 'huaweicloud_lb_loadbalancer',
-            owner: '侯鹏',
-            prePaidSupport: '支持',
-            tagSupport: '支持',
-            epsSupport: '不支持',
-            utCoverage: '未送检',
-            prScore: 12,
-            utScore: -2,
-            bugScore: -3,
-        },
-    ];
-
-    return <Table columns={columns} dataSource={data} size={'middle'} pagination={false} />;
+    return (
+        <Table
+            columns={columns}
+            dataSource={data}
+            size={'middle'}
+            pagination={false}
+            rowKey={(record) => record.id}
+        />
+    );
 };
 
 const Provider: React.FC = () => {
+    const [owners, setOwners] = useState<string[]>([]);
+
     return (
         <div className={'provider'}>
             <Breadcrumb
@@ -228,12 +235,22 @@ const Provider: React.FC = () => {
                 style={{ margin: '10px 0' }}
             />
             <div className={'header'}>
-                <SearchForm onSearch={() => {}} options={['owner']} />
+                <SearchForm
+                    onSearch={(formData) => {
+                        setOwners(formData.owner);
+                    }}
+                    options={['owner']}
+                />
             </div>
             <div style={{ background: '#fff', marginTop: '15px' }}>
-                <div className={'custom-title'}>资源列表</div>
+                <div className={'custom-title title'}>
+                    <div className={'title'}>资源列表</div>
+                    <div className={'toolbar'}>
+                        <Introduction />
+                    </div>
+                </div>
                 <div className={'provider-list'}>
-                    <ProviderList />
+                    <ProviderList owners={owners} />
                 </div>
             </div>
         </div>
