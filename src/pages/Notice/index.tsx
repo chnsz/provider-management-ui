@@ -13,6 +13,7 @@ import './notice.less';
 // @ts-ignore
 import {Scrollbars} from 'react-custom-scrollbars';
 import {useLocation} from 'umi';
+import AddFeaturePlanningDialog from "@/pages/ProviderPlanning/components/creation-dialog/add-feature-planning-dialog";
 
 export const getNoticeTypeName = function (typeVal: string): string {
     switch (typeVal) {
@@ -157,7 +158,7 @@ const Notice: React.FC = () => {
         loadData(true, true);
     };
 
-    const getProductName = ()=>{
+    const getProductName = () => {
         const hashArr = location.hash.split('/');
         if (hashArr.length === 2) {
             return [hashArr[1]];
@@ -315,27 +316,31 @@ const Notice: React.FC = () => {
                 <div className={'custom-title'}>{getDetailTitle()}</div>
                 <div style={{padding: '20px'}}>
                     <div style={{padding: '0 0 15px 8px'}}>
-                        <Button type={'primary'} size={'small'} onClick={markAsUnread}
-                                disabled={!selectedNotice?.id}
-                        >
-                            标记为未读
-                        </Button>
+                        <Space size={'middle'}>
+                            <Button type={'primary'} size={'small'} onClick={markAsUnread}
+                                    disabled={!selectedNotice?.id}
+                            >
+                                标记为未读
+                            </Button>
+                            <AddFeaturePlanningDialog productName={(selectedNotice?.productName) || ''} onClosed={() => {
+                            }}/>
+                        </Space>
                     </div>
                     <div>
                         <div className={'detail-title'}>{selectedNotice?.title}</div>
-                            <ProDescriptions column={5}>
-                                <ProDescriptions.Item span={1}></ProDescriptions.Item>
-                                <ProDescriptions.Item span={1} label="所属服务" valueType="text">
-                                    {selectedNotice?.productName}
-                                </ProDescriptions.Item>
-                                <ProDescriptions.Item span={1} label="田主" valueType="text">
-                                    {selectedNotice?.productDetail?.owner}
-                                </ProDescriptions.Item>
-                                <ProDescriptions.Item span={1} label="日期" valueType="text">
-                                    {toLongDate(selectedNotice?.created)}
-                                </ProDescriptions.Item>
-                                <ProDescriptions.Item span={1}></ProDescriptions.Item>
-                            </ProDescriptions>
+                        <ProDescriptions column={5}>
+                            <ProDescriptions.Item span={1}></ProDescriptions.Item>
+                            <ProDescriptions.Item span={1} label="所属服务" valueType="text">
+                                {selectedNotice?.productName}
+                            </ProDescriptions.Item>
+                            <ProDescriptions.Item span={1} label="田主" valueType="text">
+                                {selectedNotice?.productDetail?.owner}
+                            </ProDescriptions.Item>
+                            <ProDescriptions.Item span={1} label="日期" valueType="text">
+                                {toLongDate(selectedNotice?.created)}
+                            </ProDescriptions.Item>
+                            <ProDescriptions.Item span={1}></ProDescriptions.Item>
+                        </ProDescriptions>
                         <div className={'detail'}>
                             <MarkDownViewer content={selectedNotice?.content}/>
                         </div>

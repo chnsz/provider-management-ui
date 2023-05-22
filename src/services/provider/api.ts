@@ -27,11 +27,12 @@ export async function getProviderList(
     );
 }
 
-export async function getProviderScoreList(owners: string[], startDate: string, endStart: string) {
+export async function getProviderScoreList(owners: string[], prStatus: string, startDate: string, endStart: string) {
     return request<Global.List<Provider.ProviderScoreDto[]>>(`${basePath}/provider/score/list`, {
         method: 'GET',
         params: {
             owner: owners,
+            prStatus,
             startDate,
             endStart,
         },
@@ -68,13 +69,16 @@ export async function changeQualityStatus(id: number, state: string) {
     });
 }
 
-export async function getPrList(owner: string, providerType: string, providerName: string) {
+export async function getPrList(owner: string, prStatus: string, providerType: string, providerName: string, startDate: string, endStart: string) {
     return request<Global.List<Provider.PullRequest[]>>(`${basePath}/provider/pr/list`, {
         method: 'GET',
         params: {
             owner,
+            prStatus,
             providerType,
             providerName,
+            startDate,
+            endStart,
         },
     });
 }

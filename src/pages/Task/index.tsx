@@ -18,6 +18,7 @@ import './task.less';
 // @ts-ignore
 import {Scrollbars} from 'react-custom-scrollbars';
 import SearchForm, {SearchFormProps} from "@/components/SearchForm";
+import AddFeaturePlanningDialog from "@/pages/ProviderPlanning/components/creation-dialog/add-feature-planning-dialog";
 
 const {confirm} = Modal;
 const defaultTaskTitle = '新建的待办任务';
@@ -291,6 +292,7 @@ const Task: React.FC = () => {
                             >
                                 推送卡片
                             </Button>
+                            <AddFeaturePlanningDialog productName={task.productName} onClosed={() => {}}/>
                             <Button
                                 type="primary"
                                 size={'small'}
