@@ -1,17 +1,19 @@
 import { getApiGroupList } from '@/services/api/api';
 import { BookOutlined } from '@ant-design/icons';
-import { Divider } from 'antd';
 import { useEffect, useState } from 'react';
 import '../api.less';
 
-const ApiGroup: React.FC = () => {
+type changeProductName = {
+    productName: string;
+};
+
+const ApiGroup: React.FC<changeProductName> = ({ productName }) => {
     const [data, setData] = useState<ApiGroups[]>([]);
     const [sum, setSum] = useState<number>();
-    const URL = 'http://localhost:8001/service#/productName/ECS';
-    const hashArr = URL.split('/');
     const size = 250;
-    useEffect(() => {
-        getApiGroupList(hashArr[5]).then((rsp) => {
+
+    const loadData = () => {
+        getApiGroupList(productName).then((rsp) => {
             const list = rsp.map((o: Api.Group) => {
                 return {
                     apiGroup: o.apiGroup,
@@ -34,7 +36,9 @@ const ApiGroup: React.FC = () => {
             });
             setData(list);
         });
-    }, [hashArr[5]]);
+    };
+
+    useEffect(loadData, [productName]);
 
     const getSum = () => {
         if (sum === 0) {
@@ -53,9 +57,8 @@ const ApiGroup: React.FC = () => {
     }
 
     return (
-        <div className={'api-card'}>
+        <div className={'api-group'}>
             <div className={'search-header'}>API分组</div>
-            <Divider />
             {data.map((item, idx: any) => (
                 <div key={idx}>
                     <div className={'group-card'}>
@@ -66,25 +69,25 @@ const ApiGroup: React.FC = () => {
                             <div className={'progress-header'}>{item.apiGroup}</div>
                             <div className={'progress'}>
                                 <div
-                                    className={'n-used'}
+                                    className={'used'}
                                     style={{ width: (item.usedCount / item.sum) * size + 'px' }}
                                 ></div>
                                 <div
-                                    className={'n-need-analysis'}
+                                    className={'need-analysis'}
                                     style={{
                                         width: (item.needAnalysisCount / item.sum) * size + 'px',
                                     }}
                                 ></div>
                                 <div
-                                    className={'n-missing'}
+                                    className={'missing'}
                                     style={{ width: (item.missingCount / item.sum) * size + 'px' }}
                                 ></div>
                                 <div
-                                    className={'n-planning'}
+                                    className={'planning'}
                                     style={{ width: (item.planningCount / item.sum) * size + 'px' }}
                                 ></div>
                                 <div
-                                    className={'n-ignore'}
+                                    className={'ignore'}
                                     style={{ width: (item.ignoreCount / item.sum) * size + 'px' }}
                                 ></div>
                                 {getSum()}
