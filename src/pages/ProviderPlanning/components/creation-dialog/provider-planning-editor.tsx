@@ -9,6 +9,7 @@ import React, {useEffect, useState} from 'react';
 import '../../provider-planning.less';
 import {get} from "lodash";
 import RelationTabs from "@/pages/ProviderPlanning/components/creation-dialog/relation-tabs";
+import {getCurrentUser} from "@/services/api";
 
 export type CreateOptions = {
     // 归属服务
@@ -27,6 +28,8 @@ export type CreateOptions = {
     priorityStr: string;
     // 负责人
     assignee: string;
+    // 同步到看板
+    syncToKanboard: string;
     // 关联的 Provider
     providerList: Relation.ProviderRelation[];
     // 关联的 API
@@ -39,6 +42,7 @@ type PlanningDetailProps = {
 };
 
 const ProviderPlanningEditor: React.FC<PlanningDetailProps> = ({providerPlanning, onChange}) => {
+    const [assignee, setAssignee] = useState<string>('')
     const [featureList, setFeatureList] = useState<SelectProps['options']>([]);
     const [productList, setProductList] = useState<SelectProps['options']>([]);
     const [ownerList, setOwnerList] = useState<SelectProps['options']>([]);
@@ -77,6 +81,7 @@ const ProviderPlanningEditor: React.FC<PlanningDetailProps> = ({providerPlanning
             });
             setOwnerList(arr);
         });
+        setAssignee(providerPlanning.assignee)
     }, [providerPlanning]);
 
     const onDetailChange = (fieldName: string) => {
@@ -93,6 +98,7 @@ const ProviderPlanningEditor: React.FC<PlanningDetailProps> = ({providerPlanning
                 content: providerPlanning.content,
                 providerList: providerPlanning.providerList,
                 apiList: providerPlanning.apiList,
+                syncToKanboard: providerPlanning.syncToKanboard,
             };
             switch (fieldName) {
                 case 'title':
@@ -141,14 +147,31 @@ const ProviderPlanningEditor: React.FC<PlanningDetailProps> = ({providerPlanning
                         return;
                     }
                     updateOpts.assignee = val;
+                    setAssignee(val);
+                    break;
+                case 'syncToKanboard':
+                    if (updateOpts.syncToKanboard === val) {
+                        return;
+                    }
+                    updateOpts.syncToKanboard = val;
                     break;
             }
             onChange(updateOpts);
         };
     };
 
+    useEffect(() => {
+        getCurrentUser().then(user => {
+            if(user.username !== "") {
+                setAssignee(user.username);
+                onDetailChange('assignee')(user.username)
+            }
+        })
+    },[]);
+
     const onApiRelationChange = (list: Api.Detail[]) => {
         let updateOpts: CreateOptions = {
+            syncToKanboard: providerPlanning.syncToKanboard,
             productName: providerPlanning.productName,
             featureId: providerPlanning.featureId,
             featureName: providerPlanning.featureName,
@@ -166,6 +189,7 @@ const ProviderPlanningEditor: React.FC<PlanningDetailProps> = ({providerPlanning
 
     const onProviderRelationChange = (list: Relation.ProviderRelation[]) => {
         let updateOpts: CreateOptions = {
+            syncToKanboard: providerPlanning.syncToKanboard,
             productName: providerPlanning.productName,
             featureId: providerPlanning.featureId,
             featureName: providerPlanning.featureName,
@@ -214,15 +238,26 @@ const ProviderPlanningEditor: React.FC<PlanningDetailProps> = ({providerPlanning
                 </Descriptions.Item>
                 <Descriptions.Item label="责任人" span={1}>
                     <Select size={'small'} style={{width: '200px'}}
-                            defaultValue={providerPlanning.assignee}
+                            value={assignee}
                             onChange={onDetailChange('assignee')}
                             options={ownerList}
                     ></Select>
                 </Descriptions.Item>
                 <Descriptions.Item label="标题" span={2}>
-                    <Input value={providerPlanning.title} onChange={(e) => onDetailChange('title')(e.target.value)} size={'small'}
+                    <Input value={providerPlanning.title} onChange={(e) => onDetailChange('title')(e.target.value)}
+                           size={'small'}
                            style={{width: '615px'}}
                     ></Input>
+                </Descriptions.Item>
+                <Descriptions.Item label="同步到看板" span={1}>
+                    <Select size={'small'} style={{width: '185px'}}
+                            defaultValue={'yes'}
+                            onChange={onDetailChange('syncToKanboard')}
+                            options={[
+                                {label: '同步创建', value: 'yes'},
+                                {label: '不同步', value: 'no'},
+                            ]}
+                    ></Select>
                 </Descriptions.Item>
                 <Descriptions.Item label="待办状态" span={1}>
                     <Select size={'small'} style={{width: '200px'}}

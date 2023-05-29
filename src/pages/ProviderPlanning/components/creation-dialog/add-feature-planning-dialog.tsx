@@ -4,11 +4,13 @@ import ProviderPlanningEditor, {
     CreateOptions
 } from "@/pages/ProviderPlanning/components/creation-dialog/provider-planning-editor";
 import {createProviderPlanning} from "@/services/provider-planning/api";
+import {get} from "lodash";
 
 
 const AddFeaturePlanningDialog: React.FC<{ productName: string, onClosed: () => any }> = (props) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [planning, setPlanning] = useState<CreateOptions>({
+        syncToKanboard: 'yes',
         productName: props.productName,
         featureId: '',
         featureName: '',
@@ -28,6 +30,7 @@ const AddFeaturePlanningDialog: React.FC<{ productName: string, onClosed: () => 
 
     const closeModel = ()=>{
         setPlanning({
+            syncToKanboard: 'yes',
             productName: props.productName,
             featureId: '',
             featureName: '',
@@ -44,9 +47,8 @@ const AddFeaturePlanningDialog: React.FC<{ productName: string, onClosed: () => 
     }
 
     const handleOk = () => {
-        setIsModalOpen(false);
-
         createProviderPlanning({
+            syncToKanboard: planning.syncToKanboard,
             apiIdList: planning.apiList.map(t => {
                 return t.id
             }),
@@ -58,9 +60,12 @@ const AddFeaturePlanningDialog: React.FC<{ productName: string, onClosed: () => 
             providerList: planning.providerList,
             status: planning.status,
             title: planning.title
-        }).then(() => {
-            if (props.onClosed) {
-                props.onClosed();
+        }).then((rsp) => {
+            if(get(rsp, 'code', '200')){
+                setIsModalOpen(false);
+                if (props.onClosed) {
+                    props.onClosed();
+                }
             }
         })
     };

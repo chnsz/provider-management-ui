@@ -4,6 +4,7 @@ import React, {useEffect, useState} from 'react';
 import {Scrollbars} from 'react-custom-scrollbars';
 import {Button, Input, notification, Space} from "antd";
 import {modifyApiChangeStatus} from "@/services/api/api";
+import AddFeaturePlanningDialog from "@/pages/ProviderPlanning/components/creation-dialog/add-feature-planning-dialog";
 
 const ApiChangeView: React.FC<{
     id: number;
@@ -88,11 +89,15 @@ const ApiChangeView: React.FC<{
                         </Button>
                     </Space>
                 </ProDescriptions.Item>
-                <ProDescriptions.Item span={4} label="备注" valueType="text">
+                <ProDescriptions.Item span={6} label="备注" valueType="text">
                     <Space.Compact style={{width: '100%'}} size={'small'}>
                         <Input value={remark} size={'small'} onChange={(input) => setRemark(input.target.value)}/>
                         <Button type="primary" onClick={onChangeRemark} size={'small'}>提交</Button>
                     </Space.Compact>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <AddFeaturePlanningDialog productName={props.serviceName || ''}
+                                              onClosed={() => {
+                                              }}/>
                 </ProDescriptions.Item>
             </ProDescriptions>
             <Scrollbars>

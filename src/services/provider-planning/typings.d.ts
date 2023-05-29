@@ -18,6 +18,7 @@ declare namespace ProviderPlanning {
         creator?: string;
         // 负责人
         assignee?: string;
+        syncToKanboard?: string;
 
         // 关联的 Provider
         providerList?: Relation.ProviderRelation[];
