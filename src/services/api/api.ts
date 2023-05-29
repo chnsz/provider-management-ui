@@ -78,3 +78,15 @@ export async function getApiChangeHistory(id: number | string) {
         method: 'GET',
     });
 }
+
+export async function updatePublishStatus(id: number, status: string) {
+    return request<Global.AffectResponse>(`${basePath}/api/publish-status/${id}/${status}`, {
+        method: 'PATCH',
+    });
+}
+
+export async function updateUseStatus(id: number, status: string) {
+    return request<Global.AffectResponse>(`${basePath}/api/use-status/${id}/${status}`, {
+        method: 'PATCH',
+    });
+}
