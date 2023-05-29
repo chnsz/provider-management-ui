@@ -3,6 +3,7 @@ import { getApiChangeDetail } from '@/services/api/api';
 import React, { useEffect, useState } from 'react';
 
 const ApiChange: React.FC = () => {
+    const [id, setId] = useState<number>(0);
     const [productClass, setProductClass] = useState<string>('');
     const [serviceName, setServiceName] = useState<string>('');
     const [apiGroup, setApiGroup] = useState<string>('');
@@ -17,6 +18,7 @@ const ApiChange: React.FC = () => {
         const hashArr = location.hash.split('/');
         if (hashArr.length === 3) {
             getApiChangeDetail(hashArr[2]).then((data) => {
+                setId(data.id);
                 setProductClass(data.productGroup);
                 setServiceName(data.productName);
                 setApiGroup(data.apiGroup);
@@ -34,6 +36,7 @@ const ApiChange: React.FC = () => {
         <>
             <div style={{ height: 'calc(100vh - 220px)', padding: '20px 0' }}>
                 <ApiChangeView
+                    id={id}
                     productClass={productClass}
                     serviceName={serviceName}
                     apiName={apiName}

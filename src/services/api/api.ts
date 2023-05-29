@@ -1,4 +1,4 @@
-import { request } from '@@/exports';
+import {request} from '@@/exports';
 
 const basePath: string = '/pms';
 
@@ -34,7 +34,7 @@ export async function getApiChangeSum(
 ) {
     return request<Global.List<Api.ApiChange[]>>(`${basePath}/api/${id}/change-history`, {
         method: 'GET',
-        params: { ...queryParams },
+        params: {...queryParams},
     });
 }
 
@@ -56,14 +56,14 @@ export async function getApiDetailList(
 
     return request<Global.List<Api.Detail[]>>(`${basePath}/api/list/${limit}/${offset}`, {
         method: 'GET',
-        params: { ...params },
+        params: {...params},
     });
 }
 
 export async function getApiGroupList(productName: string) {
     return request<Api.Group[]>(`${basePath}/api/groups/list`, {
         method: 'GET',
-        params: { productName: productName },
+        params: {productName: productName},
     });
 }
 
@@ -78,3 +78,11 @@ export async function getApiChangeHistory(id: number | string) {
         method: 'GET',
     });
 }
+
+export async function modifyApiChangeStatus(id: number, status: string, remark: string) {
+    return request<Global.List<Api.ChangeHistory[]>>(`${basePath}/api/change-detail/${id}/status/${status}`, {
+        method: 'PATCH',
+        params: {remark},
+    });
+}
+

@@ -1,6 +1,3 @@
-import SearchForm from '@/components/SearchForm';
-import Introduction from '@/pages/Provider/introduction-dialog';
-import PrListDialog from '@/pages/Provider/pr_list_dialog';
 import {
     changeEpsSupport,
     changePrePaidSupport,
@@ -9,11 +6,14 @@ import {
     changeUtFlag,
     getProviderScoreList,
 } from '@/services/provider/api';
-import { createFromIconfontCN, SafetyCertificateOutlined } from '@ant-design/icons';
-import { Breadcrumb, Switch, Table } from 'antd';
-import { ColumnsType } from 'antd/es/table/interface';
-import React, { useEffect, useState } from 'react';
+import {createFromIconfontCN, SafetyCertificateOutlined} from '@ant-design/icons';
+import {Breadcrumb, Switch, Table} from 'antd';
+import {ColumnsType} from 'antd/es/table/interface';
+import React, {useEffect, useState} from 'react';
 import './provider.less';
+import PrListDialog from "@/pages/Provider/pr_list_dialog";
+import Introduction from "@/pages/Provider/introduction-dialog";
+import SearchForm from './search-form';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const IconFont = createFromIconfontCN({
@@ -24,7 +24,7 @@ const IconFont = createFromIconfontCN({
     ],
 });
 
-const ProviderList: React.FC<{ owners: string[] }> = ({ owners }) => {
+const ProviderList: React.FC<{ owners: string[], prStatus: string }> = ({owners, prStatus}) => {
     const [data, setData] = useState<Provider.ProviderScoreDto[]>([]);
 
     const onChange = (type: string, record: Provider.ProviderScoreDto) => {
@@ -64,14 +64,14 @@ const ProviderList: React.FC<{ owners: string[] }> = ({ owners }) => {
     };
 
     useEffect(() => {
-        getProviderScoreList(owners, '', '').then((data) => {
+        getProviderScoreList(owners, prStatus, '2023-05-01', '').then((data) => {
             if (data.items.length === 0) {
                 setData([]);
                 return;
             }
             setData(data.items.slice(0, 100));
         });
-    }, [owners]);
+    }, [owners, prStatus]);
 
     const columns: ColumnsType<Provider.ProviderScoreDto> = [
         {
@@ -99,13 +99,8 @@ const ProviderList: React.FC<{ owners: string[] }> = ({ owners }) => {
                             }}
                             onClick={onChangeQualityStatus(record)}
                         />
-                        <a
-                            href={`https://registry.terraform.io/providers/huaweicloud/huaweicloud/latest/docs/${resourceType}/${resourceName}`}
-                            target={'_blank'}
-                            rel="noreferrer"
-                        >
-                            {text}
-                        </a>
+                        <a href={`https://registry.terraform.io/providers/huaweicloud/huaweicloud/latest/docs/${resourceType}/${resourceName}`}
+                           target={'_blank'} rel="noreferrer">{text}</a>
                     </>
                 );
             },
@@ -182,14 +177,11 @@ const ProviderList: React.FC<{ owners: string[] }> = ({ owners }) => {
             width: '7%',
             dataIndex: 'prScore',
             align: 'center',
-            render: (v, row) => (
-                <PrListDialog
-                    val={v}
-                    owner={row.owner}
-                    providerType={row.type}
-                    providerName={row.name}
-                />
-            ),
+            render: (v, row) => <PrListDialog val={v}
+                                              owner={row.owner}
+                                              prStatus={prStatus}
+                                              providerType={row.type}
+                                              providerName={row.name}/>
         },
         {
             title: 'UT 分值',
@@ -227,30 +219,29 @@ const ProviderList: React.FC<{ owners: string[] }> = ({ owners }) => {
 
 const Provider: React.FC = () => {
     const [owners, setOwners] = useState<string[]>([]);
+    const [prStatus, setPrStatus] = useState<string>([]);
 
     return (
         <div className={'provider'}>
             <Breadcrumb
-                items={[{ title: '首页' }, { title: 'Provider 分析' }]}
-                style={{ margin: '10px 0' }}
+                items={[{title: '首页'}, {title: 'Provider 分析'}]}
+                style={{margin: '10px 0'}}
             />
             <div className={'header'}>
                 <SearchForm
                     onSearch={(formData) => {
                         setOwners(formData.owner);
+                        setPrStatus(formData.status);
                     }}
-                    options={['owner']}
                 />
             </div>
-            <div style={{ background: '#fff', marginTop: '15px' }}>
+            <div style={{background: '#fff', marginTop: '15px'}}>
                 <div className={'custom-title title'}>
                     <div className={'title'}>资源列表</div>
-                    <div className={'toolbar'}>
-                        <Introduction />
-                    </div>
+                    <div className={'toolbar'}><Introduction/></div>
                 </div>
                 <div className={'provider-list'}>
-                    <ProviderList owners={owners} />
+                    <ProviderList owners={owners} prStatus={prStatus}/>
                 </div>
             </div>
         </div>

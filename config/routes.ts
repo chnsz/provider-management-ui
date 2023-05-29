@@ -66,6 +66,12 @@ export default [
         component: './api/api-change',
     },
     {
+        path: '/api-change',
+        name: 'api-changes',
+        hideInMenu: true,
+        component: './api/api-change',
+    },
+    {
         path: '/product-feature',
         name: 'product_feature',
         hideInMenu: true,
