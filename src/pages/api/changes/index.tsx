@@ -147,6 +147,7 @@ export default () => {
                 ) : (
                     <div className={contentClassName}>
                         <ApiChangeView
+                            id={0}
                             productClass={productClass}
                             serviceName={serviceName}
                             apiGroup={apiGroup}

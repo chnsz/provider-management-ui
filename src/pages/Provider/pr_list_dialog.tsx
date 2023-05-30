@@ -6,6 +6,7 @@ import {getPrList} from "@/services/provider/api";
 
 const PrListDialog: React.FC<{
     owner: string,
+    prStatus: string,
     providerType: string,
     providerName: string,
     val: string | number,
@@ -21,9 +22,10 @@ const PrListDialog: React.FC<{
     };
     const openDialog = () => {
         setIsDialogOpen(true)
-        getPrList(props.owner, props.providerType, props.providerName).then(data => {
-            setData(data.items);
-        });
+        getPrList(props.owner, props.prStatus, props.providerType, props.providerName, '2023-05-01', '')
+            .then(data => {
+                setData(data.items);
+            });
     }
 
     const columns: ColumnsType<Provider.PullRequest> = [
