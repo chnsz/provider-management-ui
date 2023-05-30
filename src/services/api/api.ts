@@ -79,10 +79,23 @@ export async function getApiChangeHistory(id: number | string) {
     });
 }
 
+
 export async function modifyApiChangeStatus(id: number, status: string, remark: string) {
     return request<Global.List<Api.ChangeHistory[]>>(`${basePath}/api/change-detail/${id}/status/${status}`, {
         method: 'PATCH',
         params: {remark},
+    });
+}
+
+export async function updatePublishStatus(id: number, status: string) {
+    return request<Global.AffectResponse>(`${basePath}/api/publish-status/${id}/${status}`, {
+        method: 'PATCH',
+    });
+}
+
+export async function updateUseStatus(id: number, status: string) {
+    return request<Global.AffectResponse>(`${basePath}/api/use-status/${id}/${status}`, {
+        method: 'PATCH',
     });
 }
 
