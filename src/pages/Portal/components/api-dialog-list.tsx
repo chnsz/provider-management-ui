@@ -1,19 +1,58 @@
 import ApiChangeList from '@/pages/api/components/api-change-list';
-import { getApiDetailList } from '@/services/api/api';
-import { Button, Modal, Select, Table, Tag } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
+import { getApiDetailList, updatePublishStatus, updateUseStatus } from '@/services/api/api';
+import { DownOutlined } from '@ant-design/icons';
+import { Button, Dropdown, Modal, Table, Tag } from 'antd';
+import { ColumnsType } from 'antd/es/table';
 import React, { useEffect, useState } from 'react';
+import '../../api/api.less';
 
-const SearchResult: React.FC = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+interface Detail {
+    key: React.Key;
+    id: number;
+    productName: string;
+    apiGroup: string;
+    apiName: string;
+    useRemark: string;
+    method: string;
+    providerList: any;
+    uri: string;
+    apiNameEn: string;
+    publishStatus: string;
+}
+
+type queryParams = {
+    productName?: string;
+    apiGroup?: string;
+    apiName?: string;
+    uri?: string;
+    useRemark?: string;
+    publishStatus?: string;
+    id?: number[];
+};
+
+const ApiDialogList: React.FC<queryParams> = (queryParams) => {
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [data, setData] = useState<Detail[]>([]);
+    const [selectedRow, setSelectedRow] = useState<Detail | null>(null);
     const [total, setTotal] = useState<number>(0);
     const [pageSize, setPageSize] = useState<number>(20);
     const [pageNum, setPageNum] = useState<number>(1);
+    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+    const [id, setId] = useState<number>(0);
+
+    const onSelectChange = (newSelectedRowKeys: React.Key[], selectedRows: Detail[]) => {
+        setSelectedRowKeys(newSelectedRowKeys);
+        setSelectedRow(selectedRows.length > 0 ? selectedRows[0] : null);
+    };
+
+    const rowSelection = {
+        selectedRowKeys,
+        onChange: onSelectChange,
+    };
 
     useEffect(() => {
-        getApiDetailList({}, pageSize, pageNum).then((rsp) => {
-            const arr = rsp.items.map((d: Api.Detail) => {
+        getApiDetailList(queryParams, pageSize, pageNum).then((d) => {
+            const arr = d.items.map((d: Api.Detail) => {
                 return {
                     key: '' + d.id,
                     id: d.id,
@@ -29,84 +68,98 @@ const SearchResult: React.FC = () => {
                 };
             });
             setData(arr);
-            setTotal(rsp.total);
+            setTotal(d.total);
         });
-    }, [pageSize, pageNum]);
+    }, [queryParams, pageSize, pageNum]);
 
-    const getCreatePlan = () => {
-        return (
-            <>
-                <Button type="default">创建规划</Button>
-                <Select
-                    className={'search-update'}
-                    defaultValue="更改状态"
-                    dropdownMatchSelectWidth={false}
-                    options={[
-                        {
-                            value: '已使用',
-                            label: '已使用',
-                        },
-                        {
-                            value: '待分析',
-                            label: '待分析',
-                        },
-                        {
-                            value: '不适合',
-                            label: '不适合',
-                        },
-                        {
-                            value: '缺少API',
-                            label: '缺少API',
-                        },
-                        {
-                            value: '未分析',
-                            label: '未分析',
-                        },
-                    ]}
-                />
-                <Select
-                    className={'search-update'}
-                    defaultValue="发布状态"
-                    dropdownMatchSelectWidth={false}
-                    options={[
-                        {
-                            value: '开发中',
-                            label: '开发中',
-                        },
-                        {
-                            value: '已下线',
-                            label: '已下线',
-                        },
-                        {
-                            value: '线下API',
-                            label: '线下API',
-                        },
-                    ]}
-                />
-            </>
-        );
-    };
-
-    interface Detail {
-        key: React.Key;
-        id: number;
-        productName: string;
-        apiGroup: string;
-        apiName: string;
-        useRemark: string;
-        method: string;
-        providerList: any;
-        uri: string;
-        apiNameEn: string;
-        publishStatus: string;
-    }
-
-    const showModal = () => {
+    const handleRowClick = (record: Detail) => {
+        setId(record.id);
         setIsModalOpen(true);
     };
 
     const handleCancel = () => {
         setIsModalOpen(false);
+    };
+
+    const useStatusItems = [
+        { label: '已使用', key: 'used' },
+        { label: '待分析', key: 'need_analysis' },
+        { label: '不合适', key: 'ignore' },
+        { label: '缺少API', key: 'missing_api' },
+        { label: '未分析', key: 'planning' },
+    ];
+
+    const publishStatusItems = [
+        { label: '开放中', key: 'online' },
+        { label: '已下线', key: 'offline' },
+        { label: '线下API', key: 'unpublished' },
+    ];
+
+    const handleUseStatusChange = (status: string) => {
+        if (selectedRow) {
+            const newUseStatus = status;
+            updateUseStatus(selectedRow.id, newUseStatus).then(() => {
+                const newData = data.map((item) => {
+                    if (item.id === selectedRow.id) {
+                        return { ...item, useRemark: newUseStatus };
+                    }
+                    return item;
+                });
+                setData(newData);
+            });
+        }
+    };
+
+    const handlePublishStatusChange = (status: string) => {
+        if (selectedRow) {
+            const newPublishStatus = status;
+            updatePublishStatus(selectedRow.id, newPublishStatus).then(() => {
+                const newData = data.map((item) => {
+                    if (item.id === selectedRow.id) {
+                        return { ...item, publishStatus: newPublishStatus };
+                    }
+                    return item;
+                });
+                setData(newData);
+            });
+        }
+    };
+
+    const getCreatePlan = () => {
+        return (
+            <>
+                <Button size={'small'} type={'primary'}>
+                    创建规划
+                </Button>
+                <Dropdown.Button
+                    className={'search-update'}
+                    size={'small'}
+                    type={'primary'}
+                    icon={<DownOutlined />}
+                    menu={{
+                        items: useStatusItems.map((item) => ({
+                            ...item,
+                            onClick: () => handleUseStatusChange(item.key),
+                        })),
+                    }}
+                >
+                    更改状态
+                </Dropdown.Button>
+                <Dropdown.Button
+                    size={'small'}
+                    type={'primary'}
+                    icon={<DownOutlined />}
+                    menu={{
+                        items: publishStatusItems.map((item) => ({
+                            ...item,
+                            onClick: () => handlePublishStatusChange(item.key),
+                        })),
+                    }}
+                >
+                    发布状态
+                </Dropdown.Button>
+            </>
+        );
     };
 
     const columns: ColumnsType<Detail> = [
@@ -115,12 +168,14 @@ const SearchResult: React.FC = () => {
             dataIndex: 'id',
             key: 'id',
             width: 80,
+            render: (v, r, i) => (pageNum - 1) * pageSize + i + 1,
         },
         {
             title: '服务',
             dataIndex: 'productName',
             key: 'productName',
             width: 95,
+            ellipsis: true,
         },
         {
             title: 'API分组',
@@ -134,7 +189,15 @@ const SearchResult: React.FC = () => {
             dataIndex: 'apiName',
             key: 'apiName',
             width: 180,
-            render: (APIName) => <a href="#">{APIName}</a>,
+            ellipsis: true,
+            render: (apiName, record) => {
+                const href = `https://console.huaweicloud.com/apiexplorer/#/openapi/${record.productName}/doc?api=${record.apiNameEn}`;
+                return (
+                    <a href={href} rel="noreferrer" target="_blank" title="在API Explorer中查看">
+                        {apiName}
+                    </a>
+                );
+            },
         },
         {
             title: '覆盖状态',
@@ -164,11 +227,7 @@ const SearchResult: React.FC = () => {
             width: 100,
             align: 'center',
             render: (providerList) => {
-                if (!providerList === null) {
-                    return <a href="#">{(providerList || []).length}</a>;
-                } else {
-                    return <a href="#">0</a>;
-                }
+                return <a href="#">{(providerList || []).length}</a>;
             },
         },
         {
@@ -211,7 +270,7 @@ const SearchResult: React.FC = () => {
                 const href = `https://apiexplorer.developer.huaweicloud.com/apiexplorer/doc?product=${row.productName}&api=${row.apiNameEn}`;
                 return (
                     <div>
-                        <a type="button" onClick={showModal}>
+                        <a type="button" onClick={() => handleRowClick(row)}>
                             变更历史&ensp;&ensp;
                         </a>
                         <a title={title} href={href} target={'_blank'} rel="noreferrer">
@@ -223,26 +282,16 @@ const SearchResult: React.FC = () => {
         },
     ];
 
-    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-
-    const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-        setSelectedRowKeys(newSelectedRowKeys);
-    };
-
-    const rowSelection = {
-        selectedRowKeys,
-        onChange: onSelectChange,
-    };
-
     return (
-        <div className={'api-card'}>
-            <div className={'search-header'}>查询结果</div>
+        <>
             <div className={'search-plan'}>{getCreatePlan()}</div>
             <div>
                 <Table
+                    className={'api-table'}
                     rowSelection={rowSelection}
                     columns={columns}
                     dataSource={data}
+                    rowKey={(record) => record.id}
                     pagination={{
                         defaultCurrent: 1,
                         total: total,
@@ -267,9 +316,9 @@ const SearchResult: React.FC = () => {
                 onCancel={handleCancel}
                 width={1600}
             >
-                <ApiChangeList />
+                <ApiChangeList id={id} />
             </Modal>
-        </div>
+        </>
     );
 };
-export default SearchResult;
+export default ApiDialogList;

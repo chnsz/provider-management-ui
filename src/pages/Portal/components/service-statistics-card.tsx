@@ -1,7 +1,8 @@
-import {getApiPanelSum} from '@/services/portal/api';
-import {CheckCircleOutlined, CloseCircleOutlined} from '@ant-design/icons';
-import {Col, Row} from 'antd';
-import React, {useEffect, useState} from 'react';
+import ApiDialogList from '@/pages/Portal/components/api-dialog-list';
+import { getApiPanelSum } from '@/services/portal/api';
+import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { Col, Modal, Row } from 'antd';
+import React, { useEffect, useState } from 'react';
 import '../portal.less';
 
 const defaultVal = {
@@ -14,9 +15,9 @@ const defaultVal = {
         planning: 0,
         total: 0,
         used: 0,
-        unpublished: 0
+        unpublished: 0,
     },
-    product: {owner: "", productIcon: "", productName: ""},
+    product: { owner: '', productIcon: '', productName: '' },
     provider: {
         dataSource: 0,
         datasource_deprecated: 0,
@@ -25,12 +26,16 @@ const defaultVal = {
         resource: 0,
         resource_deprecated: 0,
         tag_support: false,
-        total: 0
-    }
+        total: 0,
+    },
 };
 
-const ServiceStatisticsCard: React.FC<{ productName: string }> = ({productName}) => {
+const ServiceStatisticsCard: React.FC<{ productName: string }> = ({ productName }) => {
     const [item, setItem] = useState<Portal.ProductSumPanel>(defaultVal);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectProductName, setSelectProductName] = useState<string>('');
+    const [useRemarkStatus, setUseRemarkStatus] = useState<string>('');
+    const [publishStatus, setPublishStatus] = useState<string>('');
 
     useEffect(() => {
         getApiPanelSum(productName).then((rsp) => {
@@ -38,52 +43,113 @@ const ServiceStatisticsCard: React.FC<{ productName: string }> = ({productName})
         });
     }, [productName]);
 
+    const handleCancel = () => {
+        getApiPanelSum(productName).then((rsp) => {
+            setItem(rsp);
+        });
+        setIsModalOpen(false);
+    };
+
+    const handleRowClick = (
+        productName?: string,
+        useRemarkStatus?: string,
+        publishStatus?: string,
+    ) => {
+        setSelectProductName(productName || '');
+        setUseRemarkStatus(useRemarkStatus || '');
+        setPublishStatus(publishStatus || '');
+        setIsModalOpen(true);
+    };
+
     const getApiPanel = () => {
         return (
             <Row>
                 <Col span={3}>
                     <div className={'label'}>API总数</div>
-                    <div className={'value-field'}>{item.apiSum.total}</div>
+                    <div
+                        className={'value-field'}
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => handleRowClick(item.product.productName)}
+                    >
+                        {item.apiSum.total}
+                    </div>
                 </Col>
                 <Col span={3}>
                     <div className={'label'}>已对接</div>
-                    <div className={'value-field green'}>{item.apiSum.used}</div>
+                    <div
+                        className={'value-field green'}
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => handleRowClick(item.product.productName, 'used')}
+                    >
+                        {item.apiSum.used}
+                    </div>
                 </Col>
                 <Col span={3}>
                     <div className={'label'}>规划中</div>
-                    <div className={'value-field plan-color'}>{item.apiSum.planning}</div>
+                    <div
+                        className={'value-field plan-color'}
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => handleRowClick(item.product.productName, 'planning')}
+                    >
+                        {item.apiSum.planning}
+                    </div>
                 </Col>
                 <Col span={3}>
                     <div className={'label'}>缺失</div>
-                    <div className={'value-field red'}>{item.apiSum.missing_api}</div>
+                    <div
+                        className={'value-field red'}
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => handleRowClick(item.product.productName, 'missing_api')}
+                    >
+                        {item.apiSum.missing_api}
+                    </div>
                 </Col>
                 <Col span={3}>
                     <div className={'label'}>未分析</div>
-                    <div className={'value-field orange'}>{item.apiSum.need_analysis}</div>
+                    <div
+                        className={'value-field orange'}
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => handleRowClick(item.product.productName, 'need_analysis')}
+                    >
+                        {item.apiSum.need_analysis}
+                    </div>
                 </Col>
                 <Col span={3}>
                     <div className={'label'}>不合适</div>
-                    <div className={'value-field not-suitable'}>{item.apiSum.ignore}</div>
+                    <div
+                        className={'value-field not-suitable'}
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => handleRowClick(item.product.productName, 'ignore')}
+                    >
+                        {item.apiSum.ignore}
+                    </div>
                 </Col>
                 <Col span={3}>
                     <div className={'label'}>已下线</div>
-                    <div className={'value-field'}>
-                        {
-                            item.apiSum.offline_in_use ?
-                                <>
-                                    <span className={'orange'}>{item.apiSum.offline_in_use}/</span>
-                                    {item.apiSum.offline}
-                                </>
-                                :
-                                item.apiSum.offline
-                        }
-
-
+                    <div
+                        className={'value-field'}
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => handleRowClick(item.product.productName, '', 'offline')}
+                    >
+                        {item.apiSum.offline_in_use ? (
+                            <>
+                                <span className={'orange'}>{item.apiSum.offline_in_use}/</span>
+                                {item.apiSum.offline}
+                            </>
+                        ) : (
+                            item.apiSum.offline
+                        )}
                     </div>
                 </Col>
                 <Col span={3}>
                     <div className={'label'}>线下</div>
-                    <div className={'value-field'}>{item.apiSum.unpublished || '0'}</div>
+                    <div
+                        className={'value-field'}
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => handleRowClick(item.product.productName, '', 'unpublished')}
+                    >
+                        {item.apiSum.unpublished || '0'}
+                    </div>
                 </Col>
             </Row>
         );
@@ -107,34 +173,43 @@ const ServiceStatisticsCard: React.FC<{ productName: string }> = ({productName})
                 <Col span={4}>
                     <div className={'label'}>标签</div>
                     <div className={'value-field green'}>
-                        {
-                            item.provider.tag_support ?
-                                <span className={'green'}><CheckCircleOutlined className={''}/></span>
-                                :
-                                <span className={'red'}><CloseCircleOutlined/></span>
-                        }
+                        {item.provider.tag_support ? (
+                            <span className={'green'}>
+                                <CheckCircleOutlined className={''} />
+                            </span>
+                        ) : (
+                            <span className={'red'}>
+                                <CloseCircleOutlined />
+                            </span>
+                        )}
                     </div>
                 </Col>
                 <Col span={4}>
                     <div className={'label'}>包周期</div>
                     <div className={'value-field'}>
-                        {
-                            item.provider.pre_paid_support ?
-                                <span className={'green'}><CheckCircleOutlined className={''}/></span>
-                                :
-                                <span className={'red'}><CloseCircleOutlined/></span>
-                        }
+                        {item.provider.pre_paid_support ? (
+                            <span className={'green'}>
+                                <CheckCircleOutlined className={''} />
+                            </span>
+                        ) : (
+                            <span className={'red'}>
+                                <CloseCircleOutlined />
+                            </span>
+                        )}
                     </div>
                 </Col>
                 <Col span={4}>
                     <div className={'label'}>企业项目</div>
                     <div className={'value-field red'}>
-                        {
-                            item.provider.eps_support ?
-                                <span className={'green'}><CheckCircleOutlined className={''}/></span>
-                                :
-                                <span className={'red'}><CloseCircleOutlined/></span>
-                        }
+                        {item.provider.eps_support ? (
+                            <span className={'green'}>
+                                <CheckCircleOutlined className={''} />
+                            </span>
+                        ) : (
+                            <span className={'red'}>
+                                <CloseCircleOutlined />
+                            </span>
+                        )}
                     </div>
                 </Col>
             </Row>
@@ -162,29 +237,46 @@ const ServiceStatisticsCard: React.FC<{ productName: string }> = ({productName})
     let fontSize = 26;
     const nameLen = item.product.productName.length;
     if (nameLen > 10 && nameLen < 15) {
-        fontSize = 20
+        fontSize = 20;
     } else if (nameLen >= 15) {
         fontSize = 16;
     }
 
     return (
-        <div className={'service-statistics-card'}>
-            <div className={'service-info'}>
-                <div className={'service-name'}>
-                    <span className={'name'} style={{fontSize: fontSize + 'px'}}>{item.product.productName}</span>
+        <>
+            <div className={'service-statistics-card'}>
+                <div className={'service-info'}>
+                    <div className={'service-name'}>
+                        <span className={'name'} style={{ fontSize: fontSize + 'px' }}>
+                            {item.product.productName}
+                        </span>
+                    </div>
+                    <div className={'service-owner'}>
+                        <span className={'label'}>田主：</span>
+                        {item.product.owner}
+                    </div>
                 </div>
-                <div className={'service-owner'}>
-                    <span className={'label'}>田主：</span>
-                    {item.product.owner}
+                <div className={'main-container'}>
+                    <div className={'api-panel'}>{getApiPanel()}</div>
+                    <div className={'split-line'}></div>
+                    <div className={'provider-panel'}>{getProviderPanel()}</div>
                 </div>
+                <div className={'health-sum'}>{getHealthSum()}</div>
             </div>
-            <div className={'main-container'}>
-                <div className={'api-panel'}>{getApiPanel()}</div>
-                <div className={'split-line'}></div>
-                <div className={'provider-panel'}>{getProviderPanel()}</div>
-            </div>
-            <div className={'health-sum'}>{getHealthSum()}</div>
-        </div>
+            <Modal
+                title="Api列表"
+                open={isModalOpen}
+                footer={null}
+                onCancel={handleCancel}
+                width={1600}
+            >
+                <ApiDialogList
+                    productName={selectProductName}
+                    useRemark={useRemarkStatus}
+                    publishStatus={publishStatus}
+                />
+            </Modal>
+        </>
     );
 };
 export default ServiceStatisticsCard;
