@@ -38,7 +38,7 @@ const Introduction: React.FC = () => {
 
                 <h4>二、质量守护</h4>
                 <p>指对自己负责的资源所做的加固质量的工作，按照合并的 PR 的个数作为分值，PR 的标签中需包含：
-                    <Tag>bugfix</Tag>、<Tag>refactor</Tag>、<Tag>chore</Tag>一个或者多个。
+                    <Tag>bugfix</Tag>、<Tag>refactor</Tag>、<Tag>chore</Tag>、<Tag>documentation</Tag>一个或者多个。
                 </p>
                 <p>如果一个 PR 中包含了多个资源，则每个资源均加一分。</p>
 

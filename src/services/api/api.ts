@@ -79,7 +79,6 @@ export async function getApiChangeHistory(id: number | string) {
     });
 }
 
-
 export async function modifyApiChangeStatus(id: number, status: string, remark: string) {
     return request<Global.List<Api.ChangeHistory[]>>(`${basePath}/api/change-detail/${id}/status/${status}`, {
         method: 'PATCH',
@@ -98,4 +97,3 @@ export async function updateUseStatus(id: number, status: string) {
         method: 'PATCH',
     });
 }
-

@@ -21,6 +21,13 @@ declare namespace Global {
     }
 
     type AffectResponse = Response<{ affectedRow: number }>;
+
+    type User = {
+        username: string;
+        ip: string;
+        kbUserId: number;
+        githubId: string;
+    }
 }
 declare namespace Relation {
     type ProviderRelation = {

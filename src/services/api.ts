@@ -19,3 +19,7 @@ export async function getApiChanges(path: string) {
 export async function getApiChangeReport() {
     return request<Api.Report[]>(`/api_data/Report/overview.json`, {method: 'GET'});
 }
+
+export async function getCurrentUser() {
+    return request<Global.User>(`/pms/currentUser`, {method: 'GET'});
+}

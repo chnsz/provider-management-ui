@@ -69,7 +69,8 @@ const ProviderList: React.FC<{ owners: string[], prStatus: string }> = ({owners,
                 setData([]);
                 return;
             }
-            setData(data.items.slice(0, 100));
+            const arr =data.items.slice(0, 30).concat(data.items.slice(-30))
+            setData(arr);
         });
     }, [owners, prStatus]);
 
