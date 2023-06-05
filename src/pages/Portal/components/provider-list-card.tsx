@@ -1,26 +1,33 @@
 import ProviderApiList from '@/pages/Portal/components/provider-api-list';
 import {CheckCircleOutlined, InfoCircleOutlined, MinusCircleOutlined} from '@ant-design/icons';
-import {Modal, Table, Tabs, TabsProps} from 'antd';
+import {Modal, Switch, Table, Tabs, TabsProps} from 'antd';
 import type {ColumnsType} from 'antd/es/table';
 import React, {useEffect, useState} from 'react';
 import '../portal.less';
-import {getProviderList} from "@/services/provider/api";
+import {
+    changeEpsSupport,
+    changePrePaidSupport,
+    changeTagSupport,
+    changeUtFlag,
+    getProviderList
+} from "@/services/provider/api";
 // @ts-ignore
 import {Scrollbars} from 'react-custom-scrollbars';
+import Provider from "@/pages/Provider";
 
 const getFeatureState = (supportState: string, record: Provider.Provider) => {
-    if(record.type === 'DataSource'){
+    if (record.type === 'DataSource') {
         return <span><MinusCircleOutlined style={{color: 'rgba(0, 0, 0, 0.43)'}}/></span>
     }
 
     switch (supportState) {
-        case '1':
+        case 'true':
             return <span><CheckCircleOutlined style={{color: '#5ec829'}}/> 支持</span>
-        case '0':
+        case 'false':
             return <span><CheckCircleOutlined style={{color: '#faad14'}}/> 不支持</span>
     }
 
-    return <span><InfoCircleOutlined  style={{color: '#fa8c16'}}/> 未知</span>
+    return <span><InfoCircleOutlined style={{color: '#fa8c16'}} title={'未知'}/></span>
 }
 
 const ProviderListCard: React.FC<{ productName: string }> = ({productName}) => {
@@ -53,6 +60,34 @@ const ProviderListCard: React.FC<{ productName: string }> = ({productName}) => {
             });
     }, [productName]);
 
+    const onChange = (type: string, record: Provider.Provider) => {
+        return (checked: boolean) => {
+            switch (type) {
+                case 'prePaidSupport':
+                    changePrePaidSupport(record.id, checked ? 'true' : 'false');
+                    return;
+                case 'epsSupport':
+                    changeEpsSupport(record.id, checked ? 'true' : 'false');
+                    return;
+                case 'tagSupport':
+                    changeTagSupport(record.id, checked ? 'true' : 'false');
+                    return;
+                case 'utFlag':
+                    changeUtFlag(record.id, checked ? 'full_coverage' : '-');
+                    return;
+            }
+        };
+    };
+
+    const commonFeatureRender = (featType: string) => {
+        return (text: string, record: Provider.Provider) => {
+            if (record.type === 'DataSource') {
+                return <span><MinusCircleOutlined style={{color: 'rgba(0, 0, 0, 0.43)'}}/></span>
+            }
+            return <Switch defaultChecked={text === 'true'} onChange={onChange(featType, record)}/>;
+        }
+    }
+
     const huaweiCloudColumns: ColumnsType<Provider.Provider> = [
         {
             title: '序号',
@@ -69,7 +104,8 @@ const ProviderListCard: React.FC<{ productName: string }> = ({productName}) => {
         {
             title: 'Category',
             dataIndex: 'category',
-            width: '14%',
+            ellipsis: true,
+            width: '16%',
         },
         {
             title: '名称',
@@ -88,37 +124,43 @@ const ProviderListCard: React.FC<{ productName: string }> = ({productName}) => {
             ),
         },
         {
-            title: '法电',
-            dataIndex: 'orangeCloud',
-            width: '6%',
+            title: 'UT 覆盖率（%）',
+            width: '120px',
             align: 'center',
-        },
-        {
-            title: 'G42',
-            dataIndex: 'g42Cloud',
-            width: '6%',
-            align: 'center',
-        },
-        {
-            title: '企业项目',
-            dataIndex: 'epsSupport',
-            align: 'center',
-            width: '8%',
-            render: getFeatureState,
-        },
-        {
-            title: '标签',
-            dataIndex: 'tagSupport',
-            align: 'center',
-            width: '8%',
-            render: getFeatureState,
+            dataIndex: 'utCoverage',
+            render: (text, record) => {
+                return (
+                    <>
+                        <Switch style={{width: '60px'}}
+                                defaultChecked={record.utFlag === 'full_coverage'}
+                                checkedChildren={text}
+                                unCheckedChildren={text}
+                                onChange={onChange('utFlag', record)}
+                        />
+                    </>
+                );
+            },
         },
         {
             title: '包周期',
-            dataIndex: 'prePaidSupport',
+            width: '7%',
             align: 'center',
-            width: '8%',
-            render: getFeatureState,
+            dataIndex: 'prePaidSupport',
+            render: commonFeatureRender('prePaidSupport'),
+        },
+        {
+            title: '标签',
+            width: '7%',
+            align: 'center',
+            dataIndex: 'tagSupport',
+            render: commonFeatureRender('tagSupport'),
+        },
+        {
+            title: '企业项目',
+            width: '7%',
+            align: 'center',
+            dataIndex: 'epsSupport',
+            render: commonFeatureRender('epsSupport'),
         },
     ];
 
@@ -138,7 +180,8 @@ const ProviderListCard: React.FC<{ productName: string }> = ({productName}) => {
         {
             title: 'Category',
             dataIndex: 'category',
-            width: '14%',
+            ellipsis: true,
+            width: '16%',
         },
         {
             title: '名称',
@@ -146,25 +189,25 @@ const ProviderListCard: React.FC<{ productName: string }> = ({productName}) => {
             render: (name) => <a href="#">{name}</a>,
         },
         {
-            title: '企业项目',
-            dataIndex: 'epsSupport',
+            title: '包周期',
+            width: '7%',
             align: 'center',
-            width: '8%',
-            render: getFeatureState,
+            dataIndex: 'prePaidSupport',
+            render: commonFeatureRender('prePaidSupport'),
         },
         {
             title: '标签',
-            dataIndex: 'tagSupport',
+            width: '7%',
             align: 'center',
-            width: '8%',
-            render: getFeatureState,
+            dataIndex: 'tagSupport',
+            render: commonFeatureRender('tagSupport'),
         },
         {
-            title: '包周期',
-            dataIndex: 'prePaidSupport',
+            title: '企业项目',
+            width: '7%',
             align: 'center',
-            width: '8%',
-            render: getFeatureState,
+            dataIndex: 'epsSupport',
+            render: commonFeatureRender('epsSupport'),
         },
     ];
 
@@ -174,7 +217,7 @@ const ProviderListCard: React.FC<{ productName: string }> = ({productName}) => {
             label: <>华为云 ({data.length})</>,
             children: <div style={{height: '380px'}}>
                 <Scrollbars>
-                    <Table size={'small'}
+                    <Table size={'middle'}
                            columns={huaweiCloudColumns}
                            dataSource={data}
                            pagination={false}
@@ -188,7 +231,7 @@ const ProviderListCard: React.FC<{ productName: string }> = ({productName}) => {
             label: <>法电 ({flexibleEngineData.length})</>,
             children: <div style={{height: '380px'}}>
                 <Scrollbars>
-                    <Table size={'small'}
+                    <Table size={'middle'}
                            columns={partnerColumns}
                            dataSource={flexibleEngineData}
                            pagination={false}
@@ -202,7 +245,7 @@ const ProviderListCard: React.FC<{ productName: string }> = ({productName}) => {
             label: <>G42 ({g42Data.length})</>,
             children: <div style={{height: '380px'}}>
                 <Scrollbars>
-                    <Table size={'small'}
+                    <Table size={'middle'}
                            columns={partnerColumns}
                            dataSource={g42Data}
                            pagination={false}

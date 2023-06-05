@@ -65,6 +65,7 @@ declare namespace Portal {
         apiUseIgnore: number;
         apiUseMissingApi: number;
         apiUsePlanning: number;
+        apiOfflineInUse: number;
 
         planningNew: number;
         planningFreeze: number;

@@ -1,13 +1,13 @@
-import { getApiChangeHistory } from '@/services/api/api';
-import { toShortDate } from '@/utils/common';
-import { Table, Tag } from 'antd';
-import { ColumnsType } from 'antd/es/table';
-import React, { useEffect, useState } from 'react';
+import {getApiChangeHistory} from '@/services/api/api';
+import {toShortDate} from '@/utils/common';
+import {Table, Tag} from 'antd';
+import {ColumnsType} from 'antd/es/table';
+import React, {useEffect, useState} from 'react';
 
 type changeId = {
     id: number;
 };
-const ApiChangeList: React.FC<changeId> = ({ id }) => {
+const ApiChangeList: React.FC<changeId> = ({id}) => {
     interface ApiChange {
         key: React.Key;
         id: number;
@@ -38,7 +38,9 @@ const ApiChangeList: React.FC<changeId> = ({ id }) => {
                         return <Tag color="orange">待分析</Tag>;
                     case 'processing':
                         return <Tag color="cyan">处理中</Tag>;
-                    case 'close':
+                    case 'new-params':
+                        return <Tag color="cyan">待分析：新增参数</Tag>;
+                    case 'closed':
                         return <Tag>已关闭</Tag>;
                 }
                 return <Tag>{val}</Tag>;
@@ -117,7 +119,7 @@ const ApiChangeList: React.FC<changeId> = ({ id }) => {
     return (
         <>
             <div>
-                <Table columns={columns} dataSource={data} pagination={false} />
+                <Table columns={columns} dataSource={data} pagination={false} size={'middle'}/>
             </div>
         </>
     );

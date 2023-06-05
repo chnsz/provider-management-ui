@@ -264,7 +264,8 @@ const ServiceStatisticsCard: React.FC<{ productName: string }> = ({ productName 
                 <div className={'health-sum'}>{getHealthSum()}</div>
             </div>
             <Modal
-                title="Api列表"
+                title="API列表"
+                transitionName={''}
                 open={isModalOpen}
                 footer={null}
                 onCancel={handleCancel}
