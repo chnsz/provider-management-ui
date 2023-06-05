@@ -10,6 +10,7 @@ type changeId = {
 const ApiChangeList: React.FC<changeId> = ({ id }) => {
     interface ApiChange {
         key: React.Key;
+        id: number;
         lastVersionDate: string;
         affectStatus: string;
         apiGroup: string;
@@ -52,7 +53,17 @@ const ApiChangeList: React.FC<changeId> = ({ id }) => {
             title: 'API名称',
             dataIndex: 'apiName',
             key: 'apiName',
-            render: (APIName) => <a href="#">{APIName}</a>,
+            render: (v, row) => {
+                const title = '（点击跳转 API 变更详情）';
+                const href = `/api/api-change#/id/${row.id}`;
+                return (
+                    <div>
+                        <a title={title} href={href} target={'_blank'} rel="noreferrer">
+                            {v}
+                        </a>
+                    </div>
+                );
+            },
         },
         {
             title: 'URI',
@@ -89,6 +100,7 @@ const ApiChangeList: React.FC<changeId> = ({ id }) => {
             const ary = rsp.items.map((t: Api.ChangeHistory) => {
                 return {
                     key: t.id,
+                    id: t.id,
                     apiGroup: t.apiGroup,
                     apiName: t.apiName,
                     uri: t.uri,
