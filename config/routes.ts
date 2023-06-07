@@ -103,4 +103,9 @@ export default [
         layout: false,
         component: './404',
     },
+    {
+        path: '/api-change-analysis',
+        name: 'api-change-analysis',
+        component: './ApiChange/index',
+    },
 ];
