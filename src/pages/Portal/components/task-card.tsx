@@ -9,7 +9,7 @@ import CreateTaskDialog from "@/pages/Task/components/creation-dialog/create-tas
 
 const TaskCard: React.FC<{ productName: string }> = ({productName}) => {
     const [total, setTotal] = useState<number>(0);
-    const [pageSize, setPageSize] = useState<number>(10);
+    const [pageSize, setPageSize] = useState<number>(6);
     const [pageNum, setPageNum] = useState<number>(1);
     const [data, setData] = useState<Task.Task[]>([]);
 

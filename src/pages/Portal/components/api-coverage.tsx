@@ -1,6 +1,6 @@
-import {getApiPanelSum} from '@/services/portal/api';
+import { getApiPanelSum } from '@/services/portal/api';
 import ReactEcharts from 'echarts-for-react';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import '../portal.less';
 
 const defaultVal = {
@@ -13,9 +13,9 @@ const defaultVal = {
         planning: 0,
         total: 0,
         used: 0,
-        unpublished: 0
+        unpublished: 0,
     },
-    product: {owner: "", productIcon: "", productName: ""},
+    product: { owner: '', productIcon: '', productName: '' },
     provider: {
         dataSource: 0,
         datasource_deprecated: 0,
@@ -24,11 +24,11 @@ const defaultVal = {
         resource: 0,
         resource_deprecated: 0,
         tag_support: false,
-        total: 0
-    }
+        total: 0,
+    },
 };
 
-const ApiCoverage: React.FC<{ productName: string }> = ({productName}) => {
+const ApiCoverage: React.FC<{ productName: string }> = ({ productName }) => {
     const [data, setData] = useState<Portal.ProductSumPanel>(defaultVal);
 
     useEffect(() => {
@@ -75,13 +75,9 @@ const ApiCoverage: React.FC<{ productName: string }> = ({productName}) => {
                 },
             },
             formatter: (name: string) => {
-                const item = option.series[0].data.filter(d => d.name === name)[0];
-                let percent =((item.value / data.apiSum.total) * 100).toFixed(2) + '%';
-                const arr = [
-                    `{name|${name}}`,
-                    `{percent|${percent}}`,
-                    `{value|${item.value}}`,
-                ];
+                const item = option.series[0].data.filter((d) => d.name === name)[0];
+                let percent = ((item.value / data.apiSum.total) * 100).toFixed(2) + '%';
+                const arr = [`{name|${name}}`, `{percent|${percent}}`, `{value|${item.value}}`];
                 return arr.join('');
             },
         },
@@ -112,11 +108,23 @@ const ApiCoverage: React.FC<{ productName: string }> = ({productName}) => {
                     show: false,
                 },
                 data: [
-                    {name: '已对接', value: data.apiSum.used, itemStyle: {color: '#5470c6'}},
-                    {name: '规划中', value: data.apiSum.planning, itemStyle: {color: '#36cbcb'}},
-                    {name: '待分析', value: data.apiSum.need_analysis, itemStyle: {color: '#fac858'}},
-                    {name: '缺   失', value: data.apiSum.missing_api, itemStyle: {color: '#ee6666'}},
-                    {name: '不合适', value: data.apiSum.ignore, itemStyle: {color: '#975fe4'}},
+                    { name: '已对接', value: data.apiSum.used, itemStyle: { color: '#5470c6' } },
+                    {
+                        name: '规划中',
+                        value: data.apiSum.planning,
+                        itemStyle: { color: '#36cbcb' },
+                    },
+                    {
+                        name: '待分析',
+                        value: data.apiSum.need_analysis,
+                        itemStyle: { color: '#fac858' },
+                    },
+                    {
+                        name: '缺   失',
+                        value: data.apiSum.missing_api,
+                        itemStyle: { color: '#ee6666' },
+                    },
+                    { name: '不合适', value: data.apiSum.ignore, itemStyle: { color: '#975fe4' } },
                 ],
             },
         ],
@@ -128,31 +136,33 @@ const ApiCoverage: React.FC<{ productName: string }> = ({productName}) => {
                 style: {
                     text: [
                         '{label|对接率}',
-                        '{value|' + toPercent(data.apiSum.used / data.apiSum.total) + '}'
+                        '{value|' +
+                            toPercent(data.apiSum.used / (data.apiSum.total - data.apiSum.ignore)) +
+                            '}',
                     ].join('\n'),
                     rich: {
                         label: {
                             fontSize: 16,
                             padding: [0, 0, 5, 22],
                             fill: '#929292',
-                            lineHeight: 40
+                            lineHeight: 40,
                         },
                         value: {
                             fontSize: 30,
                             fill: '#272727',
                             fontWeight: 'bold',
-                            lineHeight: 20
-                        }
-                    }
-                }
-            }
-        ]
+                            lineHeight: 20,
+                        },
+                    },
+                },
+            },
+        ],
     };
     return (
         <div className={'portal-card'}>
-            <div className={'header'}>API对接</div>
+            <div className={'header'}>API 对接</div>
             <div className={'container'}>
-                <ReactEcharts option={option}/>
+                <ReactEcharts option={option} />
                 {/*<div className={'coverage-card-percent'}>对接率： {toPercent(data.apiSum.used / data.apiSum.total)}</div>*/}
             </div>
         </div>

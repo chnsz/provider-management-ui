@@ -78,7 +78,7 @@ const ApiChangeView: React.FC<{
                 </ProDescriptions.Item>
 
                 <ProDescriptions.Item span={6} label="Provider" valueType="text">
-                    {providers.join(', ')}
+                    {(providers || []).join(', ')}
                 </ProDescriptions.Item>
                 <ProDescriptions.Item span={2} label="状态" valueType="text">
                     <Space>

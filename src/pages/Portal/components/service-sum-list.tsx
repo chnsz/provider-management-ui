@@ -62,13 +62,18 @@ const ServiceSum: React.FC<ServiceSumProps> = ({productGroup, data}) => {
         {
             title: 'API 数据',
             dataIndex: 'apiUsagesSums',
-            width: '12%',
+            width: '18%',
             align: 'center',
             render: (v, record) => {
                 return <div className={'row'}>
                     <div className={'col'}>
                         <div className={'blue'}>{record.apiUsed}</div>
                         <div className={'custom-label'}>已对接</div>
+                    </div>
+                    <div className={'col'}>
+                        <div
+                            className={record.apiOfflineInUse === 0 ? '' : 'orange'}>{record.apiOfflineInUse}</div>
+                        <div className={'custom-label'}>使用废弃API</div>
                     </div>
                     <div className={'col'}>
                         <div
@@ -110,7 +115,7 @@ const ServiceSum: React.FC<ServiceSumProps> = ({productGroup, data}) => {
                 </div>
             },
         },
-        {
+        /*{
             title: '待办任务',
             dataIndex: 'taskStatusSums',
             width: '15%',
@@ -136,7 +141,7 @@ const ServiceSum: React.FC<ServiceSumProps> = ({productGroup, data}) => {
                     </div>
                 </div>
             },
-        },
+        },*/
         {
             title: '健康度',
             dataIndex: 'age',

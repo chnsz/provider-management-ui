@@ -69,10 +69,19 @@ const ProviderList: React.FC<{ owners: string[], prStatus: string }> = ({owners,
                 setData([]);
                 return;
             }
-            const arr =data.items.slice(0, 30).concat(data.items.slice(-30))
+            const arr = data.items.slice(0, 30).concat(data.items.slice(-30))
             setData(arr);
         });
     }, [owners, prStatus]);
+
+    const renderScore = (v: any) => {
+        const score = v || 0;
+        if (score >= 0) {
+            return score;
+        }
+
+        return <span className={'orange'}>{score}</span>
+    }
 
     const columns: ColumnsType<Provider.ProviderScoreDto> = [
         {
@@ -114,6 +123,7 @@ const ProviderList: React.FC<{ owners: string[], prStatus: string }> = ({owners,
         {
             title: '包周期',
             width: '7%',
+            align: 'center',
             dataIndex: 'prePaidSupport',
             render: (text, record) => {
                 return (
@@ -129,6 +139,7 @@ const ProviderList: React.FC<{ owners: string[], prStatus: string }> = ({owners,
         {
             title: '标签',
             width: '7%',
+            align: 'center',
             dataIndex: 'tagSupport',
             render: (text, record) => {
                 return (
@@ -144,6 +155,7 @@ const ProviderList: React.FC<{ owners: string[], prStatus: string }> = ({owners,
         {
             title: '企业项目',
             width: '7%',
+            align: 'center',
             dataIndex: 'epsSupport',
             render: (text, record) => {
                 return (
@@ -159,15 +171,16 @@ const ProviderList: React.FC<{ owners: string[], prStatus: string }> = ({owners,
         {
             title: 'UT 覆盖率（%）',
             width: '7%',
+            align: 'center',
             dataIndex: 'utCoverage',
             render: (text, record) => {
                 return (
                     <>
-                        <Switch
-                            defaultChecked={record.utFlag === 'full_coverage'}
-                            checkedChildren={text}
-                            unCheckedChildren={text}
-                            onChange={onChange('utFlag', record)}
+                        <Switch style={{width: '60px'}}
+                                defaultChecked={record.utFlag === 'full_coverage'}
+                                checkedChildren={text}
+                                unCheckedChildren={text}
+                                onChange={onChange('utFlag', record)}
                         />
                     </>
                 );
@@ -189,21 +202,21 @@ const ProviderList: React.FC<{ owners: string[], prStatus: string }> = ({owners,
             width: '7%',
             dataIndex: 'utScore',
             align: 'center',
-            render: (v) => v || 0,
+            render: renderScore,
         },
         {
             title: 'Bug',
             width: '7%',
             dataIndex: 'bugScore',
             align: 'center',
-            render: (v) => v || 0,
+            render: renderScore,
         },
         {
             title: '总分',
             width: '7%',
             dataIndex: 'totalScore',
             align: 'center',
-            render: (v) => v || 0,
+            render: renderScore,
         },
     ];
 
@@ -220,7 +233,7 @@ const ProviderList: React.FC<{ owners: string[], prStatus: string }> = ({owners,
 
 const Provider: React.FC = () => {
     const [owners, setOwners] = useState<string[]>([]);
-    const [prStatus, setPrStatus] = useState<string>([]);
+    const [prStatus, setPrStatus] = useState<string>('');
 
     return (
         <div className={'provider'}>
