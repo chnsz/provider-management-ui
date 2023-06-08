@@ -1,9 +1,9 @@
+import { openApiExplorer } from '@/pages/Portal';
 import ApiListDialog from '@/pages/ProviderPlanning/components/api-list-dialog';
-import {DeleteOutlined} from '@ant-design/icons';
-import {Space, Table} from 'antd';
-import type {ColumnsType} from 'antd/es/table';
+import { DeleteOutlined } from '@ant-design/icons';
+import { Space, Table } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
 import React from 'react';
-
 
 type RelationApiProps = {
     productName: string;
@@ -11,11 +11,10 @@ type RelationApiProps = {
     onChange: (data: Api.Detail[]) => any;
 };
 
-const RelationApi: React.FC<RelationApiProps> = ({productName, data, onChange}) => {
-
+const RelationApi: React.FC<RelationApiProps> = ({ productName, data, onChange }) => {
     const onDelete = (row: Api.Detail) => {
         return () => {
-            const arr = data.filter(t => t.id !== row.id)
+            const arr = data.filter((t) => t.id !== row.id);
             onChange(arr);
         };
     };
@@ -39,13 +38,8 @@ const RelationApi: React.FC<RelationApiProps> = ({productName, data, onChange}) 
             key: 'name',
             ellipsis: true,
             render: (v, row) => {
-                const title = row.apiName + '/' + row.apiNameEn + '（点击跳转 API Explorer）';
-                const href = `https://apiexplorer.developer.huaweicloud.com/apiexplorer/doc?product=${row.productName}&api=${row.apiNameEn}`;
-                return (
-                    <a title={title} href={href} target={'_blank'} rel="noreferrer">
-                        {row.apiName}/{row.apiNameEn}
-                    </a>
-                );
+                const text = row.uri + row.apiName + ' / ' + row.apiNameEn;
+                return openApiExplorer(row.productName, row.apiNameEn, text);
             },
         },
         {
@@ -69,7 +63,7 @@ const RelationApi: React.FC<RelationApiProps> = ({productName, data, onChange}) 
             render: (v, row) => (
                 <Space size="middle">
                     <a onClick={onDelete(row)}>
-                        <DeleteOutlined/>
+                        <DeleteOutlined />
                     </a>
                 </Space>
             ),
@@ -78,13 +72,14 @@ const RelationApi: React.FC<RelationApiProps> = ({productName, data, onChange}) 
 
     return (
         <>
-            <Table columns={columns}
-                   dataSource={data}
-                   pagination={false}
-                   scroll={{y: 400}}
-                   rowKey={(record) => record.id}
+            <Table
+                columns={columns}
+                dataSource={data}
+                pagination={false}
+                scroll={{ y: 400 }}
+                rowKey={(record) => record.id}
             />
-            <div style={{padding: '12px', textAlign: 'center'}}>
+            <div style={{ padding: '12px', textAlign: 'center' }}>
                 {/*<Button size={'small'} onClick={() => setIsDialogOpen(true)}>+ 新增绑定</Button>*/}
                 <ApiListDialog
                     providerName={productName}

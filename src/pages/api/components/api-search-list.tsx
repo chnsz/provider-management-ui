@@ -1,5 +1,6 @@
 import ApiChangeList from '@/pages/api/components/api-change-list';
 import ApiGroup from '@/pages/api/components/api-group';
+import { openApiExplorer } from '@/pages/Portal';
 import {
     getApiDetailList,
     getApiGroupList,
@@ -364,17 +365,13 @@ const ApiSearchList: React.FC<ApiSearchListProp> = (props) => {
             key: 'operate',
             width: 200,
             render: (v, row) => {
-                const title = '（点击跳转 API Explorer）';
-                const href = `https://apiexplorer.developer.huaweicloud.com/apiexplorer/doc?product=${row.productName}&api=${row.apiNameEn}`;
                 return (
-                    <div>
+                    <>
                         <a type="button" onClick={() => handleRowClick(row)}>
                             变更历史&ensp;&ensp;
                         </a>
-                        <a title={title} href={href} target={'_blank'} rel="noreferrer">
-                            API Explorer
-                        </a>
-                    </div>
+                        {openApiExplorer(row.productName, row.apiNameEn, row.uri)}
+                    </>
                 );
             },
         },
