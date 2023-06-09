@@ -20,7 +20,7 @@ declare namespace Global {
         public total: number | 0;
     }
 
-    type AffectResponse = Response<{ affectedRow: number }>;
+    type AffectResponse = { affectedRow: number };
 
     type User = {
         username: string;

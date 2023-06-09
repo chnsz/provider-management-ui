@@ -49,7 +49,7 @@ const ProviderList: React.FC<{ owners: string[], prStatus: string }> = ({owners,
     const onChangeQualityStatus = (record: Provider.ProviderScoreDto) => {
         return () => {
             const state = record.qualityStatus === 'checked' ? 'unchecked' : 'checked';
-            changeQualityStatus(record.id, state).then((d) => {
+            changeQualityStatus(record.id, state).then((d:Global.AffectResponse) => {
                 if (d.affectedRow) {
                     const arr = data.map((t) => {
                         if (t.id === record.id) {
@@ -69,8 +69,8 @@ const ProviderList: React.FC<{ owners: string[], prStatus: string }> = ({owners,
                 setData([]);
                 return;
             }
-            const arr = data.items.slice(0, 30).concat(data.items.slice(-30))
-            setData(arr);
+            // const arr = data.items.slice(0, 50).concat(data.items.slice(-50))
+            setData(data.items.filter(t => t.totalScore !== 0 || t.prScore !== 0 || t.utScore !== 0 || t.bugScore !== 0));
         });
     }, [owners, prStatus]);
 

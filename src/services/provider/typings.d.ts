@@ -63,4 +63,44 @@ declare namespace Provider {
         "created": string;
         "updated": string;
     }
+
+    type ProviderBaseSum = {
+        "providerType": string;
+        "providerName": string;
+        "newField": number;
+        "deprecated": number;
+        "typeChange": number;
+        "descChange": number;
+        "typeAndDescChange": number;
+        "apiId": number;
+        "apiDetail"?: Api.Detail;
+    }
+
+    type ApiFieldChange = {
+        "id": number;
+        "apiId": number;
+        "changeEvent": string;
+        "providerType": string;
+        "providerName": string;
+        "paramType": string;
+        "fieldName": string;
+        "fieldType": string;
+        "fieldIn": string;
+        "fieldDesc": string;
+    }
+
+    type ProviderBase = {
+        "id": number;
+        "apiId": number;
+        "paramType": string;
+        "fieldName": string;
+        "fieldType": string;
+        "fieldIn": string;
+        "fieldDesc": string;
+        "useStatus": string;
+        "schemaName": string;
+        "remark": string;
+        "manualTag": string;
+        "changeEvent"?: ApiFieldChange;
+    }
 }

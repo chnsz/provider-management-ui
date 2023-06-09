@@ -62,4 +62,5 @@ export default {
     'menu.provider': 'Provider 分析',
     'menu.settings': '系统配置',
     'menu.api-change-analysis': 'API 变更分析',
+    'menu.provider_base': 'Provider 基线分析',
 };

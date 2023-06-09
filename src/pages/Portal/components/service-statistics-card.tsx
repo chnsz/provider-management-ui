@@ -267,6 +267,7 @@ const ServiceStatisticsCard: React.FC<{ productName: string }> = ({ productName 
                 title="API列表"
                 transitionName={''}
                 open={isModalOpen}
+                destroyOnClose
                 footer={null}
                 onCancel={handleCancel}
                 width={1600}

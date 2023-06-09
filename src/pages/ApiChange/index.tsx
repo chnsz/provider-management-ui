@@ -1,30 +1,16 @@
-import { getApiChangeAnalysis } from '@/services/api-change/api';
-import { getApiGroupList, modifyApiChangeStatus } from '@/services/api/api';
-import { getProductList } from '@/services/product/api';
-import { toShortDate } from '@/utils/common';
-import { ProFormSelect, ProFormText } from '@ant-design/pro-components';
-import { QueryFilter } from '@ant-design/pro-form';
-import { ProSchemaValueEnumObj } from '@ant-design/pro-utils/es/typing';
-import { Breadcrumb, notification, Table, Tag } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
-import type { TableRowSelection } from 'antd/es/table/interface';
-import React, { useEffect, useState } from 'react';
+import {getApiChangeAnalysis} from '@/services/api-change/api';
+import {getApiGroupList, modifyApiChangeStatus} from '@/services/api/api';
+import {getProductList} from '@/services/product/api';
+import {toShortDate} from '@/utils/common';
+import {ProFormSelect, ProFormText} from '@ant-design/pro-components';
+import {QueryFilter} from '@ant-design/pro-form';
+import {ProSchemaValueEnumObj} from '@ant-design/pro-utils/es/typing';
+import {Breadcrumb, Button, Modal, notification, Space, Table, Tag} from 'antd';
+import type {ColumnsType} from 'antd/es/table';
+import type {TableRowSelection} from 'antd/es/table/interface';
+import React, {useEffect, useState} from 'react';
 import './api-change.less';
-
-interface DataType {
-    key: React.Key;
-    id: number;
-    productName: string;
-    apiGroup: string;
-    apiName: string;
-    lastVersionDate: string;
-    affectStatus: string;
-    uri: string;
-    method: string;
-    apiNameEn: string;
-    providers: string;
-    remark: string;
-}
+import ApiChange from "@/pages/api/api-change";
 
 type FormProps = {
     productName: string;
@@ -63,7 +49,7 @@ const ApiChangeSearch: React.FC<{ productGroup: string; onSearch: (val: FormProp
     return (
         <QueryFilter<FormProps>
             className={'api-change-list'}
-            span={6}
+            span={4}
             onFinish={async (values) => {
                 props.onSearch(values);
             }}
@@ -73,66 +59,71 @@ const ApiChangeSearch: React.FC<{ productGroup: string; onSearch: (val: FormProp
                 label="产品服务"
                 showSearch
                 initialValue={props.productGroup}
-                rules={[{ required: true }]}
+                rules={[{required: true}]}
                 fieldProps={{
                     allowClear: false,
                     onChange: onProductGroupChange,
                 }}
                 valueEnum={productGroupMap}
             />
-            <ProFormSelect name="apiGroup" label="分组名称" showSearch valueEnum={apiGroupMap} />
-            <ProFormText name="apiName" label="API 名称" />
+            <ProFormSelect name="apiGroup" label="分组名称" showSearch valueEnum={apiGroupMap}/>
             <ProFormSelect
                 name="affectStatus"
                 label="状态"
                 showSearch
+                initialValue={'need_analysis'}
                 valueEnum={{
                     need_analysis: '待分析',
                     processing: '处理中',
                     closed: '已关闭',
                 }}
             />
+            <ProFormText name="apiName" label="API 名称"/>
         </QueryFilter>
     );
 };
 
-const ApiChange: React.FC<{
+const ApiChangeList: React.FC<{
     id: number;
-    handle?: (option: 'ok' | 'cancel', rows: DataType[], idArr: number[]) => any;
+    handle?: (option: 'ok' | 'cancel', rows: ApiChange.ApiChange[], idArr: number[]) => any;
     providerName?: string;
     affectStatus?: string;
     remark?: string;
 }> = (props) => {
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-    const [data, setData] = useState<DataType[]>([]);
+    const [data, setData] = useState<ApiChange.ApiChange[]>([]);
     const [total, setTotal] = useState<number>(0);
     const [pageSize, setPageSize] = useState<number>(20);
     const [pageNum, setPageNum] = useState<number>(1);
-    const [queryParams, setQueryParams] = useState<ApiChange.queryListParams>({});
-    const [affectStatus, setAffectStatus] = useState<string>(props.affectStatus || '');
+    const [selectedRow, setSelectedRow] = useState<ApiChange.ApiChange | null>(null);
+    const [queryParams, setQueryParams] = useState<ApiChange.queryListParams>({affectStatus: 'need_analysis'});
     const [notificationApi, contextHolder] = notification.useNotification();
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-    useEffect(() => {
+    const loadData = (params: ApiChange.queryListParams, pageSize: number, pageNum: number) => {
         getApiChangeAnalysis(queryParams, pageSize, pageNum).then((d) => {
-            const arr = d.items.map((d: ApiChange.ApiChange) => {
-                return {
-                    key: '' + d.id,
-                    id: d.id,
-                    productName: d.productName,
-                    apiGroup: d.apiGroup,
-                    apiName: d.apiName,
-                    lastVersionDate: d.lastVersionDate,
-                    affectStatus: d.affectStatus,
-                    uri: d.uri,
-                    method: d.method,
-                    apiNameEn: d.apiNameEn,
-                    providers: d.providers,
-                    remark: d.remark,
-                };
-            });
-            setData(arr);
+            // const arr = d.items.map((d: ApiChange.ApiChange) => {
+            //     return {
+            //         key: '' + d.id,
+            //         id: d.id,
+            //         productName: d.productName,
+            //         apiGroup: d.apiGroup,
+            //         apiName: d.apiName,
+            //         lastVersionDate: d.lastVersionDate,
+            //         affectStatus: d.affectStatus,
+            //         uri: d.uri,
+            //         method: d.method,
+            //         apiNameEn: d.apiNameEn,
+            //         providers: d.providers,
+            //         remark: d.remark,
+            //     };
+            // });
+            setData(d.items);
             setTotal(d.total);
         });
+    }
+    useEffect(() => {
+        loadData(queryParams, pageSize, pageNum);
     }, [queryParams, pageSize, pageNum]);
 
     const onSearch = (val: FormProps) => {
@@ -149,29 +140,37 @@ const ApiChange: React.FC<{
         setSelectedRowKeys(newSelectedRowKeys);
     };
 
-    const rowSelection: TableRowSelection<DataType> = {
+    const rowSelection: TableRowSelection<ApiChange.ApiChange> = {
         selectedRowKeys,
         onChange: onSelectChange,
     };
 
-    const onChangeStatus = (status: string, remark: string | undefined) => {
-        console.log('props.id:', props.id);
-        console.log('props.remark:', props.remark);
-        modifyApiChangeStatus(props.id, status, remark || '').then(() => {
-            setAffectStatus('');
+    const onChangeStatus = (id: number, status: string, remark: string | undefined) => {
+        modifyApiChangeStatus(id, status, remark || '').then(() => {
             notificationApi['info']({
                 message: '提示',
                 description: '操作成功',
             });
+            loadData(queryParams, pageSize, pageNum);
         });
     };
 
-    const columns: ColumnsType<DataType> = [
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleCancel = () => {
+        setIsModalOpen(false);
+        loadData(queryParams, pageSize, pageNum);
+    };
+
+    const columns: ColumnsType<ApiChange.ApiChange> = [
         {
             title: '序号',
             dataIndex: 'id',
             key: 'id',
-            width: 80,
+            width: 60,
+            align: 'center',
             render: (v, r, i) => (pageNum - 1) * pageSize + i + 1,
         },
         {
@@ -179,6 +178,7 @@ const ApiChange: React.FC<{
             dataIndex: 'lastVersionDate',
             key: 'lastVersionDate',
             width: 110,
+            align: 'center',
             render: toShortDate,
         },
         {
@@ -219,11 +219,13 @@ const ApiChange: React.FC<{
             ellipsis: true,
             width: '18%',
             render: (v, row) => {
-                const href = `https://console.huaweicloud.com/apiexplorer/#/openapi/${row.productName}/doc?api=${row.apiNameEn}`;
                 return (
-                    <a href={href} rel="noreferrer" target="_blank" title="在API Explorer中查看">
-                        {row.apiName}/{row.apiNameEn}
-                    </a>
+                    <Button type={'link'} onClick={() => {
+                        showModal();
+                        setSelectedRow(row);
+                    }}>
+                        {row.apiName} / {row.apiNameEn}
+                    </Button>
                 );
             },
         },
@@ -262,7 +264,6 @@ const ApiChange: React.FC<{
             title: '备注',
             dataIndex: 'remark',
             key: 'remark',
-            align: 'center',
             ellipsis: true,
         },
         {
@@ -270,17 +271,17 @@ const ApiChange: React.FC<{
             dataIndex: 'operate',
             key: 'operate',
             align: 'center',
-            render: () => {
+            width: 150,
+            render: (v, record) => {
                 return (
-                    <div>
-                        {affectStatus}
-                        <a href="#" onClick={() => onChangeStatus('need_analysis', props.remark)}>
-                            开启&ensp;&ensp;
+                    <Space>
+                        <a href="#" onClick={() => onChangeStatus(record.id, 'need_analysis', props.remark)}>
+                            开启
                         </a>
-                        <a href="#" onClick={() => onChangeStatus('closed', props.remark)}>
+                        <a href="#" onClick={() => onChangeStatus(record.id, 'closed', props.remark)}>
                             关闭
                         </a>
-                    </div>
+                    </Space>
                 );
             },
         },
@@ -289,16 +290,18 @@ const ApiChange: React.FC<{
     return (
         <>
             <Breadcrumb
-                items={[{ title: '首页' }, { title: 'API 变更分析' }]}
-                style={{ margin: '10px 0' }}
+                items={[{title: '首页'}, {title: 'API 变更分析'}]}
+                style={{margin: '10px 0'}}
             />
-            <ApiChangeSearch productGroup={props.providerName || ''} onSearch={onSearch} />
-            <div style={{ height: '16px' }} />
+            <ApiChangeSearch productGroup={props.providerName || ''} onSearch={onSearch}/>
+            <div style={{height: '16px'}}/>
             <Table
                 rowSelection={rowSelection}
                 className={'api-change-list'}
                 columns={columns}
                 dataSource={data}
+                size={'middle'}
+                rowKey={(record) => record.id}
                 pagination={{
                     defaultCurrent: 1,
                     total: total,
@@ -315,8 +318,18 @@ const ApiChange: React.FC<{
                     },
                 }}
             />
+            <Modal
+                transitionName={''}
+                destroyOnClose
+                open={isModalOpen}
+                onCancel={handleCancel}
+                footer={null}
+                width={'80%'}
+            >
+                <ApiChange changeId={selectedRow?.id}/>
+            </Modal>
             {contextHolder}
         </>
     );
 };
-export default ApiChange;
+export default ApiChangeList;

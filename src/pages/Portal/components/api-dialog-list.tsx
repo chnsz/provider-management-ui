@@ -179,6 +179,7 @@ const ApiDialogList: React.FC<queryParams> = (queryParams) => {
             key: 'apiName',
             width: 300,
             ellipsis: true,
+            render: (v, record)=> v + ' / ' + record.apiNameEn,
         },
         {
             title: '覆盖状态',

@@ -26,6 +26,11 @@ export default [
         component: './Provider/index',
     },
     {
+        path: '/provider-base',
+        name: 'provider_base',
+        component: './Provider/provider-base',
+    },
+    {
         path: '/service',
         hideInMenu: true,
         name: 'portal',
@@ -96,6 +101,7 @@ export default [
     {
         path: '/notice',
         name: 'notice',
+        hideInMenu: true,
         component: './Notice/index',
     },
     {

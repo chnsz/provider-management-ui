@@ -64,10 +64,10 @@ const ApiChangeView: React.FC<{
                 <ProDescriptions.Item span={2} label="API 分组" valueType="text">
                     {props.apiGroup}
                 </ProDescriptions.Item>
-                <ProDescriptions.Item span={2} label="API 名称" valueType="text">
-                    {props.apiName}
+                <ProDescriptions.Item span={5} label="API 名称" valueType="text">
+                    {props.apiName} / {props.apiNameEn}
                 </ProDescriptions.Item>
-                <ProDescriptions.Item span={8} label="在线调试" valueType="text">
+                <ProDescriptions.Item span={5} label="在线调试" valueType="text">
                     <a
                         href={`https://console.huaweicloud.com/apiexplorer/#/openapi/${props.serviceName}/doc?api=${props.apiNameEn}`}
                         target={'_blank'}
@@ -100,9 +100,11 @@ const ApiChangeView: React.FC<{
                                               }}/>
                 </ProDescriptions.Item>
             </ProDescriptions>
+            <div style={{height: 'calc(100% - 100px)'}}>
             <Scrollbars>
                 <div dangerouslySetInnerHTML={{__html: content}}/>
             </Scrollbars>
+            </div>
             {contextHolder}
         </>
     );

@@ -82,3 +82,41 @@ export async function getPrList(owner: string, prStatus: string, providerType: s
         },
     });
 }
+
+export async function getProviderBaseAllSum() {
+    return request<Global.List<Provider.ProviderBaseSum[]>>(`${basePath}/provider-api-base/sum`, {
+        method: 'GET',
+    });
+}
+
+export async function getProviderApiBaseSum(providerType: string, providerName: string) {
+    return request<Global.List<Provider.ProviderBaseSum[]>>(`${basePath}/provider-api-base/${providerType}/${providerName}/sum`, {
+        method: 'GET',
+    });
+}
+
+export async function getProviderBaseList(apiId: number, providerType: string, providerName: string) {
+    return request<Global.List<Provider.ProviderBase[]>>(`${basePath}/provider-api-base/list`, {
+        method: 'GET',
+        params: {
+            apiId: apiId,
+            providerType: providerType,
+            providerName: providerName,
+        },
+    });
+}
+
+export async function saveProviderBase(apiId: number,
+                                       providerType: string,
+                                       providerName: string,
+                                       inputList: Provider.ProviderBase[],
+                                       outputList: Provider.ProviderBase[]
+) {
+    return request<Global.Response<string>>(`${basePath}/provider-api-base/${providerType}/${providerName}/${apiId}/action/save`, {
+        method: 'POST',
+        data: {
+            inputList: inputList,
+            outputList: outputList,
+        },
+    });
+}
