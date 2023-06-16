@@ -1,8 +1,8 @@
-import React, {useState} from "react";
-import {Space, Tooltip} from "antd";
-import './portal.less'
-import ServiceSumList from "@/pages/Portal/components/service-sum-list";
-import {InfoCircleOutlined} from "@ant-design/icons";
+import ServiceSumList from '@/pages/Portal/components/service-sum-list';
+import { InfoCircleOutlined } from '@ant-design/icons';
+import { Space, Tooltip } from 'antd';
+import React, { useState } from 'react';
+import './portal.less';
 
 interface ServiceSumData {
     allApiCount: number;
@@ -17,87 +17,110 @@ interface ServiceSumData {
     otherApiUsed: number;
 }
 
-const tooltip = <div className={'tooltip'}>
-    <Tooltip title={<div>对接率：<br/>对接的服务数 / 已开放 API 的服务数</div>}>
-        <InfoCircleOutlined/>
-    </Tooltip>
-</div>;
-
-const ServiceSum: React.FC<{ data: ServiceSumData }> = ({data}) => {
-    const rate = data.allApiCount > 0 ? data.allApiUsed / data.allApiCount * 100 : 0;
-    const coreRate = data.coreApiCount > 0 ? data.coreApiUsed / data.coreApiCount * 100 : 0;
-    const mainRate = data.mainApiCount > 0 ? data.mainApiUsed / data.mainApiCount * 100 : 0;
-    const emergingRate = data.emergingApiCount > 0 ? data.emergingApiUsed / data.emergingApiCount * 100 : 0;
-    const otherRate = data.otherApiCount > 0 ? data.otherApiUsed / data.otherApiCount * 100 : 0;
-
-    return <div className={'service-sum'}>
-        <div className={'card'}>
-            {tooltip}
-            <div className={'primary-desc'}>
-                <div className={'label'}>
-                    <img src="/icons/all.svg" alt="服务总对接率"/>
+const tooltip = (
+    <div className={'tooltip'}>
+        <Tooltip
+            title={
+                <div>
+                    对接率：
+                    <br />
+                    对接的服务数 / 已开放 API 的服务数
                 </div>
-                <div className={'value'}>{rate.toFixed(2)}%</div>
-            </div>
-            <div className={'second-desc'}>
-                <div className={'label'}>服务总对接率</div>
-                <div className={'value'}>{data.allApiUsed} / {data.allApiCount}</div>
-            </div>
-        </div>
-        <div className={'card'}>
-            {tooltip}
-            <div className={'primary-desc'}>
-                <div className={'label'}>
-                    <img src="/icons/core.svg" alt="核心服务对接率"/>
-                </div>
-                <div className={'value'}>{coreRate.toFixed(2)}%</div>
-            </div>
-            <div className={'second-desc'}>
-                <div className={'label'}>核心服务对接率</div>
-                <div className={'value'}>{data.coreApiUsed} / {data.coreApiCount}</div>
-            </div>
-        </div>
-        <div className={'card'}>
-            {tooltip}
-            <div className={'primary-desc'}>
-                <div className={'label'}>
-                    <img src="/icons/main.svg" alt="核心服务对接率"/>
-                </div>
-                <div className={'value'}>{mainRate.toFixed(2)}%</div>
-            </div>
-            <div className={'second-desc'}>
-                <div className={'label'}>主力服务对接率</div>
-                <div className={'value'}>{data.mainApiUsed} / {data.mainApiCount}</div>
-            </div>
-        </div>
-        <div className={'card'}>
-            {tooltip}
-            <div className={'primary-desc'}>
-                <div className={'label'}>
-                    <img src="/icons/emerging.svg" alt="新兴服务对接率"/>
-                </div>
-                <div className={'value'}>{emergingRate.toFixed(2)}%</div>
-            </div>
-            <div className={'second-desc'}>
-                <div className={'label'}>新兴服务对接率</div>
-                <div className={'value'}>{data.emergingApiUsed} / {data.emergingApiCount}</div>
-            </div>
-        </div>
-        <div className={'card'}>
-            {tooltip}
-            <div className={'primary-desc'}>
-                <div className={'label'}>
-                    <img src="/icons/other.svg" alt="其他服务对接率"/>
-                </div>
-                <div className={'value'}>{otherRate.toFixed(2)}%</div>
-            </div>
-            <div className={'second-desc'}>
-                <div className={'label'}>其他服务对接率</div>
-                <div className={'value'}>{data.otherApiUsed} / {data.otherApiCount}</div>
-            </div>
-        </div>
+            }
+        >
+            <InfoCircleOutlined />
+        </Tooltip>
     </div>
-}
+);
+
+const ServiceSum: React.FC<{ data: ServiceSumData }> = ({ data }) => {
+    const rate = data.allApiCount > 0 ? (data.allApiUsed / data.allApiCount) * 100 : 0;
+    const coreRate = data.coreApiCount > 0 ? (data.coreApiUsed / data.coreApiCount) * 100 : 0;
+    const mainRate = data.mainApiCount > 0 ? (data.mainApiUsed / data.mainApiCount) * 100 : 0;
+    const emergingRate =
+        data.emergingApiCount > 0 ? (data.emergingApiUsed / data.emergingApiCount) * 100 : 0;
+    const otherRate = data.otherApiCount > 0 ? (data.otherApiUsed / data.otherApiCount) * 100 : 0;
+
+    return (
+        <div className={'service-sum'}>
+            <div className={'card'}>
+                {tooltip}
+                <div className={'primary-desc'}>
+                    <div className={'label'}>
+                        <img src="/icons/all.svg" alt="服务总对接率" />
+                    </div>
+                    <div className={'value'}>{rate.toFixed(2)}%</div>
+                </div>
+                <div className={'second-desc'}>
+                    <div className={'label'}>服务总对接率</div>
+                    <div className={'value'}>
+                        {data.allApiUsed} / {data.allApiCount}
+                    </div>
+                </div>
+            </div>
+            <div className={'card'}>
+                {tooltip}
+                <div className={'primary-desc'}>
+                    <div className={'label'}>
+                        <img src="/icons/core.svg" alt="核心服务对接率" />
+                    </div>
+                    <div className={'value'}>{coreRate.toFixed(2)}%</div>
+                </div>
+                <div className={'second-desc'}>
+                    <div className={'label'}>核心服务对接率</div>
+                    <div className={'value'}>
+                        {data.coreApiUsed} / {data.coreApiCount}
+                    </div>
+                </div>
+            </div>
+            <div className={'card'}>
+                {tooltip}
+                <div className={'primary-desc'}>
+                    <div className={'label'}>
+                        <img src="/icons/main.svg" alt="核心服务对接率" />
+                    </div>
+                    <div className={'value'}>{mainRate.toFixed(2)}%</div>
+                </div>
+                <div className={'second-desc'}>
+                    <div className={'label'}>主力服务对接率</div>
+                    <div className={'value'}>
+                        {data.mainApiUsed} / {data.mainApiCount}
+                    </div>
+                </div>
+            </div>
+            <div className={'card'}>
+                {tooltip}
+                <div className={'primary-desc'}>
+                    <div className={'label'}>
+                        <img src="/icons/emerging.svg" alt="新兴服务对接率" />
+                    </div>
+                    <div className={'value'}>{emergingRate.toFixed(2)}%</div>
+                </div>
+                <div className={'second-desc'}>
+                    <div className={'label'}>新兴服务对接率</div>
+                    <div className={'value'}>
+                        {data.emergingApiUsed} / {data.emergingApiCount}
+                    </div>
+                </div>
+            </div>
+            <div className={'card'}>
+                {tooltip}
+                <div className={'primary-desc'}>
+                    <div className={'label'}>
+                        <img src="/icons/other.svg" alt="其他服务对接率" />
+                    </div>
+                    <div className={'value'}>{otherRate.toFixed(2)}%</div>
+                </div>
+                <div className={'second-desc'}>
+                    <div className={'label'}>其他服务对接率</div>
+                    <div className={'value'}>
+                        {data.otherApiUsed} / {data.otherApiCount}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
 
 const Portal: React.FC = () => {
     const [serviceSumData, setServiceSumData] = useState<ServiceSumData>({
@@ -125,9 +148,9 @@ const Portal: React.FC = () => {
             mainServiceUsed: 0,
             otherService: 0,
             otherServiceUsed: 0,
-        }
+        };
 
-        data.productSumList.forEach(t => {
+        data.productSumList.forEach((t) => {
             sumData.totalService++;
             switch (t.level) {
                 case '核心服务':
@@ -182,14 +205,41 @@ const Portal: React.FC = () => {
             mainApiCount: data.mainApiCount,
             mainApiUsed: data.mainApiUsed
         });*/
-    }
+    };
 
-    return <div className={'portal'}>
-        <Space direction={'vertical'} style={{width: '100%'}} size={20}>
-            <ServiceSum data={serviceSumData}/>
-            <ServiceSumList onload={serviceSumDataLoad}/>
-        </Space>
-    </div>
-}
+    return (
+        <div className={'portal'}>
+            <Space direction={'vertical'} style={{ width: '100%' }} size={20}>
+                <ServiceSum data={serviceSumData} />
+                <ServiceSumList onload={serviceSumDataLoad} />
+            </Space>
+        </div>
+    );
+};
 
 export default Portal;
+
+export const openApiExplorer = (
+    productName: string,
+    apiNameEn: string,
+    uri: string,
+    text?: string,
+) => {
+    const innerText = text || 'API Explorer';
+    const title = text ? text + '（点击跳转 API Explorer）' : '（点击跳转 API Explorer）';
+
+    let version = uri.split('/')[1];
+    if (version.toLowerCase().indexOf('v') !== 0) {
+        version = '';
+    }
+
+    let href = `https://apiexplorer.developer.huaweicloud.com/apiexplorer/doc?product=${productName}&api=${apiNameEn}`;
+    if (version) {
+        href += `&version=${version}`;
+    }
+    return (
+        <a title={title} href={href} target={'_blank'} rel="noreferrer">
+            {innerText}
+        </a>
+    );
+};
