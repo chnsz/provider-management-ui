@@ -108,4 +108,9 @@ export default [
         name: 'api-change-analysis',
         component: './ApiChange/index',
     },
+    {
+        path: '/api-baseline',
+        name: 'api-baseline',
+        component: './ApiBaseline/index',
+    },
 ];
