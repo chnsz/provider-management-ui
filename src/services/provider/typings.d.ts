@@ -6,6 +6,14 @@ declare namespace Provider {
         productName: string;
         category: string;
         name: string;
+        g42Name: string;
+        g42RelaTag: 'reference' | 'other';
+        g42SchemaSyncStatus: 'yes' | 'no';
+        g42Remark: string;
+        feName: string;
+        feRelaTag: 'reference' | 'other';
+        feSchemaSyncStatus: 'yes' | 'no';
+        feRemark: string;
         activeStatus: string;
         publishStatus: string;
         releaseDate: string;

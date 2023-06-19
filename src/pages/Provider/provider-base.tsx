@@ -44,42 +44,49 @@ const ProviderBase: React.FC = () => {
             title: '未分析字段',
             width: '7%',
             dataIndex: 'newField',
+            align: 'center',
             render:renderNum,
         },
         {
             title: '废弃字段',
             width: '7%',
             dataIndex: 'deprecated',
+            align: 'center',
             render:renderNum,
         },
         {
             title: '仅类型变更',
             width: '7%',
             dataIndex: 'typeChange',
+            align: 'center',
             render:renderNum,
         },
         {
             title: '仅描述变更',
             width: '7%',
             dataIndex: 'descChange',
+            align: 'center',
             render:renderNum,
         },
         {
             title: '类型 & 描述变更',
             width: '7%',
             dataIndex: 'typeAndDescChange',
+            align: 'center',
             render:renderNum,
         },
         {
             title: '未使用的字段',
             width: '7%',
             dataIndex: 'notUsed',
+            align: 'center',
             render:renderNum,
         },
         {
             title: '已用的字段',
             width: '7%',
             dataIndex: 'used',
+            align: 'center',
             render:renderNum,
         },
     ];
@@ -96,7 +103,7 @@ const ProviderBase: React.FC = () => {
                     <Table
                         columns={columns}
                         dataSource={data}
-                        size={'small'}
+                        size={'middle'}
                         pagination={false}
                         rowKey={r => r.providerType + '_' + r.providerName}
                     />

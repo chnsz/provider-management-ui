@@ -152,6 +152,7 @@ export default () => {
                             serviceName={serviceName}
                             apiGroup={apiGroup}
                             apiName={apiName}
+                            uri={''}
                             content={content}
                             apiNameEn={apiNameEn}
                         />

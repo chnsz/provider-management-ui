@@ -62,31 +62,9 @@ const SearchForm: React.FC<{ productName: string, onSearch: (val: FormProps) => 
                 }}
                 valueEnum={productNameMap}
             />
+            <ProFormSelect name="apiGroup" label="分组名称" showSearch valueEnum={apiGroupMap}/>
             <ProFormText name="apiName" label="API 名称"/>
             <ProFormText name="uri" label="URI"/>
-            <ProFormSelect name="apiGroup" label="分组名称" showSearch valueEnum={apiGroupMap}/>
-            <ProFormSelect
-                name="publishStatus"
-                label="发布状态"
-                showSearch
-                valueEnum={{
-                    online: '开放中',
-                    offline: '已下线',
-                    unpublished: '线下API',
-                }}
-            />
-            <ProFormSelect
-                name="useRemark"
-                label="覆盖分析"
-                showSearch
-                valueEnum={{
-                    used: '已使用',
-                    need_analysis: '待分析',
-                    planning: '规划中',
-                    ignore: '不适合',
-                    missing_api: '缺少API',
-                }}
-            />
         </QueryFilter>
     );
 };

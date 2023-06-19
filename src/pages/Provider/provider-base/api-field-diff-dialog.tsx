@@ -64,7 +64,7 @@ const ApiFieldDiffDialog: React.FC<{ providerBase: Provider.ProviderBase }> = ({
                         text = '描述变更'
                         break;
                     case 'TypeChange':
-                        text = '类型述变更'
+                        text = '类型变更'
                         break;
                     case 'TypeAndDescChange':
                         text = '类型和描述变更'

@@ -16,10 +16,9 @@ export async function getApiPanelSum(productName: string) {
     });
 }
 
-export async function getServiceSumList(ownerArr: string[]) {
+export async function getServiceSumList(ownerArr: string[], levelArr: string[]) {
     return request<Portal.PortalSum>(`${basePath}/portal/product/sum`, {
         method: 'GET',
-        params: {owner: ownerArr}
+        params: {owner: ownerArr, level: levelArr}
     });
 }
-

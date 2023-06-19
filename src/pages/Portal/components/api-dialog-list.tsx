@@ -177,7 +177,7 @@ const ApiDialogList: React.FC<queryParams> = (queryParams) => {
             title: 'API名称',
             dataIndex: 'apiName',
             key: 'apiName',
-            width: 300,
+            width: '30%',
             ellipsis: true,
             render: (v, record)=> v + ' / ' + record.apiNameEn,
         },

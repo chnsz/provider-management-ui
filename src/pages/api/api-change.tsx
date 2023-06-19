@@ -10,6 +10,7 @@ const ApiChange: React.FC<{ changeId?: number }> = ({changeId}) => {
     const [apiName, setApiName] = useState<string>('');
     const [content, setContent] = useState<string>('');
     const [apiNameEn, setApiNameEn] = useState<string>('');
+    const [uri, setUri] = useState<string>('');
     const [providers, setProviders] = useState<string>('');
     const [affectStatus, setAffectStatus] = useState<string>('');
     const [remark, setRemark] = useState<string>('');
@@ -29,6 +30,7 @@ const ApiChange: React.FC<{ changeId?: number }> = ({changeId}) => {
             setApiGroup(data.apiGroup);
             setApiName(data.apiName);
             setApiNameEn(data.apiNameEn);
+            setUri(data.uri);
             setContent(data.diffContent);
             setProviders(data.providers);
             setAffectStatus(data.affectStatus);
@@ -47,6 +49,7 @@ const ApiChange: React.FC<{ changeId?: number }> = ({changeId}) => {
                     apiGroup={apiGroup}
                     content={content}
                     apiNameEn={apiNameEn}
+                    uri={uri}
                     affectStatus={affectStatus}
                     providers={providers}
                     remark={remark}

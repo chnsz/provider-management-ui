@@ -43,6 +43,8 @@ const ProviderBaseDialog: React.FC<{
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [data1, setData1] = useState<Provider.ProviderBase[]>([]);
     const [data2, setData2] = useState<Provider.ProviderBase[]>([]);
+    const [originData1, setOriginData1] = useState<Provider.ProviderBase[]>([]);
+    const [originData2, setOriginData2] = useState<Provider.ProviderBase[]>([]);
 
     const [fieldName, setFieldName] = useState<string>('');
     const [fieldType, setFieldType] = useState<string>('string');
@@ -53,6 +55,8 @@ const ProviderBaseDialog: React.FC<{
     const [notificationApi, contextHolder] = notification.useNotification();
     const [expandKey1, setExpandKey1] = useState<string[]>([]);
     const [expandKey2, setExpandKey2] = useState<string[]>([]);
+    const [inputFilter, setInputFilter] = useState<string>('');
+    const [outputFilter, setOutputFilter] = useState<string>('');
 
     const showModal = () => {
         if (!props.apiId || !props.providerType || !props.providerName) {
@@ -90,6 +94,8 @@ const ProviderBaseDialog: React.FC<{
                 })
                 setData1(arr1);
                 setData2(arr2);
+                setOriginData1(arr1);
+                setOriginData2(arr2);
                 setExpandKey1(expKey1);
                 setExpandKey2(expKey2);
             });
@@ -383,6 +389,26 @@ const ProviderBaseDialog: React.FC<{
         },
     ];
 
+    const filterInput = (val: string) => {
+        setInputFilter(val);
+        if (val === '') {
+            setData1(originData1);
+            return;
+        }
+        const arr = data1.filter(t => t.fieldName.toLowerCase().includes(val))
+        setData1(arr);
+    }
+
+    const filterOutput = (val: string) => {
+        setOutputFilter(val);
+        if (val === '') {
+            setData2(originData2);
+            return;
+        }
+        const arr = data2.filter(t => t.fieldName.toLowerCase().includes(val))
+        setData2(arr);
+    }
+
     const columns2: ColumnsType<Provider.ProviderBase> = columns1.filter(t => t.title !== '字段位置')
 
     return <>
@@ -390,7 +416,7 @@ const ProviderBaseDialog: React.FC<{
             props.model === 'button' ?
                 <Button type={'primary'} onClick={showModal} size={'small'}>对此基线</Button>
                 :
-                <Button type={'link'} onClick={showModal}>{props.text}</Button>
+                <a onClick={showModal} title={props.text}>{props.text}</a>
         }
         {contextHolder}
         <Modal title="维护基线"
@@ -408,7 +434,18 @@ const ProviderBaseDialog: React.FC<{
                ]}>
             <div style={{height: '75vh'}}>
                 <Scrollbars>
-                    <h3>请求参数</h3>
+                    <div style={{display: 'flex', padding: '10px 0'}}>
+                        <div style={{flex: 5, fontWeight: 'bold', fontSize: '16px'}}>请求参数</div>
+                        <div style={{flex: 1}}>
+                            <div>
+                                <span>过滤：</span>
+                                <Input style={{width: '260px'}} value={inputFilter}
+                                       allowClear
+                                       onChange={(e) => filterInput(e.target.value)}
+                                />
+                            </div>
+                        </div>
+                    </div>
                     <Table
                         columns={columns1}
                         dataSource={data1}
@@ -425,19 +462,19 @@ const ProviderBaseDialog: React.FC<{
                         <h4>手动补录</h4>
                         <Space direction={'horizontal'}>
                             名称:<Input style={{width: '200px'}}
-                                            value={fieldName}
-                                            onChange={(e) => setFieldName(e.target.value)}/>
+                                        value={fieldName}
+                                        onChange={(e) => setFieldName(e.target.value)}/>
                             位置:<Select style={{width: '100px'}}
-                                             options={FieldInOption}
-                                             value={fieldIn}
-                                             onChange={val => setFieldIn(val)}/>
+                                         options={FieldInOption}
+                                         value={fieldIn}
+                                         onChange={val => setFieldIn(val)}/>
                             类型:<Select style={{width: '100px'}}
-                                             options={FieldTypeOption}
-                                             value={fieldType}
-                                             onChange={val => setFieldType(val)}/>
+                                         options={FieldTypeOption}
+                                         value={fieldType}
+                                         onChange={val => setFieldType(val)}/>
                             描述:<Input style={{width: '200px'}}
-                                            value={fieldDesc}
-                                            onChange={(e) => setFieldDesc(e.target.value)}/>
+                                        value={fieldDesc}
+                                        onChange={(e) => setFieldDesc(e.target.value)}/>
                             Schema 名称:<Input style={{width: '100px'}}
                                                value={schemaName}
                                                onChange={(e) => setSchemaName(e.target.value)}/>
@@ -449,7 +486,18 @@ const ProviderBaseDialog: React.FC<{
                         </Space>
                     </div>
                     <Divider dashed/>
-                    <h3>响应参数</h3>
+                    <div style={{display: 'flex', padding: '10px 0'}}>
+                        <div style={{flex: 5, fontWeight: 'bold', fontSize: '16px'}}>响应参数</div>
+                        <div style={{flex: 1}}>
+                            <div>
+                                <span>过滤：</span>
+                                <Input style={{width: '260px'}} value={outputFilter}
+                                       allowClear
+                                       onChange={(e) => filterOutput(e.target.value)}
+                                />
+                            </div>
+                        </div>
+                    </div>
                     <Table
                         columns={columns2}
                         dataSource={data2}
@@ -466,15 +514,15 @@ const ProviderBaseDialog: React.FC<{
                         <h4>手动补录</h4>
                         <Space direction={'horizontal'}>
                             名称:<Input style={{width: '200px'}}
-                                            value={fieldName}
-                                            onChange={(e) => setFieldName(e.target.value)}/>
+                                        value={fieldName}
+                                        onChange={(e) => setFieldName(e.target.value)}/>
                             类型:<Select style={{width: '100px'}}
-                                             options={FieldTypeOption}
-                                             value={fieldType}
-                                             onChange={val => setFieldType(val)}/>
+                                         options={FieldTypeOption}
+                                         value={fieldType}
+                                         onChange={val => setFieldType(val)}/>
                             描述:<Input style={{width: '100px'}}
-                                            value={fieldDesc}
-                                            onChange={(e) => setFieldDesc(e.target.value)}/>
+                                        value={fieldDesc}
+                                        onChange={(e) => setFieldDesc(e.target.value)}/>
                             Schema 名称:<Input style={{width: '100px'}}
                                                value={schemaName}
                                                onChange={(e) => setSchemaName(e.target.value)}/>

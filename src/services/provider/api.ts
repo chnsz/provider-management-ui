@@ -27,6 +27,84 @@ export async function getProviderList(
     );
 }
 
+export async function getProviderSyncList(params: queryProviderParams) {
+    return request<Global.List<Provider.Provider[]>>(
+        `${basePath}/provider/sync/list`,
+        {
+            method: 'GET',
+            params: params,
+        },
+    );
+}
+
+export async function updateSync(id: number, cloudName: string, name: string) {
+    const params: { cloudName: string, g42Name?: string, feName?: string } = {cloudName: cloudName};
+    if (cloudName === 'G42Cloud') {
+        params.g42Name = name;
+    } else if (cloudName === 'FlexibleEngineCloud') {
+        params.feName = name;
+    }
+
+    return request<Global.List<Provider.Provider[]>>(
+        `${basePath}/provider/${id}/sync`,
+        {
+            method: 'PATCH',
+            data: params,
+        },
+    );
+}
+
+export async function updateRemark(id: number, cloudName: string, remark: string) {
+    const params: { cloudName: string, g42Remark?: string, feRemark?: string } = {cloudName: cloudName};
+    if (cloudName === 'G42Cloud') {
+        params.g42Remark = remark;
+    } else if (cloudName === 'FlexibleEngineCloud') {
+        params.feRemark = remark;
+    }
+
+    return request<Global.List<Provider.Provider[]>>(
+        `${basePath}/provider/${id}/remark`,
+        {
+            method: 'PATCH',
+            data: params,
+        },
+    );
+}
+
+export async function updateRelaTag(id: number, cloudName: string, relaTag: string) {
+    const params: { cloudName: string, g42RelaTag?: string, feRelaTag?: string } = {cloudName: cloudName};
+    if (cloudName === 'G42Cloud') {
+        params.g42RelaTag = relaTag;
+    } else if (cloudName === 'FlexibleEngineCloud') {
+        params.feRelaTag = relaTag;
+    }
+
+    return request<Global.List<Provider.Provider[]>>(
+        `${basePath}/provider/${id}/relation`,
+        {
+            method: 'PATCH',
+            data: params,
+        },
+    );
+}
+
+export async function updateSchemaSyncStatus(id: number, cloudName: string, schemaSyncStatus: string) {
+    const params: { cloudName: string, g42SchemaSyncStatus?: string, feSchemaSyncStatus?: string } = {cloudName: cloudName};
+    if (cloudName === 'G42Cloud') {
+        params.g42SchemaSyncStatus = schemaSyncStatus;
+    } else if (cloudName === 'FlexibleEngineCloud') {
+        params.feSchemaSyncStatus = schemaSyncStatus;
+    }
+
+    return request<Global.List<Provider.Provider[]>>(
+        `${basePath}/provider/${id}/schemaSyncStatus`,
+        {
+            method: 'PATCH',
+            data: params,
+        },
+    );
+}
+
 export async function getProviderScoreList(owners: string[], prStatus: string, startDate: string, endStart: string) {
     return request<Global.List<Provider.ProviderScoreDto[]>>(`${basePath}/provider/score/list`, {
         method: 'GET',

@@ -5,6 +5,7 @@ import {Scrollbars} from 'react-custom-scrollbars';
 import {Button, Input, notification, Space} from "antd";
 import {modifyApiChangeStatus} from "@/services/api/api";
 import AddFeaturePlanningDialog from "@/pages/ProviderPlanning/components/creation-dialog/add-feature-planning-dialog";
+import {openApiExplorer} from "@/pages/Portal";
 
 const ApiChangeView: React.FC<{
     id: number;
@@ -12,6 +13,7 @@ const ApiChangeView: React.FC<{
     serviceName: string;
     apiGroup: string;
     apiName: string;
+    uri: string;
     content: string;
     apiNameEn: string;
     affectStatus?: string;
@@ -68,13 +70,7 @@ const ApiChangeView: React.FC<{
                     {props.apiName} / {props.apiNameEn}
                 </ProDescriptions.Item>
                 <ProDescriptions.Item span={5} label="在线调试" valueType="text">
-                    <a
-                        href={`https://console.huaweicloud.com/apiexplorer/#/openapi/${props.serviceName}/doc?api=${props.apiNameEn}`}
-                        target={'_blank'}
-                        rel={'noopener noreferrer'}
-                    >
-                        API Explorer
-                    </a>
+                    {openApiExplorer(props.serviceName, props.apiNameEn, props.uri)}
                 </ProDescriptions.Item>
 
                 <ProDescriptions.Item span={6} label="Provider" valueType="text">
@@ -101,9 +97,9 @@ const ApiChangeView: React.FC<{
                 </ProDescriptions.Item>
             </ProDescriptions>
             <div style={{height: 'calc(100% - 100px)'}}>
-            <Scrollbars>
-                <div dangerouslySetInnerHTML={{__html: content}}/>
-            </Scrollbars>
+                <Scrollbars>
+                    <div dangerouslySetInnerHTML={{__html: content}}/>
+                </Scrollbars>
             </div>
             {contextHolder}
         </>
