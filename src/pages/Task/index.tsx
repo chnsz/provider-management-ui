@@ -12,7 +12,7 @@ import {
 } from '@/services/task/api';
 import {useLocation} from '@@/exports';
 import {ExclamationCircleFilled, SendOutlined} from '@ant-design/icons';
-import {Breadcrumb, Button, Modal, notification, Space} from 'antd';
+import {Breadcrumb, Button, message, Modal, Space} from 'antd';
 import React, {useEffect, useState} from 'react';
 import './task.less';
 // @ts-ignore
@@ -42,7 +42,7 @@ let taskStatus: string[] = [];
 const Task: React.FC = () => {
     const [taskList, setTaskList] = useState<Task.Task[]>([]);
     const [task, setTask] = useState<Task.Task>(defaultTask);
-    const [notificationApi, contextHolder] = notification.useNotification();
+    const [messageApi, contextHolder] = message.useMessage();
 
     const location = useLocation();
 
@@ -56,10 +56,7 @@ const Task: React.FC = () => {
         getTaskList(queryParams, 50, pageNum).then((data) => {
             if (notice && data.items.length === 0) {
                 page--;
-                notificationApi['info']({
-                    message: '提示',
-                    description: '没有更多数据',
-                });
+                messageApi.warning('没有更多数据');
                 return;
             }
 
@@ -90,19 +87,13 @@ const Task: React.FC = () => {
 
     const onDetailChange = (opts: Task.UpdateOpts) => {
         if (!opts.id) {
-            notificationApi['info']({
-                message: '警告',
-                description: '数据ID为空，无法保存',
-            });
+            messageApi.warning('数据ID为空，无法保存');
             return;
         }
 
         updateTask(opts.id, opts).then((rsp) => {
             if (!rsp.id) {
-                notificationApi['error']({
-                    message: '错误',
-                    description: '保存失败，服务没有返回保存后的数据',
-                });
+                messageApi.error('保存失败，服务没有返回保存后的数据');
             }
             setTask(rsp);
             const arr = taskList.map((t) => {
@@ -128,10 +119,7 @@ const Task: React.FC = () => {
 
     const onDeleteTask = () => {
         if (task.id === 0) {
-            notificationApi['warning']({
-                message: '操作失败',
-                description: '您还没有选择资源规划，请先选择一条资源规划',
-            });
+            messageApi.warning('您还没有选择资源规划，请先选择一条资源规划');
             return;
         }
 
@@ -168,10 +156,7 @@ const Task: React.FC = () => {
 
     const createKanboardTask = () => {
         if (task.id === 0) {
-            notificationApi['warning']({
-                message: '操作失败',
-                description: '您还没有选择待办任务',
-            });
+            messageApi.warning('您还没有选择待办任务');
             return;
         }
 
@@ -179,28 +164,19 @@ const Task: React.FC = () => {
             if (!t.kanboardTask) {
                 return;
             }
-            notificationApi['info']({
-                message: '成功',
-                description: '卡片推送成功',
-            });
+            messageApi.info('卡片推送成功');
             setTask(t);
         });
     };
 
     const closeTask = () => {
         if (task.id === 0) {
-            notificationApi['warning']({
-                message: '操作失败',
-                description: '您还没有选择待办任务',
-            });
+            messageApi.warning('您还没有选择待办任务');
             return;
         }
 
         changeTaskStatus(task.id, 'closed').then(() => {
-            notificationApi['info']({
-                message: '成功',
-                description: '任务已关闭',
-            });
+            messageApi.info('任务已关闭');
             const newTask = task;
             newTask.status = 'closed';
             setTask(newTask);
@@ -222,10 +198,7 @@ const Task: React.FC = () => {
             priority: 1,
         }).then(t => {
             if (t.id <= 0) {
-                notificationApi['warning']({
-                    message: '操作失败',
-                    description: '未能获取新创建的任务',
-                });
+                messageApi.warning('未能获取新创建的任务');
                 return;
             }
             setTask(t);
@@ -292,7 +265,8 @@ const Task: React.FC = () => {
                             >
                                 推送卡片
                             </Button>
-                            <AddFeaturePlanningDialog productName={task.productName} onClosed={() => {}}/>
+                            <AddFeaturePlanningDialog productName={task.productName} onClosed={() => {
+                            }}/>
                             <Button
                                 type="primary"
                                 size={'small'}

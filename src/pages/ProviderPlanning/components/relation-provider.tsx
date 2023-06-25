@@ -1,6 +1,6 @@
 import {bindProviderPlanningProvider, unbindProviderPlanningProvider,} from '@/services/provider-planning/api';
 import {DeleteOutlined} from '@ant-design/icons';
-import {Button, Input, notification, Select, Space, Table} from 'antd';
+import {Button, Input, message, notification, Select, Space, Table} from 'antd';
 import type {ColumnsType} from 'antd/es/table';
 import React, {useEffect, useState} from 'react';
 
@@ -32,7 +32,7 @@ const RelationProvider: React.FC<RelationProviderProps> = ({
                                                                providerList,
                                                                onChange,
                                                            }) => {
-    const [notificationApi, contextHolder] = notification.useNotification();
+    const [messageApi, contextHolder] = message.useMessage();
 
     const [data, setData] = useState<DataType[]>([]);
     const [providerType, setProviderType] = useState<string>(options[0].value);
@@ -54,10 +54,7 @@ const RelationProvider: React.FC<RelationProviderProps> = ({
             data.filter((t) => t.providerName === providerName && t.providerType === providerType)
                 .length > 0
         ) {
-            notificationApi['error']({
-                message: '操作失败',
-                description: '重复，已存在相同类型和名称的资源',
-            });
+            messageApi.error('操作失败：已存在相同类型和名称的资源');
             return;
         }
         bindProviderPlanningProvider(planningId, providerType, providerName).then(() => {

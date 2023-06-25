@@ -5,7 +5,7 @@ import {toShortDate} from '@/utils/common';
 import {ProFormSelect, ProFormText} from '@ant-design/pro-components';
 import {QueryFilter} from '@ant-design/pro-form';
 import {ProSchemaValueEnumObj} from '@ant-design/pro-utils/es/typing';
-import {Breadcrumb, Button, Modal, notification, Space, Table, Tag} from 'antd';
+import {Breadcrumb, Button, message, Modal, notification, Space, Table, Tag} from 'antd';
 import type {ColumnsType} from 'antd/es/table';
 import type {TableRowSelection} from 'antd/es/table/interface';
 import React, {useEffect, useState} from 'react';
@@ -97,7 +97,7 @@ const ApiChangeList: React.FC<{
     const [pageNum, setPageNum] = useState<number>(1);
     const [selectedRow, setSelectedRow] = useState<ApiChange.ApiChange | null>(null);
     const [queryParams, setQueryParams] = useState<ApiChange.queryListParams>({affectStatus: 'need_analysis'});
-    const [notificationApi, contextHolder] = notification.useNotification();
+    const [messageApi, contextHolder] = message.useMessage();
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const loadData = (params: ApiChange.queryListParams, pageSize: number, pageNum: number) => {
@@ -147,10 +147,7 @@ const ApiChangeList: React.FC<{
 
     const onChangeStatus = (id: number, status: string, remark: string | undefined) => {
         modifyApiChangeStatus(id, status, remark || '').then(() => {
-            notificationApi['info']({
-                message: '提示',
-                description: '操作成功',
-            });
+            messageApi.info('操作成功');
             loadData(queryParams, pageSize, pageNum);
         });
     };

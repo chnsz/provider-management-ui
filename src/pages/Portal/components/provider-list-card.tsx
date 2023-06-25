@@ -1,6 +1,6 @@
 import ProviderApiList from '@/pages/Portal/components/provider-api-list';
 import {EditOutlined, MinusCircleOutlined} from '@ant-design/icons';
-import {Input, Modal, notification, Select, Space, Switch, Table, Tabs, TabsProps} from 'antd';
+import {Input, message, Modal, notification, Select, Space, Switch, Table, Tabs, TabsProps} from 'antd';
 import type {ColumnsType} from 'antd/es/table';
 import React, {useEffect, useState} from 'react';
 import '../portal.less';
@@ -44,7 +44,7 @@ const ProviderListCard: React.FC<{
 }> = (
     {productName, tableHeight, hideTitle, selectedKey}
 ) => {
-    const [notificationApi, contextHolder] = notification.useNotification();
+    const [messageApi, contextHolder] = message.useMessage();
     const [data, setData] = useState<Provider.Provider[]>([]);
     const [g42Data, setG42Data] = useState<Provider.Provider[]>([]);
     const [flexibleEngineData, setFlexibleEngineData] = useState<Provider.Provider[]>([]);
@@ -211,10 +211,7 @@ const ProviderListCard: React.FC<{
                 return;
             }
             updateSync(row.id, row.cloudName, val).then(() => {
-                notificationApi['info']({
-                    message: '提示',
-                    description: '操作成功',
-                });
+                messageApi.info('操作成功');
                 loadData(productName);
             });
         } else if (fieldName === 'remark') {
@@ -225,10 +222,7 @@ const ProviderListCard: React.FC<{
                 return;
             }
             updateRemark(row.id, row.cloudName, val).then(() => {
-                notificationApi['info']({
-                    message: '提示',
-                    description: '操作成功',
-                });
+                messageApi.info('操作成功');
                 loadData(productName);
             });
         } else if (fieldName === 'relaTag') {
@@ -239,10 +233,7 @@ const ProviderListCard: React.FC<{
                 return;
             }
             updateRelaTag(row.id, row.cloudName, val).then(() => {
-                notificationApi['info']({
-                    message: '提示',
-                    description: '操作成功',
-                });
+                messageApi.info('操作成功');
                 loadData(productName);
             });
         } else if (fieldName === 'schemaSyncStatus') {
@@ -253,10 +244,7 @@ const ProviderListCard: React.FC<{
                 return;
             }
             updateSchemaSyncStatus(row.id, row.cloudName, val).then(() => {
-                notificationApi['info']({
-                    message: '提示',
-                    description: '操作成功',
-                });
+                messageApi.info('操作成功');
                 loadData(productName);
             });
         }
@@ -351,8 +339,8 @@ const ProviderListCard: React.FC<{
                     style={{width: '80%'}}
                     onChange={v => saveProvider('relaTag', v, row)}
                     options={[
-                        {value: 'reference', label: '是'},
-                        {value: 'other', label: '否'},
+                        {value: 'yes', label: '是'},
+                        {value: 'no', label: '否'},
                     ]}
                 />
             }

@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Button, Divider, Input, Modal, notification, Select, Space, Table, Tag} from "antd";
+import {Button, Divider, Input, message, Modal, notification, Select, Space, Table, Tag} from "antd";
 import Provider from "@/pages/Provider";
 import {getProviderBaseList, saveProviderBase} from "@/services/provider/api";
 import {ColumnsType} from "antd/es/table/interface";
@@ -52,7 +52,7 @@ const ProviderBaseDialog: React.FC<{
     const [fieldDesc, setFieldDesc] = useState<string>('');
     const [schemaName, setSchemaName] = useState<string>('');
     const [remark, setRemark] = useState<string>('');
-    const [notificationApi, contextHolder] = notification.useNotification();
+    const [messageApi, contextHolder] = message.useMessage();
     const [expandKey1, setExpandKey1] = useState<string[]>([]);
     const [expandKey2, setExpandKey2] = useState<string[]>([]);
     const [inputFilter, setInputFilter] = useState<string>('');
@@ -61,10 +61,7 @@ const ProviderBaseDialog: React.FC<{
     const showModal = () => {
         if (!props.apiId || !props.providerType || !props.providerName) {
             console.warn('apiId:', props.apiId, 'providerType', props.providerType, 'providerName', props.providerName)
-            notificationApi['warning']({
-                message: '操作失败',
-                description: 'providerName 不可以为空',
-            });
+            messageApi.warning('providerName 不可以为空');
             return
         }
 

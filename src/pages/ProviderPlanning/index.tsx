@@ -9,7 +9,7 @@ import {
     getProviderPlanningList,
 } from '@/services/provider-planning/api';
 import {ExclamationCircleFilled, SendOutlined} from '@ant-design/icons';
-import {Breadcrumb, Button, Modal, notification, Space} from 'antd';
+import {Breadcrumb, Button, message, Modal, notification, Space} from 'antd';
 import React, {useEffect, useState} from 'react';
 import './provider-planning.less';
 // @ts-ignore
@@ -33,7 +33,7 @@ export const defaultVal = {
 const ProviderPlanning: React.FC = () => {
     const [providerPlanningList, setProviderPlanningList] = useState<ProviderPlanning.ProviderPlanning[]>([]);
     const [selectedPlanning, setSelectedPlanning] = useState<ProviderPlanning.ProviderPlanning>(defaultVal);
-    const [notificationApi, contextHolder] = notification.useNotification();
+    const [messageApi, contextHolder] = message.useMessage();
     const location = useLocation();
 
     let page = 1;
@@ -59,10 +59,7 @@ const ProviderPlanning: React.FC = () => {
         getProviderPlanningList(queryParams, 50, pageNum).then((data) => {
             if (data.items.length === 0 && pageNum > 1) {
                 page--
-                notificationApi['info']({
-                    message: '提示',
-                    description: '没有更多数据',
-                });
+                messageApi.warning('没有更多数据');
                 return;
             }
             if (isAppend) {
@@ -128,20 +125,14 @@ const ProviderPlanning: React.FC = () => {
 
     const createKanboardTask = () => {
         if (selectedPlanning.id === 0) {
-            notificationApi['warning']({
-                message: '操作失败',
-                description: '您还没有选择资源规划，请先选择一条资源规划',
-            });
+            messageApi.warning('操作失败：您还没有选择资源规划，请先选择一条资源规划');
             return;
         }
         createPlanningKbTask(selectedPlanning.id).then(p => {
             if (!p.kanboardTask) {
                 return
             }
-            notificationApi['info']({
-                message: '成功',
-                description: '卡片推送成功',
-            });
+            messageApi.info('卡片推送成功');
             setSelectedPlanning(p);
         });
     }

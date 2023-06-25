@@ -2,7 +2,7 @@ import {ProDescriptions} from '@ant-design/pro-components';
 import React, {useEffect, useState} from 'react';
 // @ts-ignore
 import {Scrollbars} from 'react-custom-scrollbars';
-import {Button, Input, notification, Space} from "antd";
+import {Button, Input, message, Space} from "antd";
 import {modifyApiChangeStatus} from "@/services/api/api";
 import AddFeaturePlanningDialog from "@/pages/ProviderPlanning/components/creation-dialog/add-feature-planning-dialog";
 import {openApiExplorer} from "@/pages/Portal";
@@ -20,7 +20,7 @@ const ApiChangeView: React.FC<{
     providers?: string;
     remark?: string;
 }> = (props) => {
-    const [notificationApi, contextHolder] = notification.useNotification();
+    const [messageApi, contextHolder] = message.useMessage();
     const [remark, setRemark] = useState<string>(props.remark || '');
     const [affectStatus, setAffectStatus] = useState<string>(props.affectStatus || '');
 
@@ -33,19 +33,13 @@ const ApiChangeView: React.FC<{
     const onChangeStatus = (status: string, remark: string | undefined) => {
         modifyApiChangeStatus(props.id, status, remark || '').then(() => {
             setAffectStatus('closed');
-            notificationApi['info']({
-                message: '提示',
-                description: '保存成功',
-            });
+            messageApi.info('保存成功');
         })
     }
 
     const onChangeRemark = () => {
         modifyApiChangeStatus(props.id, props.affectStatus || '', remark).then(() => {
-            notificationApi['info']({
-                message: '提示',
-                description: '保存成功',
-            });
+            messageApi.info('保存成功');
         })
     }
 
