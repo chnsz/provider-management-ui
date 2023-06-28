@@ -1,6 +1,6 @@
 import ProviderApiList from '@/pages/Portal/components/provider-api-list';
-import {CheckCircleOutlined, InfoCircleOutlined, MinusCircleOutlined} from '@ant-design/icons';
-import {Modal, Switch, Table, Tabs, TabsProps} from 'antd';
+import {EditOutlined, MinusCircleOutlined} from '@ant-design/icons';
+import {Input, message, Modal, notification, Select, Space, Switch, Table, Tabs, TabsProps} from 'antd';
 import type {ColumnsType} from 'antd/es/table';
 import React, {useEffect, useState} from 'react';
 import '../portal.less';
@@ -9,33 +9,52 @@ import {
     changePrePaidSupport,
     changeTagSupport,
     changeUtFlag,
-    getProviderList
+    getProviderList,
+    getProviderSyncList,
+    updateRelaTag,
+    updateRemark,
+    updateSchemaSyncStatus,
+    updateSync
 } from "@/services/provider/api";
 // @ts-ignore
 import {Scrollbars} from 'react-custom-scrollbars';
 import Provider from "@/pages/Provider";
 
-const getFeatureState = (supportState: string, record: Provider.Provider) => {
-    if (record.type === 'DataSource') {
-        return <span><MinusCircleOutlined style={{color: 'rgba(0, 0, 0, 0.43)'}}/></span>
-    }
 
-    switch (supportState) {
-        case 'true':
-            return <span><CheckCircleOutlined style={{color: '#5ec829'}}/> 支持</span>
-        case 'false':
-            return <span><CheckCircleOutlined style={{color: '#faad14'}}/> 不支持</span>
-    }
+const EditInput: React.FC<{ val: string, onBlur: (v: string) => any }> = ({val, onBlur}) => {
+    const [value, setValue] = useState(val);
+    useEffect(()=>{
+        setValue(val);
+    }, [val]);
 
-    return <span><InfoCircleOutlined style={{color: '#fa8c16'}} title={'未知'}/></span>
+    return <>
+        <Input value={value} bordered={false} maxLength={16}
+               onChange={(v) => setValue(v.target.value)}
+               onBlur={(v) => onBlur(v.target.value)}
+        />
+    </>
 }
 
-const ProviderListCard: React.FC<{ productName: string }> = ({productName}) => {
+
+const ProviderListCard: React.FC<{
+    productName: string,
+    tableHeight?: string,
+    hideTitle?: boolean,
+    selectedKey?: string
+}> = (
+    {productName, tableHeight, hideTitle, selectedKey}
+) => {
+    const [messageApi, contextHolder] = message.useMessage();
     const [data, setData] = useState<Provider.Provider[]>([]);
     const [g42Data, setG42Data] = useState<Provider.Provider[]>([]);
     const [flexibleEngineData, setFlexibleEngineData] = useState<Provider.Provider[]>([]);
     const [apiList, setApiList] = useState<Api.Detail[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const tabHeight = tableHeight || '380px';
+    const [huaweiCount, setHuaweiCount] = useState<number>(0)
+    const [g42Count, setG42Count] = useState<number>(0)
+    const [feCount, setFeCount] = useState<number>(0)
+    const defSelected = selectedKey || '1';
 
     const showApiList = (record: Provider.Provider) => {
         return () => {
@@ -44,20 +63,39 @@ const ProviderListCard: React.FC<{ productName: string }> = ({productName}) => {
         }
     };
 
-    useEffect(() => {
+    const loadData = (productName: string) => {
         getProviderList({cloudName: 'HuaweiCloud', productName: productName}, 100, 1)
             .then((rsp) => {
                 setData(rsp.items);
+                setHuaweiCount(rsp.items.length)
             });
 
-        getProviderList({cloudName: 'G42Cloud', productName: productName}, 100, 1)
+        getProviderSyncList({cloudName: 'G42Cloud', productName: productName})
             .then((rsp) => {
                 setG42Data(rsp.items);
+                let count = 0;
+                rsp.items.forEach(t => {
+                    if (t.g42Name) {
+                        count++
+                    }
+                })
+                setG42Count(count);
             });
-        getProviderList({cloudName: 'FlexibleEngineCloud', productName: productName}, 100, 1)
+        getProviderSyncList({cloudName: 'FlexibleEngineCloud', productName: productName})
             .then((rsp) => {
                 setFlexibleEngineData(rsp.items);
+                let count = 0;
+                rsp.items.forEach(t => {
+                    if (t.feName) {
+                        count++
+                    }
+                })
+                setFeCount(count);
             });
+    }
+
+    useEffect(() => {
+        loadData(productName);
     }, [productName]);
 
     const onChange = (type: string, record: Provider.Provider) => {
@@ -164,6 +202,54 @@ const ProviderListCard: React.FC<{ productName: string }> = ({productName}) => {
         },
     ];
 
+    const saveProvider = (fieldName: string, val: string, row: Provider.Provider) => {
+        if (fieldName === 'name') {
+            if (row.cloudName === 'G42Cloud' && val === row.g42Name) {
+                return;
+            }
+            if (row.cloudName === 'FlexibleEngineCloud' && val === row.feName) {
+                return;
+            }
+            updateSync(row.id, row.cloudName, val).then(() => {
+                messageApi.info('操作成功');
+                loadData(productName);
+            });
+        } else if (fieldName === 'remark') {
+            if (row.cloudName === 'G42Cloud' && val === row.g42Remark) {
+                return;
+            }
+            if (row.cloudName === 'FlexibleEngineCloud' && val === row.feRemark) {
+                return;
+            }
+            updateRemark(row.id, row.cloudName, val).then(() => {
+                messageApi.info('操作成功');
+                loadData(productName);
+            });
+        } else if (fieldName === 'relaTag') {
+            if (row.cloudName === 'G42Cloud' && val === row.g42RelaTag) {
+                return;
+            }
+            if (row.cloudName === 'FlexibleEngineCloud' && val === row.feRelaTag) {
+                return;
+            }
+            updateRelaTag(row.id, row.cloudName, val).then(() => {
+                messageApi.info('操作成功');
+                loadData(productName);
+            });
+        } else if (fieldName === 'schemaSyncStatus') {
+            if (row.cloudName === 'G42Cloud' && val === row.g42SchemaSyncStatus) {
+                return;
+            }
+            if (row.cloudName === 'FlexibleEngineCloud' && val === row.feSchemaSyncStatus) {
+                return;
+            }
+            updateSchemaSyncStatus(row.id, row.cloudName, val).then(() => {
+                messageApi.info('操作成功');
+                loadData(productName);
+            });
+        }
+    }
+
     const partnerColumns: ColumnsType<Provider.Provider> = [
         {
             title: '序号',
@@ -175,47 +261,121 @@ const ProviderListCard: React.FC<{ productName: string }> = ({productName}) => {
         {
             title: '资源类型',
             dataIndex: 'type',
-            width: '8%',
+            width: 100,
         },
         {
             title: 'Category',
             dataIndex: 'category',
             ellipsis: true,
-            width: '16%',
+            width: 240,
         },
         {
-            title: '名称',
+            title: '华为云资源名称',
             dataIndex: 'name',
-            render: (name) => <a href="#">{name}</a>,
         },
         {
-            title: '包周期',
-            width: '7%',
-            align: 'center',
-            dataIndex: 'prePaidSupport',
-            render: commonFeatureRender('prePaidSupport'),
+            title: <>伙伴云资源名称<EditOutlined style={{color: '#6d6d6d'}}/></>,
+            dataIndex: 'name',
+            render: (v, row) => {
+                let name = ''
+                if (row.cloudName === 'G42Cloud') {
+                    name = row.g42Name;
+                } else if (row.cloudName === 'FlexibleEngineCloud') {
+                    name = row.feName;
+                }
+                return <Input defaultValue={name} bordered={false}
+                              onBlur={(v) => {
+                                  saveProvider('name', v.target.value, row)
+                              }}
+                />
+            },
         },
         {
-            title: '标签',
-            width: '7%',
-            align: 'center',
-            dataIndex: 'tagSupport',
-            render: commonFeatureRender('tagSupport'),
+            title: <>备注<EditOutlined style={{color: '#6d6d6d'}}/></>,
+            width: 360,
+            render: (v: any, row) => {
+                let remark = ''
+                if (row.cloudName === 'G42Cloud') {
+                    remark = row.g42Remark;
+                } else if (row.cloudName === 'FlexibleEngineCloud') {
+                    remark = row.feRemark;
+                }
+                return <>
+                    <Space>
+                        <EditInput val={remark} onBlur={(v) =>saveProvider('remark', v, row)}/>
+                        <a onClick={() => {
+                            saveProvider('remark', '缺少API', row)
+                        }}>
+                            缺少API
+                        </a>
+                        <a onClick={() => {
+                            saveProvider('remark', '无服务', row)
+                        }}>
+                            无服务
+                        </a>
+                        <a onClick={() => {
+                            saveProvider('remark', '待支持', row)
+                        }}>
+                            待支持
+                        </a>
+                    </Space>
+                </>
+            }
         },
         {
-            title: '企业项目',
-            width: '7%',
-            align: 'center',
-            dataIndex: 'epsSupport',
-            render: commonFeatureRender('epsSupport'),
+            title: <>是否引用<EditOutlined style={{color: '#6d6d6d'}}/></>,
+            dataIndex: 'g42RelaTag',
+            width: '100px',
+            render: (v: any, row) => {
+                let relaTag = ''
+                if (row.cloudName === 'G42Cloud') {
+                    relaTag = row.g42RelaTag;
+                } else if (row.cloudName === 'FlexibleEngineCloud') {
+                    relaTag = row.feRelaTag;
+                }
+                return <Select
+                    defaultValue={relaTag}
+                    bordered={false}
+                    style={{width: '80%'}}
+                    onChange={v => saveProvider('relaTag', v, row)}
+                    options={[
+                        {value: 'yes', label: '是'},
+                        {value: 'no', label: '否'},
+                    ]}
+                />
+            }
+        },
+        {
+            title: <>参数一致性<EditOutlined style={{color: '#6d6d6d'}}/></>,
+            dataIndex: 'g42SchemaSyncStatus',
+            width: '100px',
+            render: (v: any, row) => {
+                let schemaSyncStatus = ''
+                if (row.cloudName === 'G42Cloud') {
+                    schemaSyncStatus = row.g42SchemaSyncStatus;
+                } else if (row.cloudName === 'FlexibleEngineCloud') {
+                    schemaSyncStatus = row.feSchemaSyncStatus;
+                }
+
+                return <Select
+                    defaultValue={schemaSyncStatus}
+                    style={{width: '80%'}}
+                    bordered={false}
+                    onChange={v => saveProvider('schemaSyncStatus', v, row)}
+                    options={[
+                        {value: 'yes', label: '是'},
+                        {value: 'no', label: '否'},
+                    ]}
+                />
+            }
         },
     ];
 
     const items: TabsProps['items'] = [
         {
             key: '1',
-            label: <>华为云 ({data.length})</>,
-            children: <div style={{height: '380px'}}>
+            label: <>华为云 ({huaweiCount})</>,
+            children: <div style={{height: tabHeight}}>
                 <Scrollbars>
                     <Table size={'middle'}
                            columns={huaweiCloudColumns}
@@ -228,10 +388,10 @@ const ProviderListCard: React.FC<{ productName: string }> = ({productName}) => {
         },
         {
             key: '2',
-            label: <>法电 ({flexibleEngineData.length})</>,
-            children: <div style={{height: '380px'}}>
+            label: <>法电 ({feCount})</>,
+            children: <div style={{height: tabHeight}}>
                 <Scrollbars>
-                    <Table size={'middle'}
+                    <Table size={'small'}
                            columns={partnerColumns}
                            dataSource={flexibleEngineData}
                            pagination={false}
@@ -242,10 +402,10 @@ const ProviderListCard: React.FC<{ productName: string }> = ({productName}) => {
         },
         {
             key: '3',
-            label: <>G42 ({g42Data.length})</>,
-            children: <div style={{height: '380px'}}>
+            label: <>G42 ({g42Count})</>,
+            children: <div style={{height: tabHeight}}>
                 <Scrollbars>
-                    <Table size={'middle'}
+                    <Table size={'small'}
                            columns={partnerColumns}
                            dataSource={g42Data}
                            pagination={false}
@@ -258,10 +418,11 @@ const ProviderListCard: React.FC<{ productName: string }> = ({productName}) => {
 
     return (
         <>
+            {contextHolder}
             <div className={'portal-card'}>
-                <div className={'header'}>Provider 列表</div>
+                {hideTitle ? <></> : <div className={'header'}>Provider 列表</div>}
                 <div className={'container'}>
-                    <Tabs defaultActiveKey="1" items={items}/>
+                    <Tabs defaultActiveKey={defSelected} items={items}/>
                 </div>
             </div>
             <Modal

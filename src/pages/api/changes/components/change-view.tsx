@@ -2,9 +2,10 @@ import {ProDescriptions} from '@ant-design/pro-components';
 import React, {useEffect, useState} from 'react';
 // @ts-ignore
 import {Scrollbars} from 'react-custom-scrollbars';
-import {Button, Input, notification, Space} from "antd";
+import {Button, Input, message, Space} from "antd";
 import {modifyApiChangeStatus} from "@/services/api/api";
 import AddFeaturePlanningDialog from "@/pages/ProviderPlanning/components/creation-dialog/add-feature-planning-dialog";
+import {openApiExplorer} from "@/pages/Portal";
 
 const ApiChangeView: React.FC<{
     id: number;
@@ -12,13 +13,14 @@ const ApiChangeView: React.FC<{
     serviceName: string;
     apiGroup: string;
     apiName: string;
+    uri: string;
     content: string;
     apiNameEn: string;
     affectStatus?: string;
     providers?: string;
     remark?: string;
 }> = (props) => {
-    const [notificationApi, contextHolder] = notification.useNotification();
+    const [messageApi, contextHolder] = message.useMessage();
     const [remark, setRemark] = useState<string>(props.remark || '');
     const [affectStatus, setAffectStatus] = useState<string>(props.affectStatus || '');
 
@@ -31,19 +33,13 @@ const ApiChangeView: React.FC<{
     const onChangeStatus = (status: string, remark: string | undefined) => {
         modifyApiChangeStatus(props.id, status, remark || '').then(() => {
             setAffectStatus('closed');
-            notificationApi['info']({
-                message: '提示',
-                description: '保存成功',
-            });
+            messageApi.info('保存成功');
         })
     }
 
     const onChangeRemark = () => {
         modifyApiChangeStatus(props.id, props.affectStatus || '', remark).then(() => {
-            notificationApi['info']({
-                message: '提示',
-                description: '保存成功',
-            });
+            messageApi.info('保存成功');
         })
     }
 
@@ -64,17 +60,11 @@ const ApiChangeView: React.FC<{
                 <ProDescriptions.Item span={2} label="API 分组" valueType="text">
                     {props.apiGroup}
                 </ProDescriptions.Item>
-                <ProDescriptions.Item span={2} label="API 名称" valueType="text">
-                    {props.apiName}
+                <ProDescriptions.Item span={5} label="API 名称" valueType="text">
+                    {props.apiName} / {props.apiNameEn}
                 </ProDescriptions.Item>
-                <ProDescriptions.Item span={8} label="在线调试" valueType="text">
-                    <a
-                        href={`https://console.huaweicloud.com/apiexplorer/#/openapi/${props.serviceName}/doc?api=${props.apiNameEn}`}
-                        target={'_blank'}
-                        rel={'noopener noreferrer'}
-                    >
-                        API Explorer
-                    </a>
+                <ProDescriptions.Item span={5} label="在线调试" valueType="text">
+                    {openApiExplorer(props.serviceName, props.apiNameEn, props.uri)}
                 </ProDescriptions.Item>
 
                 <ProDescriptions.Item span={6} label="Provider" valueType="text">
@@ -100,9 +90,11 @@ const ApiChangeView: React.FC<{
                                               }}/>
                 </ProDescriptions.Item>
             </ProDescriptions>
-            <Scrollbars>
-                <div dangerouslySetInnerHTML={{__html: content}}/>
-            </Scrollbars>
+            <div style={{height: 'calc(100% - 100px)'}}>
+                <Scrollbars>
+                    <div dangerouslySetInnerHTML={{__html: content}}/>
+                </Scrollbars>
+            </div>
             {contextHolder}
         </>
     );

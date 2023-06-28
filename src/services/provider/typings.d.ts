@@ -6,6 +6,14 @@ declare namespace Provider {
         productName: string;
         category: string;
         name: string;
+        g42Name: string;
+        g42RelaTag: 'reference' | 'other';
+        g42SchemaSyncStatus: 'yes' | 'no';
+        g42Remark: string;
+        feName: string;
+        feRelaTag: 'reference' | 'other';
+        feSchemaSyncStatus: 'yes' | 'no';
+        feRemark: string;
         activeStatus: string;
         publishStatus: string;
         releaseDate: string;
@@ -62,5 +70,45 @@ declare namespace Provider {
         "closedAt": string;
         "created": string;
         "updated": string;
+    }
+
+    type ProviderBaseSum = {
+        "providerType": string;
+        "providerName": string;
+        "newField": number;
+        "deprecated": number;
+        "typeChange": number;
+        "descChange": number;
+        "typeAndDescChange": number;
+        "apiId": number;
+        "apiDetail"?: Api.Detail;
+    }
+
+    type ApiFieldChange = {
+        "id": number;
+        "apiId": number;
+        "changeEvent": string;
+        "providerType": string;
+        "providerName": string;
+        "paramType": string;
+        "fieldName": string;
+        "fieldType": string;
+        "fieldIn": string;
+        "fieldDesc": string;
+    }
+
+    type ProviderBase = {
+        "id": number;
+        "apiId": number;
+        "paramType": string;
+        "fieldName": string;
+        "fieldType": string;
+        "fieldIn": string;
+        "fieldDesc": string;
+        "useStatus": string;
+        "schemaName": string;
+        "remark": string;
+        "manualTag": string;
+        "changeEvent"?: ApiFieldChange;
     }
 }

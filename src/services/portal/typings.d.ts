@@ -86,8 +86,12 @@ declare namespace Portal {
         featurePartCovered: number;
         featureNotCovered: number;
 
-        providerCount: number;
-        dataSourceCount: number;
+        huaweiCloudProviderCount: number;
+        huaweiCloudDataSourceCount: number;
+        g42ProviderCount: number;
+        g42DataSourceCount: number;
+        feProviderCount: number;
+        feDataSourceCount: number;
     }
 
     type PortalSum = {

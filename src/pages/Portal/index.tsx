@@ -228,7 +228,7 @@ export const openApiExplorer = (
     const innerText = text || 'API Explorer';
     const title = text ? text + '（点击跳转 API Explorer）' : '（点击跳转 API Explorer）';
 
-    let version = uri.split('/')[1];
+    let version = uri.split('/')[1] || '';
     if (version.toLowerCase().indexOf('v') !== 0) {
         version = '';
     }

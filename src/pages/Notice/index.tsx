@@ -4,7 +4,7 @@ import {getNotice, getNoticeList, markNoticeNotRead, markNoticeRead} from '@/ser
 import {getProductList, getUserList} from '@/services/product/api';
 import {toLongDate, toShortDate} from '@/utils/common';
 import {ProDescriptions} from '@ant-design/pro-components';
-import {Breadcrumb, Button, notification, Radio, Select, Space} from 'antd';
+import {Breadcrumb, Button, message, notification, Radio, Select, Space} from 'antd';
 import {ButtonType} from 'antd/es/button/buttonHelpers';
 import {SelectProps} from 'antd/es/select';
 import classNames from 'classnames';
@@ -57,7 +57,7 @@ const setNoticeIsRead = function (
 
 const Notice: React.FC = () => {
     const location = useLocation();
-    const [notificationApi, contextHolder] = notification.useNotification();
+    const [messageApi, contextHolder] = message.useMessage();
     const [noticeList, setNoticeList] = useState<Notice.Notice[]>([]);
     const [selectedNotice, setSelectedNotice] = useState<Notice.Notice | undefined>();
     const [ownerList, setOwnerList] = useState<string[]>([]);
@@ -77,10 +77,7 @@ const Notice: React.FC = () => {
             let items = rsp.items || [];
 
             if (isNotice && items.length === 0) {
-                notificationApi['info']({
-                    message: '提示',
-                    description: '没有数据了',
-                });
+                messageApi.warning('没有数据了');
                 return;
             }
             if (isAppend) {
