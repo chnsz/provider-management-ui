@@ -44,7 +44,7 @@ const ConvertProviderName: React.FC = () => {
         </div>
         <Spin spinning={loading}>
             <DiffEditor
-                height={'calc(100vh - 160px)'}
+                height={'calc(100vh - 220px)'}
                 language={'go'}
                 modified={modified}
                 onChange={onChange}

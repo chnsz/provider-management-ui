@@ -57,13 +57,13 @@
     path: '/account/settings',
     name: 'account.settings',
     hideInMenu: true,
-    component: './user/user-setting',
+    component: './User/user-setting',
   },
   {
     path: '/account/changePwd',
     name: 'account.changePwd',
     hideInMenu: true,
-    component: './user/change-pwd',
+    component: './User/change-pwd',
   },
   //------------------------------------
   {
@@ -108,7 +108,7 @@
       {
         name: 'login',
         path: '/user/login',
-        component: './user/Login',
+        component: './User/Login',
       },
       {
         component: './404',

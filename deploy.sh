@@ -2,11 +2,12 @@
 
 npm run build
 
+current_path=$(pwd)
 # 本地文件夹路径
-local_folder="/mnt/d/code/pms-ui-new/dist"
-local_dockerfile="/mnt/d/code/pms-ui-new/Dockerfile"
-local_build_file="/mnt/d/code/pms-ui-new/remote_build.sh"
-local_nginx_config="/mnt/d/code/pms-ui-new/default.conf"
+local_folder="${current_path}/dist"
+local_dockerfile="${current_path}/Dockerfile"
+local_build_file="${current_path}/remote_build.sh"
+local_nginx_config="${current_path}/default.conf"
 
 # 远程服务器的用户名和IP地址
 remote_user="root"

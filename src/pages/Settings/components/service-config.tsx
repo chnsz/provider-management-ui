@@ -120,9 +120,9 @@ const OwnerView: React.FC<{
         allowClear
         onClear={onClear}
         onChange={
-            (val: { value: string; label: React.ReactNode }) => {
-                setValue(val.value);
-                onChange(val.value);
+            (val) => {
+                setValue(val);
+                onChange(val);
             }}
         options={ownerList}
     />
