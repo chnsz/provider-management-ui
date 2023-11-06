@@ -5,8 +5,8 @@ import {getProductList, getUserList} from '@/services/product/api';
 import {toLongDate, toShortDate} from '@/utils/common';
 import {ProDescriptions} from '@ant-design/pro-components';
 import {Breadcrumb, Button, message, notification, Radio, Select, Space} from 'antd';
-import {ButtonType} from 'antd/es/button/buttonHelpers';
-import {SelectProps} from 'antd/es/select';
+import type {ButtonType} from 'antd/es/button/buttonHelpers';
+import type {SelectProps} from 'antd/es/select';
 import classNames from 'classnames';
 import React, {useEffect, useState} from 'react';
 import './notice.less';
@@ -14,6 +14,7 @@ import './notice.less';
 import {Scrollbars} from 'react-custom-scrollbars';
 import {useLocation} from 'umi';
 import AddFeaturePlanningDialog from "@/pages/ProviderPlanning/components/creation-dialog/add-feature-planning-dialog";
+import CustomBreadcrumb from "@/components/Breadcrumb";
 
 export const getNoticeTypeName = function (typeVal: string): string {
     switch (typeVal) {
@@ -74,7 +75,7 @@ const Notice: React.FC = () => {
             50,
             currentPageNum,
         ).then((rsp) => {
-            let items = rsp.items || [];
+            const items = rsp.items || [];
 
             if (isNotice && items.length === 0) {
                 messageApi.warning('没有数据了');
@@ -200,7 +201,7 @@ const Notice: React.FC = () => {
 
     return (
         <LRLayout className={'notice'}>
-            <Breadcrumb items={[{title: '首页'}, {title: '通知消息'}]}/>
+            <CustomBreadcrumb items={[{title: '首页'}, {title: '通知消息'}]}/>
             <Header>
                 {contextHolder}
                 <div className={'top'}>
@@ -319,14 +320,15 @@ const Notice: React.FC = () => {
                             >
                                 标记为未读
                             </Button>
-                            <AddFeaturePlanningDialog productName={(selectedNotice?.productName) || ''} onClosed={() => {
-                            }}/>
+                            <AddFeaturePlanningDialog productName={(selectedNotice?.productName) || ''}
+                                                      onClosed={() => {
+                                                      }}/>
                         </Space>
                     </div>
                     <div>
                         <div className={'detail-title'}>{selectedNotice?.title}</div>
                         <ProDescriptions column={5}>
-                            <ProDescriptions.Item span={1}></ProDescriptions.Item>
+                            <ProDescriptions.Item span={1}/>
                             <ProDescriptions.Item span={1} label="所属服务" valueType="text">
                                 {selectedNotice?.productName}
                             </ProDescriptions.Item>
@@ -336,7 +338,7 @@ const Notice: React.FC = () => {
                             <ProDescriptions.Item span={1} label="日期" valueType="text">
                                 {toLongDate(selectedNotice?.created)}
                             </ProDescriptions.Item>
-                            <ProDescriptions.Item span={1}></ProDescriptions.Item>
+                            <ProDescriptions.Item span={1}/>
                         </ProDescriptions>
                         <div className={'detail'}>
                             <MarkDownViewer content={selectedNotice?.content}/>

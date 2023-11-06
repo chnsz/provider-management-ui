@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {Table} from "antd";
-import {ColumnsType} from "antd/es/table";
+import type {ColumnsType} from "antd/es/table";
 import {getSyncTypeName} from "@/pages/Partner/components/provider_sync_issue_dialog";
 import {columnRender, getDefaultSyncSum, getProviderIssuesData} from "@/pages/Partner/components/provider_sync_issue";
 import {CloudName} from "@/global";
 
-const preDocsData: { [type: string]: Provider.ProviderSyncSum } = {
+const preDocsData: Record<string, Provider.ProviderSyncSum> = {
     DocsMissingField: getDefaultSyncSum('DocsMissingField'),
     InvalidDocsField: getDefaultSyncSum('InvalidDocsField'),
     SchemaDocsFieldConflict: getDefaultSyncSum('SchemaDocsFieldConflict'),

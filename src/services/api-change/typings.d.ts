@@ -26,4 +26,33 @@ declare namespace ApiChange {
         apiName?: string;
         affectStatus?: string;
     };
+
+    type ApiFieldChange = {
+        id: number;
+        apiId: number;
+        changeEvent: string;
+        providerType: string;
+        providerName: string;
+        paramType: string;
+        fieldName: string;
+        fieldType: string;
+        fieldIn: string;
+        fieldDesc: string;
+        status: string;
+        remark: string;
+        daysUsed: number;
+        created: string;
+        updated: string;
+
+        api: Api.Detail;
+    }
+
+    type ApiFieldChangeQuery = {
+        owner: string;
+        providerType?: string;
+        providerName?: string;
+        fieldName?: string;
+        changeEvent?: string;
+        status?: string;
+    }
 }

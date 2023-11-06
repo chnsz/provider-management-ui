@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Form, Input, Modal, Select} from 'antd';
-import {SelectProps} from "antd/es/select";
+import type {SelectProps} from "antd/es/select";
 import {getProductList} from "@/services/product/api";
 import {createProductFeature} from "@/services/product-feature/api";
 

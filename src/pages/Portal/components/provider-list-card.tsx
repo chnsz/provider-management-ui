@@ -1,6 +1,7 @@
 import ProviderApiList from '@/pages/Portal/components/provider-api-list';
 import {EditOutlined, MinusCircleOutlined} from '@ant-design/icons';
-import {Input, message, Modal, notification, Select, Space, Switch, Table, Tabs, TabsProps} from 'antd';
+import type {TabsProps} from 'antd';
+import {Input, message, Modal, Select, Space, Switch, Table, Tabs} from 'antd';
 import type {ColumnsType} from 'antd/es/table';
 import React, {useEffect, useState} from 'react';
 import '../portal.less';
@@ -18,17 +19,16 @@ import {
 } from "@/services/provider/api";
 // @ts-ignore
 import {Scrollbars} from 'react-custom-scrollbars';
-import Provider from "@/pages/Provider";
-
+import {CloudName} from "@/global";
 
 const EditInput: React.FC<{ val: string, onBlur: (v: string) => any }> = ({val, onBlur}) => {
     const [value, setValue] = useState(val);
-    useEffect(()=>{
+    useEffect(() => {
         setValue(val);
     }, [val]);
 
     return <>
-        <Input value={value} bordered={false} maxLength={16}
+        <Input value={value} maxLength={16}
                onChange={(v) => setValue(v.target.value)}
                onBlur={(v) => onBlur(v.target.value)}
         />
@@ -63,15 +63,15 @@ const ProviderListCard: React.FC<{
         }
     };
 
-    const loadData = (productName: string) => {
-        getProviderList({cloudName: 'HuaweiCloud', productName: productName}, 100, 1)
+    const loadData = (prodName: string) => {
+        getProviderList({cloudName: CloudName.HuaweiCloud, productName: prodName}, 100, 1)
             .then((rsp) => {
                 setData(rsp.items);
                 setHuaweiCount(rsp.items.length)
             });
 
-        getProviderSyncList({cloudName: 'G42Cloud', productName: productName})
-            .then((rsp) => {
+        getProviderSyncList({cloudName: CloudName.G42Cloud, productName: prodName})
+            .then((rsp: Global.List<Provider.Provider[]>) => {
                 setG42Data(rsp.items);
                 let count = 0;
                 rsp.items.forEach(t => {
@@ -81,8 +81,8 @@ const ProviderListCard: React.FC<{
                 })
                 setG42Count(count);
             });
-        getProviderSyncList({cloudName: 'FlexibleEngineCloud', productName: productName})
-            .then((rsp) => {
+        getProviderSyncList({cloudName: CloudName.FlexibleEngineCloud, productName: prodName})
+            .then((rsp: Global.List<Provider.Provider[]>) => {
                 setFlexibleEngineData(rsp.items);
                 let count = 0;
                 rsp.items.forEach(t => {
@@ -131,19 +131,20 @@ const ProviderListCard: React.FC<{
             title: '序号',
             dataIndex: 'serialNo',
             align: 'center',
-            width: 80,
+            width: 45,
             render: (v, r, i) => i + 1,
         },
         {
             title: '资源类型',
             dataIndex: 'type',
+            ellipsis: true,
             width: '8%',
         },
         {
             title: 'Category',
             dataIndex: 'category',
             ellipsis: true,
-            width: '16%',
+            width: 100,
         },
         {
             title: '名称',
@@ -162,7 +163,7 @@ const ProviderListCard: React.FC<{
             ),
         },
         {
-            title: 'UT 覆盖率（%）',
+            title: 'UT覆盖率(%)',
             width: '120px',
             align: 'center',
             dataIndex: 'utCoverage',
@@ -170,7 +171,7 @@ const ProviderListCard: React.FC<{
                 return (
                     <>
                         <Switch style={{width: '60px'}}
-                                defaultChecked={record.utFlag === 'full_coverage'}
+                                defaultChecked={record.utFlag === 'full_coverage' || text > 80}
                                 checkedChildren={text}
                                 unCheckedChildren={text}
                                 onChange={onChange('utFlag', record)}
@@ -204,10 +205,10 @@ const ProviderListCard: React.FC<{
 
     const saveProvider = (fieldName: string, val: string, row: Provider.Provider) => {
         if (fieldName === 'name') {
-            if (row.cloudName === 'G42Cloud' && val === row.g42Name) {
+            if (row.cloudName === CloudName.G42Cloud && val === row.g42Name) {
                 return;
             }
-            if (row.cloudName === 'FlexibleEngineCloud' && val === row.feName) {
+            if (row.cloudName === CloudName.FlexibleEngineCloud && val === row.feName) {
                 return;
             }
             updateSync(row.id, row.cloudName, val).then(() => {
@@ -215,10 +216,10 @@ const ProviderListCard: React.FC<{
                 loadData(productName);
             });
         } else if (fieldName === 'remark') {
-            if (row.cloudName === 'G42Cloud' && val === row.g42Remark) {
+            if (row.cloudName === CloudName.G42Cloud && val === row.g42Remark) {
                 return;
             }
-            if (row.cloudName === 'FlexibleEngineCloud' && val === row.feRemark) {
+            if (row.cloudName === CloudName.FlexibleEngineCloud && val === row.feRemark) {
                 return;
             }
             updateRemark(row.id, row.cloudName, val).then(() => {
@@ -226,10 +227,10 @@ const ProviderListCard: React.FC<{
                 loadData(productName);
             });
         } else if (fieldName === 'relaTag') {
-            if (row.cloudName === 'G42Cloud' && val === row.g42RelaTag) {
+            if (row.cloudName === CloudName.G42Cloud && val === row.g42RelaTag) {
                 return;
             }
-            if (row.cloudName === 'FlexibleEngineCloud' && val === row.feRelaTag) {
+            if (row.cloudName === CloudName.FlexibleEngineCloud && val === row.feRelaTag) {
                 return;
             }
             updateRelaTag(row.id, row.cloudName, val).then(() => {
@@ -237,10 +238,10 @@ const ProviderListCard: React.FC<{
                 loadData(productName);
             });
         } else if (fieldName === 'schemaSyncStatus') {
-            if (row.cloudName === 'G42Cloud' && val === row.g42SchemaSyncStatus) {
+            if (row.cloudName === CloudName.G42Cloud && val === row.g42SchemaSyncStatus) {
                 return;
             }
-            if (row.cloudName === 'FlexibleEngineCloud' && val === row.feSchemaSyncStatus) {
+            if (row.cloudName === CloudName.FlexibleEngineCloud && val === row.feSchemaSyncStatus) {
                 return;
             }
             updateSchemaSyncStatus(row.id, row.cloudName, val).then(() => {
@@ -255,19 +256,20 @@ const ProviderListCard: React.FC<{
             title: '序号',
             dataIndex: 'serialNo',
             align: 'center',
-            width: 80,
+            width: 45,
             render: (v, r, i) => i + 1,
         },
         {
             title: '资源类型',
             dataIndex: 'type',
-            width: 100,
+            ellipsis: true,
+            width: 80,
         },
         {
             title: 'Category',
             dataIndex: 'category',
             ellipsis: true,
-            width: 240,
+            width: 120,
         },
         {
             title: '华为云资源名称',
@@ -278,33 +280,33 @@ const ProviderListCard: React.FC<{
             dataIndex: 'name',
             render: (v, row) => {
                 let name = ''
-                if (row.cloudName === 'G42Cloud') {
+                if (row.cloudName === CloudName.G42Cloud) {
                     name = row.g42Name;
-                } else if (row.cloudName === 'FlexibleEngineCloud') {
+                } else if (row.cloudName === CloudName.FlexibleEngineCloud) {
                     name = row.feName;
                 }
                 return <Input defaultValue={name} bordered={false}
-                              onBlur={(v) => {
-                                  saveProvider('name', v.target.value, row)
+                              onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+                                  saveProvider('name', e.target.value, row)
                               }}
                 />
             },
         },
         {
             title: <>备注<EditOutlined style={{color: '#6d6d6d'}}/></>,
-            width: 360,
+            width: 250,
             render: (v: any, row) => {
                 let remark = ''
-                if (row.cloudName === 'G42Cloud') {
+                if (row.cloudName === CloudName.G42Cloud) {
                     remark = row.g42Remark;
-                } else if (row.cloudName === 'FlexibleEngineCloud') {
+                } else if (row.cloudName === CloudName.FlexibleEngineCloud) {
                     remark = row.feRemark;
                 }
                 return <>
+                    <EditInput val={remark} onBlur={(val: string) => saveProvider('remark', val, row)}/>
                     <Space>
-                        <EditInput val={remark} onBlur={(v) =>saveProvider('remark', v, row)}/>
                         <a onClick={() => {
-                            saveProvider('remark', '缺少API', row)
+                            saveProvider('remark', '缺API', row)
                         }}>
                             缺少API
                         </a>
@@ -323,45 +325,21 @@ const ProviderListCard: React.FC<{
             }
         },
         {
-            title: <>是否引用<EditOutlined style={{color: '#6d6d6d'}}/></>,
+            title: <>引用<EditOutlined style={{color: '#6d6d6d'}}/></>,
             dataIndex: 'g42RelaTag',
-            width: '100px',
+            width: '90px',
             render: (v: any, row) => {
                 let relaTag = ''
-                if (row.cloudName === 'G42Cloud') {
+                if (row.cloudName === CloudName.G42Cloud) {
                     relaTag = row.g42RelaTag;
-                } else if (row.cloudName === 'FlexibleEngineCloud') {
+                } else if (row.cloudName === CloudName.FlexibleEngineCloud) {
                     relaTag = row.feRelaTag;
                 }
                 return <Select
                     defaultValue={relaTag}
                     bordered={false}
                     style={{width: '80%'}}
-                    onChange={v => saveProvider('relaTag', v, row)}
-                    options={[
-                        {value: 'yes', label: '是'},
-                        {value: 'no', label: '否'},
-                    ]}
-                />
-            }
-        },
-        {
-            title: <>参数一致性<EditOutlined style={{color: '#6d6d6d'}}/></>,
-            dataIndex: 'g42SchemaSyncStatus',
-            width: '100px',
-            render: (v: any, row) => {
-                let schemaSyncStatus = ''
-                if (row.cloudName === 'G42Cloud') {
-                    schemaSyncStatus = row.g42SchemaSyncStatus;
-                } else if (row.cloudName === 'FlexibleEngineCloud') {
-                    schemaSyncStatus = row.feSchemaSyncStatus;
-                }
-
-                return <Select
-                    defaultValue={schemaSyncStatus}
-                    style={{width: '80%'}}
-                    bordered={false}
-                    onChange={v => saveProvider('schemaSyncStatus', v, row)}
+                    onChange={(val: string) => saveProvider('relaTag', val, row)}
                     options={[
                         {value: 'yes', label: '是'},
                         {value: 'no', label: '否'},

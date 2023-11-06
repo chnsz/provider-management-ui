@@ -1,233 +1,361 @@
-import type { InputRef } from 'antd';
-import { Breadcrumb, Form, Input, Table } from 'antd';
-import type { FormInstance } from 'antd/es/form';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import {getProductList, getProductListPaged, getUserList, updateProduct} from '@/services/product/api';
+import {Select, Table} from 'antd';
+import type {ColumnsType} from 'antd/es/table';
+import {set} from 'lodash';
+import React, {useEffect, useState} from 'react';
 import '../settings.less';
+import CustomBreadcrumb from "@/components/Breadcrumb";
+import {QueryFilter} from "@ant-design/pro-form";
+import {ProFormSelect} from "@ant-design/pro-components";
+import type {ProSchemaValueEnumObj} from "@ant-design/pro-utils/es/typing";
 
-const EditableContext = React.createContext<FormInstance<any> | null>(null);
-
-interface DataType {
-    key: React.Key;
+type FormProps = {
     productGroup: string;
     productName: string;
-    name: string;
-    grading: string;
-    api: number;
-    user: string;
-    state: string;
-}
+};
 
-const EditableRow: React.FC = (props) => {
-    const [form] = Form.useForm();
+const SearchForm: React.FC<{
+    onSearch: (val: FormProps) => any,
+}> = ({data, onSearch}) => {
+    const [productGroupOptions, setProductGroupOptions] = useState<ProSchemaValueEnumObj>({});
+    const [productNameOptions, setProductNameOptions] = useState<ProSchemaValueEnumObj>({});
+    const [productGroup, setProductGroup] = useState<string>('');
+    const [productName, setProductName] = useState<string>('');
+
+    useEffect(() => {
+        onSearch({productGroup: productGroup, productName: productName})
+    }, [productGroup, productName]);
+
+    useEffect(() => {
+        getProductList().then((response) => {
+            let mapper: Record<string, boolean> = {};
+
+            const productNameMap: ProSchemaValueEnumObj = {};
+            response.items
+                .filter((d) => {
+                    if (d.productNameC in mapper) {
+                        return false;
+                    }
+                    mapper[d.productNameC] = true;
+                    return true;
+                }).map(v => v.productNameC).sort().forEach(n => productNameMap[n] = n);
+            setProductNameOptions(productNameMap);
+
+            mapper = {};
+            const productGroupMap: ProSchemaValueEnumObj = {};
+            response.items.filter((d) => {
+                if (d.productGroup in mapper) {
+                    return false;
+                }
+                mapper[d.productGroup] = true;
+                return true;
+            }).map(v => v.productGroup).forEach(n => productGroupMap[n] = n);
+            setProductGroupOptions(productGroupMap);
+        });
+    }, []);
+
     return (
-        <Form form={form} component={false}>
-            <EditableContext.Provider value={form}>
-                <tr {...props} />
-            </EditableContext.Provider>
-        </Form>
+        <QueryFilter<FormProps>
+            span={4}
+            labelWidth={80}
+            searchGutter={8}
+            style={{marginTop: '20px', marginBottom: '-27px'}}
+            onFinish={async (values) => onSearch(values)}
+            onReset={async () => onSearch({productGroup: '', productName: ''})}
+        >
+            <ProFormSelect
+                name="productGroup"
+                label="服务领域"
+                showSearch
+                valueEnum={productGroupOptions}
+                fieldProps={{
+                    onChange: (v) => {
+                        setProductGroup(v);
+                        setProductName('');
+                    }
+                }}
+            />
+            <ProFormSelect
+                name="productName"
+                label="服务简称"
+                showSearch
+                valueEnum={productNameOptions}
+                fieldProps={{
+                    value: productName,
+                    onChange: (v) => setProductName(v),
+                }}
+            />
+        </QueryFilter>
     );
 };
 
-interface EditableCellProps {
-    title: React.ReactNode;
-    editable: boolean;
-    children: React.ReactNode;
-    dataIndex: keyof DataType;
-    record: DataType;
-    handleSave: (record: DataType) => void;
-}
-
-const EditableCell: React.FC<EditableCellProps> = ({
-    title,
-    editable,
-    children,
-    dataIndex,
-    record,
-    handleSave,
-    ...restProps
-}) => {
-    const [editing, setEditing] = useState<boolean>(false);
-    const inputRef = useRef<InputRef>(null);
-    const form = useContext(EditableContext)!;
+const OwnerView: React.FC<{
+    name: string,
+    onChange: (value: string) => any,
+    onClear: () => any,
+}> = ({name, onChange, onClear}) => {
+    const [value, setValue] = useState<string>();
+    const [ownerList, setOwnerList] = useState<{ value: string; label: string }[]>([]);
 
     useEffect(() => {
-        if (editing) {
-            inputRef.current!.focus();
-        }
-    }, [editing]);
+        getUserList().then((rsp) => {
+            const arr = rsp.items.map((u: Product.User) => {
+                return {
+                    value: u.username,
+                    label: u.username,
+                };
+            });
+            setOwnerList(arr);
+        });
+    }, []);
 
-    const toggleEdit = () => {
-        setEditing(!editing);
-        form.setFieldsValue({ [dataIndex]: record[dataIndex] });
-    };
+    useEffect(() => {
+        setValue(name);
+    }, [name])
 
-    const save = async () => {
-        try {
-            const values = await form.validateFields();
+    return <Select
+        value={value}
+        style={{width: '100%'}}
+        bordered={false}
+        allowClear
+        onClear={onClear}
+        onChange={
+            (val: { value: string; label: React.ReactNode }) => {
+                setValue(val.value);
+                onChange(val.value);
+            }}
+        options={ownerList}
+    />
+}
 
-            toggleEdit();
-            handleSave({ ...record, ...values });
-        } catch (errInfo) {
-            console.error('Save failed:', errInfo);
-        }
-    };
+const SelectView: React.FC<{
+    defaultVal: string,
+    options: { value: string; label: string }[],
+    onChange: (value: string) => any,
+    onClear: () => any,
+    showSearch?: boolean,
+}> = ({defaultVal, options, onChange, onClear, showSearch}) => {
+    const [value, setValue] = useState<string>(defaultVal);
+    useEffect(() => {
+        setValue(defaultVal);
+    }, [defaultVal]);
 
-    let childNode;
-
-    if (editable) {
-        if (editing) {
-            childNode = (
-                <Form.Item
-                    style={{ margin: 0 }}
-                    name={dataIndex}
-                    rules={[
-                        {
-                            required: true,
-                            message: `${title} is required.`,
-                        },
-                    ]}
-                >
-                    <Input ref={inputRef} onPressEnter={save} onBlur={save} />
-                </Form.Item>
-            );
-        } else {
-            childNode = (
-                <div
-                    className="editable-cell-value-wrap"
-                    style={{ paddingRight: 24 }}
-                    onClick={toggleEdit}
-                >
-                    {children}
-                </div>
-            );
-        }
-    } else {
-        childNode = children;
-    }
-
-    return <td {...restProps}>{childNode}</td>;
-};
-
-type EditableTableProps = Parameters<typeof Table>[0];
-
-type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
+    return <Select
+        value={value}
+        style={{width: '100%'}}
+        bordered={false}
+        showSearch
+        allowClear={!!onClear}
+        onClear={onClear}
+        onChange={(v) => {
+            setValue(v);
+            onChange(v);
+        }}
+        options={options}
+    />
+}
 
 const ServiceConfig: React.FC = () => {
-    const [dataSource, setDataSource] = useState<DataType[]>([
-        {
-            key: '0',
-            productGroup: '计算产品部',
-            productName: 'ECS',
-            name: '弹性云服务器',
-            grading: '核心服务',
-            api: 100,
-            user: '时长阔',
-            state: '活动',
-        },
-        {
-            key: '1',
-            productGroup: '计算产品部',
-            productName: 'ECS',
-            name: '弹性云服务器',
-            grading: '核心服务',
-            api: 100,
-            user: '时长阔',
-            state: '活动',
-        },
-    ]);
+    const [total, setTotal] = useState<number>(0);
+    const [pageSize, setPageSize] = useState<number>(15);
+    const [pageNum, setPageNum] = useState<number>(1);
+    const [params, setParams] = useState<{ productName: string, productGroup: string }>({
+        productName: '',
+        productGroup: ''
+    });
+    const [data, setData] = useState<Product.Product[]>([]);
+    const [serviceOptions, setServiceOptions] = useState<{ val: string; value: string; label: string }[]>([]);
+    const [productList, setProductList] = useState<Product.Product[]>([]);
 
-    const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
+    const loadData = (formData: { productName: string, productGroup: string }) => {
+        getProductListPaged(formData, pageSize, pageNum).then((response) => {
+            const arr = response.items.sort((a, b) => {
+                const s1 = a.productGroup + a.productName;
+                const s2 = b.productGroup + b.productName;
+                return s1.localeCompare(s2);
+            });
+            setData(arr);
+            setTotal(response.total);
+        })
+    }
+
+    useEffect(() => {
+        loadData(params);
+    }, [params, pageSize, pageNum]);
+
+    useEffect(() => {
+        getProductList().then((response) => {
+            const mapper: Record<string, boolean> = {};
+            const svcOptions = response.items
+                .filter((d) => {
+                    if (d.productNameC in mapper) {
+                        return false;
+                    }
+                    mapper[d.productNameC] = true;
+                    return true;
+                })
+                .map((d) => {
+                    return {
+                        val: d.productNameC,
+                        value: d.productNameC + '@' + d.productNameCZh,
+                        label: d.productNameC + ' / ' + d.productNameCZh,
+                    };
+                })
+                .sort((a, b) => a.label.localeCompare(b.label));
+            setServiceOptions(svcOptions);
+        });
+    }, []);
+
+    const saveData = (field: string, val: string, product: Product.Product) => {
+        if (field === 'productNameC') {
+            const arr = val.split('@');
+            product.productNameC = arr[0];
+            product.productNameCZh = arr[1];
+        } else {
+            set(product, field, val);
+        }
+        updateProduct(product.id, product);
+    };
+
+    const columns: ColumnsType<Product.Product> = [
         {
-            title: '产品部',
+            title: '序号',
+            dataIndex: 'sn',
+            align: 'center',
+            width: 80,
+            render: (v, r, i) => i + 1,
+        },
+        {
+            title: '服务领域',
             dataIndex: 'productGroup',
-            width: '30%',
+            width: '20%',
         },
         {
-            title: '服务简称',
+            title: '服务',
+            dataIndex: 'productNameC',
+            width: '20%',
+            render: (v: any, row) => {
+                const val = row.productNameC + ' / ' + row.productNameCZh;
+                return <SelectView defaultVal={val}
+                                   showSearch
+                                   options={serviceOptions}
+                                   onClear={() =>
+                                       setTimeout(() => {
+                                           saveData('level', '', row);
+                                       }, 50)}
+                                   onChange={(v) => saveData('productNameC', v, row)}
+                />;
+            },
+        },
+        {
+            title: '服务（API Explorer）',
             dataIndex: 'productName',
-        },
-        {
-            title: '服务名称',
-            dataIndex: 'name',
+            width: '20%',
+            render: (v, row) => (
+                <>
+                    {row.productName} / {row.productNameZh}
+                </>
+            ),
         },
         {
             title: '服务分级',
-            dataIndex: 'grading',
-            editable: true,
+            dataIndex: 'level',
+            align: 'center',
+            width: '10%',
+            render: (v: any, row) => {
+                return <SelectView defaultVal={v === '' ? ' ' : v}
+                                   onClear={() =>
+                                       setTimeout(() => {
+                                           saveData('level', '', row);
+                                       }, 50)}
+                                   onChange={(v) => saveData('level', v, row)}
+                                   options={[
+                                       {value: '核心服务', label: '核心服务'},
+                                       {value: '主力服务', label: '主力服务'},
+                                       {value: '', label: '(清空）'},
+                                   ]}
+                />;
+            },
         },
         {
             title: 'API数量',
-            dataIndex: 'api',
+            dataIndex: 'apiCount',
+            align: 'center',
+            width: '10%',
         },
         {
-            title: '田主',
-            dataIndex: 'user',
-            editable: true,
+            title: '责任人',
+            dataIndex: 'owner',
+            align: 'center',
+            width: '10%',
+            render: (v: any, row) => {
+                return <OwnerView
+                    name={v === '' ? ' ' : v}
+                    onClear={() =>
+                        setTimeout(() => {
+                            saveData('owner', '', row);
+                        }, 50)
+                    }
+                    onChange={(v) => saveData('owner', v, row)}
+                />;
+            },
         },
         {
             title: '状态',
-            dataIndex: 'state',
-            editable: true,
+            dataIndex: 'statusCode',
+            align: 'center',
+            render: (v: any, row) => {
+                return (
+                    <Select
+                        defaultValue={v}
+                        style={{width: '100%'}}
+                        bordered={false}
+                        onChange={(v) => saveData('statusCode', v, row)}
+                        options={[
+                            {value: 'active', label: '监听中'},
+                            {value: 'ignore', label: '不监听'},
+                        ]}
+                    />
+                );
+            },
         },
     ];
 
-    const handleSave = (row: DataType) => {
-        const newData = dataSource.map((t) => {
-            if (t.key === row.key) {
-                return row;
-            }
-            return t;
-        });
-        setDataSource(newData);
-    };
-
-    const components = {
-        body: {
-            row: EditableRow,
-            cell: EditableCell,
-        },
-    };
-
-    const columns = defaultColumns.map((col) => {
-        if (!col.editable) {
-            return col;
-        }
-        return {
-            ...col,
-            onCell: (record: DataType) => ({
-                record,
-                editable: col.editable,
-                dataIndex: col.dataIndex,
-                title: col.title,
-                handleSave,
-            }),
-        };
-    });
-
     return (
         <div>
-            <div>
-                <Breadcrumb
-                    style={{ marginTop: '20px' }}
+            <div style={{marginTop: '25px'}}>
+                <CustomBreadcrumb
                     items={[
-                        {
-                            title: '首页',
-                        },
-                        {
-                            title: <a href="">服务配置</a>,
-                        },
+                        {title: '首页'},
+                        {title: <a href="">系统配置</a>},
+                        {title: <a href="">服务配置</a>},
                     ]}
                 />
             </div>
-            <div className={'serve-card'}>
-                <h1>服务列表</h1>
+            <SearchForm onSearch={setParams}/>
+            <div className={'serve-card'} style={{marginTop: '15px'}}>
+                <h3>服务列表</h3>
                 <Table
-                    pagination={false}
-                    components={components}
                     rowClassName={() => 'editable-row'}
                     bordered
-                    dataSource={dataSource}
-                    columns={columns as ColumnTypes}
+                    size={'small'}
+                    dataSource={data}
+                    columns={columns}
+                    pagination={{
+                        defaultCurrent: 1,
+                        total: total,
+                        size: 'default',
+                        pageSize: pageSize,
+                        current: pageNum,
+                        showTotal: (num) => `总条数: ${num}`,
+                        onShowSizeChange: (current, size) => {
+                            setPageSize(size);
+                        },
+                        onChange: (page, size) => {
+                            setPageSize(size);
+                            setPageNum(page);
+                        },
+                    }}
                 />
             </div>
         </div>

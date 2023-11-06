@@ -1,8 +1,7 @@
 import React, {useState} from "react";
-import {Button, Divider, Input, message, Modal, notification, Select, Space, Table, Tag} from "antd";
-import Provider from "@/pages/Provider";
+import {Button, Col, Divider, Input, message, Modal, notification, Row, Select, Space, Table, Tag} from "antd";
 import {getProviderBaseList, saveProviderBase} from "@/services/provider/api";
-import {ColumnsType} from "antd/es/table/interface";
+import type {ColumnsType} from "antd/es/table/interface";
 // @ts-ignore
 import {Scrollbars} from 'react-custom-scrollbars';
 import {set} from 'lodash'
@@ -34,6 +33,7 @@ const FieldInOption = [
 
 const ProviderBaseDialog: React.FC<{
     apiId?: number,
+    apiName?: string,
     providerType?: string,
     providerName?: string,
     text?: string,
@@ -103,7 +103,7 @@ const ProviderBaseDialog: React.FC<{
         saveProviderBase(props.apiId || 0,
             props.providerType || '',
             props.providerName || '',
-            data1.filter(t => t.useStatus !== ''),
+            originData1.filter(t => t.useStatus !== ''),
             data2.filter(t => t.useStatus !== '')
         ).then((d: any) => {
             if (d === 'success') {
@@ -206,18 +206,6 @@ const ProviderBaseDialog: React.FC<{
         }
     }
 
-    const remove = (dataType: string, row: Provider.ProviderBase) => {
-        if (dataType === 'input') {
-            setData1(
-                data1.filter(t => t.id !== row.id)
-            );
-        } else if (dataType === 'output') {
-            setData2(
-                data2.filter(t => t.id !== row.id)
-            );
-        }
-    }
-
     const onEdit = (field: string, val: any, row: Provider.ProviderBase) => {
         set(row, field, val);
     }
@@ -249,12 +237,12 @@ const ProviderBaseDialog: React.FC<{
         setRemark('');
     }
 
-    const markRestUnused = (paramType: string) => {
+    const markRestUnused = (paramType: string, state: string) => {
         return () => {
             if (paramType === 'input') {
                 const data = data1.map(t => {
                     if (t.useStatus === '') {
-                        t.useStatus = 'not-used'
+                        t.useStatus = state
                     }
                     return t;
                 });
@@ -262,7 +250,7 @@ const ProviderBaseDialog: React.FC<{
             } else if (paramType === 'output') {
                 const data = data2.map(t => {
                     if (t.useStatus === '') {
-                        t.useStatus = 'not-used'
+                        t.useStatus = state
                     }
                     return t;
                 });
@@ -300,10 +288,18 @@ const ProviderBaseDialog: React.FC<{
             width: '15%',
             ellipsis: true,
             render: (v: any, row) => {
-                return <Input defaultValue={v}
-                              bordered={false}
-                              onBlur={(e) => onEdit('fieldName', e.target.value, row)}/>
-            }
+                let required = <>&nbsp;</>;
+                if (row.fieldRequired === 'yes' && row.fieldIn !== 'body') {
+                    required = <span style={{color: '#ff4d4f', fontWeight: 'bold'}}>*</span>
+                }
+                return <>
+                    {required}
+                    <Input defaultValue={v}
+                           bordered={false}
+                           style={{width: '95%', marginLeft: '0', paddingLeft: '4px'}}
+                           onBlur={(e) => onEdit('fieldName', e.target.value, row)}/>
+                </>
+            },
         },
         {
             title: <>字段类型<EditOutlined style={{color: '#6d6d6d'}}/></>,
@@ -416,7 +412,7 @@ const ProviderBaseDialog: React.FC<{
                 <a onClick={showModal} title={props.text}>{props.text}</a>
         }
         {contextHolder}
-        <Modal title="维护基线"
+        <Modal title={`维护基线【${props.providerType}: ${props.providerName}】【API: ${props.apiName || ''}】`}
                open={isModalOpen}
                onOk={handleOk}
                onCancel={handleCancel}
@@ -426,8 +422,8 @@ const ProviderBaseDialog: React.FC<{
                maskClosable={false}
                width={'95%'}
                footer={[
+                   <Button key="save" onClick={handleCancel}>关闭</Button>,
                    <Button key="close" type="primary" onClick={handleOk}>保存</Button>,
-                   <Button key="save" onClick={handleCancel}>关闭</Button>
                ]}>
             <div style={{height: '75vh'}}>
                 <Scrollbars>
@@ -479,7 +475,6 @@ const ProviderBaseDialog: React.FC<{
                                         value={remark}
                                         onChange={(e) => setRemark(e.target.value)}/>
                             <Button type="primary" onClick={() => addNewField('input')}>新增</Button>
-                            <Button type="link" onClick={markRestUnused('input')}>标记剩余字段：未使用</Button>
                         </Space>
                     </div>
                     <Divider dashed/>
@@ -527,10 +522,27 @@ const ProviderBaseDialog: React.FC<{
                                         value={remark}
                                         onChange={(e) => setRemark(e.target.value)}/>
                             <Button type="primary" onClick={() => addNewField('output')}>新增</Button>
-                            <Button type="link" onClick={markRestUnused('output')}>标记剩余字段：未使用</Button>
                         </Space>
                     </div>
                 </Scrollbars>
+                <Row style={{marginTop: '24px'}}>
+                    <Col span={8}/>
+                    <Col span={4}>
+                        <Space>
+                            <span>将剩余<span style={{color: '#fa541c'}}>入参</span>字段标记为：</span>
+                            <a onClick={markRestUnused('input', 'not-used')}>未使用</a>
+                            <a onClick={markRestUnused('input', 'ignore')}>不关注</a>
+                        </Space>
+                    </Col>
+                    <Col span={4}>
+                        <Space>
+                            <span>将剩余<span style={{color: '#fa541c'}}>出参</span>字段标记为：</span>
+                            <a onClick={markRestUnused('output', 'not-used')}>未使用</a>
+                            <a onClick={markRestUnused('output', 'ignore')}>不关注</a>
+                        </Space>
+                    </Col>
+                    <Col span={8}/>
+                </Row>
             </div>
         </Modal>
     </>

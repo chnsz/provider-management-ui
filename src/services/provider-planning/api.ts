@@ -1,23 +1,22 @@
-import {request} from '@@/exports';
-
-const basePath = '/pms';
+import {request} from 'umi';
+import {PMS_PATH} from "@/services/api";
 
 export async function createProviderPlanning(createOpts: ProviderPlanning.CreateOption) {
-    return request<ProviderPlanning.ProviderPlanning>(`${basePath}/provider-planning`, {
+    return request<ProviderPlanning.ProviderPlanning>(`${PMS_PATH}/provider-planning`, {
         method: 'POST',
         data: createOpts,
     });
 }
 
 export async function updateProviderPlanning(id: number, opts: ProviderPlanning.UpdateOption) {
-    return request<ProviderPlanning.ProviderPlanning>(`${basePath}/provider-planning/${id}`, {
+    return request<ProviderPlanning.ProviderPlanning>(`${PMS_PATH}/provider-planning/${id}`, {
         method: 'PATCH',
         data: opts,
     });
 }
 
 export async function deleteProviderPlanning(id: number) {
-    return request<{ affectedRow: number }>(`${basePath}/provider-planning/${id}`, {
+    return request<{ affectedRow: number }>(`${PMS_PATH}/provider-planning/${id}`, {
         method: 'DELETE',
     });
 }
@@ -38,7 +37,7 @@ export async function getProviderPlanningList(
     const offset = (pageNum - 1) * pageSize;
 
     return request<Global.List<ProviderPlanning.ProviderPlanning[]>>(
-        `${basePath}/provider-planning/list/${limit}/${offset}`,
+        `${PMS_PATH}/provider-planning/list/${limit}/${offset}`,
         {
             method: 'GET',
             params: {...queryParams},
@@ -48,7 +47,7 @@ export async function getProviderPlanningList(
 
 /** 查询规划详情 GET /pms/provider-planning/{id} */
 export async function getProviderPlanning(id: number | string) {
-    return request<ProviderPlanning.ProviderPlanning>(`${basePath}/provider-planning/${id}`, {
+    return request<ProviderPlanning.ProviderPlanning>(`${PMS_PATH}/provider-planning/${id}`, {
         method: 'GET',
     });
 }
@@ -59,7 +58,7 @@ export async function bindProviderPlanningProvider(
     providerType: string,
     providerName: string,
 ) {
-    return request<Global.AffectResponse>(`${basePath}/provider-planning/provider/${id}`, {
+    return request<Global.AffectResponse>(`${PMS_PATH}/provider-planning/provider/${id}`, {
         method: 'PUT',
         data: {
             providerList: [{type: providerType, name: providerName}],
@@ -73,7 +72,7 @@ export async function unbindProviderPlanningProvider(
     providerType: string,
     providerName: string,
 ) {
-    return request<Global.AffectResponse>(`${basePath}/provider-planning/provider/${id}`, {
+    return request<Global.AffectResponse>(`${PMS_PATH}/provider-planning/provider/${id}`, {
         method: 'PATCH',
         data: {
             providerList: [{type: providerType, name: providerName}],
@@ -83,7 +82,7 @@ export async function unbindProviderPlanningProvider(
 
 /** 绑定API到规划 */
 export async function bindProviderPlanningApi(id: number, apiIdList: number[]) {
-    return request<Global.AffectResponse>(`${basePath}/provider-planning/api/${id}`, {
+    return request<Global.AffectResponse>(`${PMS_PATH}/provider-planning/api/${id}`, {
         method: 'PUT',
         data: {
             apiIdList: apiIdList,
@@ -93,7 +92,7 @@ export async function bindProviderPlanningApi(id: number, apiIdList: number[]) {
 
 /** 移除绑定到规划的API  */
 export async function unbindProviderPlanningApi(id: number, apiIdList: number[]) {
-    return request<Global.AffectResponse>(`${basePath}/provider-planning/api/${id}`, {
+    return request<Global.AffectResponse>(`${PMS_PATH}/provider-planning/api/${id}`, {
         method: 'PATCH',
         data: {
             apiIdList: apiIdList,
@@ -102,5 +101,15 @@ export async function unbindProviderPlanningApi(id: number, apiIdList: number[])
 }
 
 export async function createPlanningKbTask(id: number) {
-    return request<ProviderPlanning.ProviderPlanning>(`${basePath}/provider-planning/kanboard-task/${id}`, {method: 'PUT'});
+    return request<ProviderPlanning.ProviderPlanning>(`${PMS_PATH}/provider-planning/kanboard-task/${id}`, {method: 'PUT'});
+}
+
+export async function getProviderPlanningListByOwner(owner: string) {
+    return request<Global.List<ProviderPlanning.ProviderPlanning[]>>(
+        `${PMS_PATH}/provider-planning/owner/list`,
+        {
+            method: 'GET',
+            params: {owner: owner},
+        },
+    );
 }

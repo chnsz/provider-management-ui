@@ -19,7 +19,8 @@ const ProviderListDialog: React.FC<{ productName: string, text: JSX.Element, sel
                 <Button type={'primary'} key="save" onClick={() => setIsModalOpen(false)}>关闭</Button>
             ]}>
             <div style={{height: '900px'}}>
-                <ProviderListCard productName={props.productName} tableHeight={'800px'} hideTitle={true} selectedKey={props.selectedKey}/>
+                <ProviderListCard productName={props.productName} tableHeight={'800px'} hideTitle={true}
+                                  selectedKey={props.selectedKey}/>
             </div>
         </Modal>
     </>

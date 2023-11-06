@@ -22,7 +22,7 @@ const OverviewItem: React.FC<{
 
     let label;
     if (arr.length > 1) {
-        let str: string = arr[1];
+        const str: string = arr[1];
         if (str.indexOf('有影响') !== -1) {
             label = <Tag color="#f50">{str}</Tag>;
         } else if (str === '无影响') {

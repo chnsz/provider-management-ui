@@ -114,6 +114,7 @@ declare namespace Api {
         uriShort: string;
         publishStatus: string;
         useRemark: string;
+        remark: string;
         definition: string;
         lastSyncDate: string;
         created: string;
@@ -132,12 +133,14 @@ declare namespace Api {
     };
 
     type queryListParams = {
+        cloudName?: string;
         productName?: string;
         apiGroup?: string;
         apiName?: string;
         uri?: string;
         useRemark?: string;
         publishStatus?: string;
+        owner?: string;
         id?: number[];
     };
 

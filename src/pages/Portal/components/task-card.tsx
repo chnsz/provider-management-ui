@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {Button, Space, Table} from "antd";
-import {ColumnsType} from "antd/es/table";
+import type {ColumnsType} from "antd/es/table";
 import {createTaskKbTask, deleteTask, getTaskList} from "@/services/task/api";
 import {getTaskStatus} from "@/pages/Task/components/task-detail";
 import {toShortDate} from "@/utils/common";

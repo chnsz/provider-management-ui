@@ -41,7 +41,7 @@ const SummaryCard: React.FC = () => {
                 </div>
             </div>
         </div>
-        <div style={{width: '20px'}}></div>
+        <div style={{width: '20px'}}/>
         <div className={'sum-panel'}>
             <div className={'title'}>G42</div>
             <div style={{display: 'flex', width: '100%'}}>

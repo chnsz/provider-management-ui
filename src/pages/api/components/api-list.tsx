@@ -1,8 +1,8 @@
-import { Button, Form, Input, Select, Space } from 'antd';
+import {Button, Form, Input, Select, Space} from 'antd';
 import React from 'react';
 import '../api.less';
 
-const { Option } = Select;
+const {Option} = Select;
 
 const ApiList: React.FC = () => {
     return (
@@ -28,12 +28,12 @@ const ApiList: React.FC = () => {
                 </Form>
                 <Form className={'api-group'}>
                     <Form.Item label="API名称">
-                        <Input className={'api-input'} placeholder="请输入" />
+                        <Input className={'api-input'} placeholder="请输入"/>
                     </Form.Item>
                 </Form>
                 <Form className={'api-group'}>
                     <Form.Item label="URI">
-                        <Input className={'api-input'} placeholder="请输入" />
+                        <Input className={'api-input'} placeholder="请输入"/>
                     </Form.Item>
                 </Form>
                 <Form className={'api-group'}>

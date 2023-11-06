@@ -1,20 +1,20 @@
 // @ts-ignore
 /* eslint-disable */
-import {request} from '@umijs/max';
+import {request} from 'umi';
+import {PGS_PATH} from "@/services/api";
+import {toHash} from "@/utils/common";
 
 /** 获取当前的用户 GET /api/currentUser */
 export async function currentUser(options?: { [key: string]: any }) {
-    return request<{
-        data: API.CurrentUser;
-    }>('/api/currentUser', {
+    return request<API.CurrentUser>(`${PGS_PATH}/user/current`, {
         method: 'GET',
         ...(options || {}),
     });
 }
 
-/** 退出登录接口 POST /api/login/outLogin */
-export async function outLogin(options?: { [key: string]: any }) {
-    return request<Record<string, any>>('/api/login/outLogin', {
+/** 退出登录接口 POST  /pgs/user/logout */
+export async function logout(options?: { [key: string]: any }) {
+    return request<Record<string, any>>(`${PGS_PATH}/user/logout`, {
         method: 'POST',
         ...(options || {}),
     });
@@ -22,12 +22,16 @@ export async function outLogin(options?: { [key: string]: any }) {
 
 /** 登录接口 POST /api/login/account */
 export async function login(body: API.LoginParams, options?: { [key: string]: any }) {
-    return request<API.LoginResult>('/api/login/account', {
+    return request<API.LoginResult>(`${PGS_PATH}/user/login`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        data: body,
+        data: {
+            username: body.username || '',
+            password: toHash(body.password || ''),
+            autoLogin: body.autoLogin || '',
+        },
         ...(options || {}),
     });
 }

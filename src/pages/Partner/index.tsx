@@ -10,35 +10,35 @@ import ServiceSumList from "@/pages/Portal/components/service-sum-list";
 import CustomBreadcrumb from "@/components/Breadcrumb";
 
 const PartnerAnalysis: React.FC = () => {
-  const [providerSyncSum, setProviderSyncSum] = useState<Provider.ProviderSyncSum[]>([]);
+    const [providerSyncSum, setProviderSyncSum] = useState<Provider.ProviderSyncSum[]>([]);
 
-  const loadData = () => {
-    getProviderSyncSum().then(t => {
-      setProviderSyncSum(t.items);
-    });
-  }
-  useEffect(() => {
-    loadData()
-  }, []);
+    const loadData = () => {
+        getProviderSyncSum().then(t => {
+            setProviderSyncSum(t.items);
+        });
+    }
+    useEffect(() => {
+        loadData()
+    }, []);
 
-  return <>
-    <CustomBreadcrumb items={[{title: '首页'}, {title: '伙伴云分析'}]}/>
-    <Space size={20} direction={'vertical'} style={{width: '100%'}}>
-      <SummaryCard/>
-      <div className={'partner'} style={{background: '#fff'}}>
-        <div className={'custom-title'}>资源文档问题</div>
-        <div style={{padding: '20px'}}>
-          <ProviderDocsIssue data={providerSyncSum} loadData={loadData}/>
-        </div>
-      </div>
-      <div className={'partner'} style={{background: '#fff'}}>
-        <div className={'custom-title'}>伙伴云同步信息</div>
-        <div style={{padding: '20px'}}>
-          <ProviderSyncIssue data={providerSyncSum} loadData={loadData}/>
-        </div>
-      </div>
-    </Space>
-    {/*<Row>
+    return <>
+        <CustomBreadcrumb items={[{title: '首页'}, {title: '伙伴云分析'}]}/>
+        <Space size={20} direction={'vertical'} style={{width: '100%'}}>
+            <SummaryCard/>
+            <div className={'partner'} style={{background: '#fff'}}>
+                <div className={'custom-title'}>资源文档问题</div>
+                <div style={{padding: '20px'}}>
+                    <ProviderDocsIssue data={providerSyncSum} loadData={loadData}/>
+                </div>
+            </div>
+            <div className={'partner'} style={{background: '#fff'}}>
+                <div className={'custom-title'}>伙伴云同步信息</div>
+                <div style={{padding: '20px'}}>
+                    <ProviderSyncIssue data={providerSyncSum} loadData={loadData}/>
+                </div>
+            </div>
+        </Space>
+        {/*<Row>
             <Col flex="calc(58% - 10px)">
                 <div className={'partner'} style={{background: '#fff', height: '400px'}}>
                     <div className={'custom-title'}>资源文档问题</div>
@@ -57,10 +57,10 @@ const PartnerAnalysis: React.FC = () => {
                 </div>
             </Col>
         </Row>*/}
-    <div className={'partner portal'} style={{}}>
-      <ServiceSumList partner onload={() => null}/>
-    </div>
-  </>
+        <div className={'partner portal'} style={{}}>
+            <ServiceSumList partner onload={() => null}/>
+        </div>
+    </>
 }
 
 export default PartnerAnalysis;

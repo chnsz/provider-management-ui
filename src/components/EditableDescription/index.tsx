@@ -1,7 +1,9 @@
 import {EditOutlined} from '@ant-design/icons';
-import {Button, DatePicker, Input, InputRef, Select} from 'antd';
-import {DefaultOptionType, SelectProps} from 'antd/es/select';
-import React, {ReactElement, useEffect, useRef, useState} from 'react';
+import type {InputRef} from 'antd';
+import {Button, DatePicker, Input, Select} from 'antd';
+import type {DefaultOptionType, SelectProps} from 'antd/es/select';
+import type {ReactElement} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import './editable-description.less';
 import dayjs from 'dayjs';
 

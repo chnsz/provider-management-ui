@@ -1,24 +1,41 @@
 declare namespace Product {
     type Product = {
-        // 主键
-        id: string;
-        // 领域
+        id: number;
         productGroup: string;
-        // 归属服务
         productName: string;
-        // 标题
+        productNameZh: string;
+        productNameC: string;
+        productNameCZh: string;
         productIcon?: string;
-        // 页面地址
         owner?: string;
-        // 创建日期
+        ordinalPosition: number;
         created: string;
-        // 更新日期
         updated: string;
+
+        apiCount: number;
+        level: string;
+        statusCode: string;
     };
 
     type User = {
         username: string;
         ip: string;
         kbUserId: number;
+    }
+
+    type TestJobRecord = {
+        id: number;
+        productName: string;
+        name: string;
+        jobId: number;
+        timeCost: string;
+        status: string;
+        startTime: string;
+        endTime: string;
+        output: string;
+        coverageFile: string;
+        logFile: string;
+        created?: string;
+        updated?: string;
     }
 }

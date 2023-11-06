@@ -1,4 +1,4 @@
-import { toShortDate } from '@/utils/common';
+import {toShortDate} from '@/utils/common';
 import classNames from 'classnames';
 import React from 'react';
 import '../task.less';

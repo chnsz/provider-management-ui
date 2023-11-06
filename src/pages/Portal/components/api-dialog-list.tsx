@@ -1,47 +1,133 @@
 import ApiChangeList from '@/pages/api/components/api-change-list';
-import { openApiExplorer } from '@/pages/Portal';
-import { getApiDetailList, updatePublishStatus, updateUseStatus } from '@/services/api/api';
-import { DownOutlined } from '@ant-design/icons';
-import { Dropdown, Modal, Table, Tag } from 'antd';
-import { ColumnsType } from 'antd/es/table';
-import React, { useEffect, useState } from 'react';
+import {openApiExplorer} from '@/pages/Portal';
+import {getApiDetailList, getApiGroupList, updatePublishStatus, updateUseStatus} from '@/services/api/api';
+import {DownOutlined, EditOutlined} from '@ant-design/icons';
+import {Button, Dropdown, Input, message, Modal, Radio, Select, Space, Table, Tag} from 'antd';
+import type {ColumnsType} from 'antd/es/table';
+import React, {useEffect, useState} from 'react';
 import '../../api/api.less';
-
-interface Detail {
-    key: React.Key;
-    id: number;
-    productName: string;
-    apiGroup: string;
-    apiName: string;
-    useRemark: string;
-    method: string;
-    providerList: any;
-    uri: string;
-    apiNameEn: string;
-    publishStatus: string;
-}
+import {createProviderPlanning} from "@/services/provider-planning/api";
+import type {ProSchemaValueEnumObj} from "@ant-design/pro-utils/es/typing";
+import {getProductList} from "@/services/product/api";
+import {QueryFilter} from "@ant-design/pro-form";
+import {ProFormSelect, ProFormText} from "@ant-design/pro-components";
+import {CloudName} from "@/global";
 
 type queryParams = {
     productName?: string;
     apiGroup?: string;
     apiName?: string;
+    cloudName?: string;
     uri?: string;
     useRemark?: string;
     publishStatus?: string;
+    owner?: string;
     id?: number[];
 };
 
+const options = [
+    {
+        value: 'Resource',
+        label: 'Resource',
+    },
+    {
+        value: 'DataSource',
+        label: 'DataSource',
+    },
+];
+
+type FormProps = {
+    productName: string;
+    apiName: string;
+    uri: string;
+    useRemark: string;
+    apiGroup: string;
+};
+
+const SearchForm: React.FC<{ owner?: string, onSearch: (val: FormProps) => any }> = (props) => {
+    const [productNameMap, setProductNameMap] = useState<ProSchemaValueEnumObj>({});
+    const [apiGroupMap, setApiGroupMap] = useState<ProSchemaValueEnumObj>({});
+
+    useEffect(() => {
+        getProductList(props.owner).then((d: Global.List<Product.Product[]>) => {
+            const map: ProSchemaValueEnumObj = {};
+            d.items.map((p) => p.productName)
+                .sort()
+                .forEach(n => map[n] = n);
+            setProductNameMap(map);
+        });
+    }, []);
+
+    const onProductNameChange = (v: string) => {
+        if (!v) {
+            setApiGroupMap({});
+            return;
+        }
+        getApiGroupList(v).then((d: Api.Group[]) => {
+            const map: ProSchemaValueEnumObj = {};
+            d.map(t => t.apiGroup)
+                .sort()
+                .forEach(n => map[n] = n);
+            setApiGroupMap(map);
+        });
+    };
+
+    return (
+        <QueryFilter<FormProps>
+            span={4}
+            labelWidth={80}
+            searchGutter={8}
+            style={{marginTop: '20px', marginBottom: '-27px'}}
+            onFinish={async (values) => props.onSearch(values)}
+        >
+            <ProFormSelect
+                name="productName"
+                label="产品服务"
+                showSearch
+                fieldProps={{
+                    onChange: onProductNameChange,
+                }}
+                valueEnum={productNameMap}
+            />
+            <ProFormSelect name="apiGroup" label="分组名称" showSearch valueEnum={apiGroupMap}/>
+            <ProFormText name="apiName" label="API名称" placeholder={'支持模糊搜索'}/>
+            <ProFormText name="uri" label="URI" placeholder={'支持模糊搜索'}/>
+            <ProFormSelect
+                name="useRemark"
+                label="覆盖状态"
+                showSearch
+                valueEnum={{
+                    used: '已使用',
+                    need_analysis: '待分析',
+                    planning: '规划中',
+                    ignore: '不适合',
+                    missing_api: '缺少API',
+                }}
+            />
+        </QueryFilter>
+    );
+};
+
 const ApiDialogList: React.FC<queryParams> = (queryParams) => {
+    const [messageApi, contextHolder] = message.useMessage();
+    const [isRemarkDialogOpen, setRemarkDialogOpen] = useState(false);
+    const [remark, setRemark] = useState<string>('');
+    const [formData, setFormData] = useState<Api.queryListParams>({});
+
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    const [data, setData] = useState<Detail[]>([]);
-    const [selectedRow, setSelectedRow] = useState<Detail[]>([]);
+    const [isPlanningDialogOpen, setIsPlanningDialogOpen] = useState<boolean>(false);
+    const [data, setData] = useState<Api.Detail[]>([]);
+    const [selectedRow, setSelectedRow] = useState<Api.Detail[]>([]);
     const [total, setTotal] = useState<number>(0);
     const [pageSize, setPageSize] = useState<number>(20);
     const [pageNum, setPageNum] = useState<number>(1);
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [id, setId] = useState<number>(0);
+    const [providerType, setProviderType] = useState<string>(options[0].value);
+    const [providerName, setProviderName] = useState<string>('');
+    const [planningTitle, setPlanningTitle] = useState<string>('新增资源');
 
-    const onSelectChange = (newSelectedRowKeys: React.Key[], selectedRows: Detail[]) => {
+    const onSelectChange = (newSelectedRowKeys: React.Key[], selectedRows: Api.Detail[]) => {
         setSelectedRowKeys(newSelectedRowKeys);
         setSelectedRow(selectedRows);
     };
@@ -51,32 +137,33 @@ const ApiDialogList: React.FC<queryParams> = (queryParams) => {
         onChange: onSelectChange,
     };
 
-    const loadData = (params: Api.queryListParams, pageSize: number, pageNum: number) => {
-        getApiDetailList(queryParams, pageSize, pageNum).then((d) => {
-            const arr = d.items.map((d: Api.Detail) => {
-                return {
-                    key: '' + d.id,
-                    id: d.id,
-                    productName: d.productName,
-                    apiGroup: d.apiGroup,
-                    apiName: d.apiName,
-                    useRemark: d.useRemark,
-                    publishStatus: d.publishStatus,
-                    method: d.method,
-                    uri: d.uri,
-                    providerList: d.providerList,
-                    apiNameEn: d.apiNameEn,
-                };
-            });
-            setData(arr);
+    const loadData = (params: Api.queryListParams, pgSize: number, pgNum: number) => {
+        getApiDetailList(params, pgSize, pgNum).then((d) => {
+            setData(d.items);
             setTotal(d.total);
         });
     };
     useEffect(() => {
-        loadData(queryParams, pageSize, pageNum);
-    }, [queryParams, pageSize, pageNum]);
+        const params: Api.queryListParams = {...formData};
+        if (!params.productName) {
+            params.productName = queryParams.productName;
+        }
+        params.cloudName = queryParams.cloudName;
+        params.owner = queryParams.owner;
 
-    const handleRowClick = (record: Detail) => {
+        loadData(params, pageSize, pageNum);
+    }, [queryParams, formData, pageSize, pageNum]);
+
+    const onSearch = (formVal: FormProps) => {
+        const params: Api.queryListParams = {...formVal};
+        if (!params.productName) {
+            params.productName = queryParams.productName;
+        }
+        setPageNum(1);
+        setFormData(params);
+    }
+
+    const handleRowClick = (record: Api.Detail) => {
         setId(record.id);
         setIsModalOpen(true);
     };
@@ -86,106 +173,183 @@ const ApiDialogList: React.FC<queryParams> = (queryParams) => {
     };
 
     const useStatusItems = [
-        { label: '已使用', key: 'used' },
-        { label: '待分析', key: 'need_analysis' },
-        { label: '不合适', key: 'ignore' },
-        { label: '缺少API', key: 'missing_api' },
-        { label: '未分析', key: 'planning' },
+        {label: '已使用', key: 'used'},
+        {label: '待分析', key: 'need_analysis'},
+        {label: '不适合', key: 'ignore'},
+        {label: '缺少API', key: 'missing_api'},
+        {label: '未分析', key: 'planning'},
     ];
 
     const publishStatusItems = [
-        { label: '开放中', key: 'online' },
-        { label: '已下线', key: 'offline' },
-        { label: '线下API', key: 'unpublished' },
+        {label: '开放中', key: 'online'},
+        {label: '已下线', key: 'offline'},
+        {label: '线下API', key: 'unpublished'},
     ];
 
     const handleUseStatusChange = (status: string) => {
+        if (status === 'ignore') {
+            setRemarkDialogOpen(true);
+            return
+        }
         selectedRow.forEach((row) => {
             updateUseStatus(row.id, status).then(() => {
-                loadData(queryParams, pageSize, pageNum);
+                loadData(formData, pageSize, pageNum);
             });
         });
         setSelectedRowKeys([]);
     };
+
+    const updateUseStatusToIgnore = () => {
+        setRemarkDialogOpen(false);
+        selectedRow.forEach((row) => {
+            updateUseStatus(row.id, 'ignore', remark).then(() => {
+                loadData(formData, pageSize, pageNum);
+            });
+        });
+        setSelectedRowKeys([]);
+        setRemark('');
+    }
 
     const handlePublishStatusChange = (status: string) => {
         selectedRow.forEach((row) => {
             updatePublishStatus(row.id, status).then(() => {
-                loadData(queryParams, pageSize, pageNum);
+                loadData(formData, pageSize, pageNum);
             });
         });
         setSelectedRowKeys([]);
     };
 
-    const getCreatePlan = () => {
+    const showCreatePlanning = () => {
+        if (selectedRow.length === 0) {
+            messageApi.warning('您还没有选择数据，请先选择API');
+            return
+        }
+        setIsPlanningDialogOpen(true);
+    }
+
+    const savePlanning = () => {
+        setIsPlanningDialogOpen(false);
+
+        createProviderPlanning({
+            // 归属服务
+            productName: selectedRow[0].productName,
+            title: planningTitle + `【${providerType}】${providerName}`,
+            priority: 1,
+            syncToKanboard: 'no',
+            status: 'new',
+            providerList: [{
+                id: 0,
+                dataType: '',
+                dataId: 0,
+
+                providerType: providerType,
+                providerName: providerName,
+            }],
+            apiIdList: selectedRow.map(row => row.id),
+        }).then(() => {
+            loadData(formData, pageSize, pageNum);
+            setSelectedRowKeys([]);
+        });
+
+        setProviderType(options[0].value);
+        setProviderName('');
+        setPlanningTitle('新增资源');
+    }
+
+    const onRemarkChange = (newRemark: string, row: Api.Detail) => {
+        if (newRemark === row.remark) {
+            return
+        }
+        updateUseStatus(row.id, row.useRemark, newRemark).then(() => {
+            messageApi.info('保存成功');
+            loadData(formData, pageSize, pageNum);
+        });
+    }
+
+
+    const getToolbar = () => {
         return (
             <>
-                <Dropdown.Button
-                    className={'search-update'}
-                    size={'small'}
-                    type={'primary'}
-                    icon={<DownOutlined />}
-                    menu={{
-                        items: useStatusItems.map((item) => ({
-                            ...item,
-                            onClick: () => handleUseStatusChange(item.key),
-                        })),
-                    }}
-                >
-                    更改状态
-                </Dropdown.Button>
-                <Dropdown.Button
-                    size={'small'}
-                    type={'primary'}
-                    icon={<DownOutlined />}
-                    menu={{
-                        items: publishStatusItems.map((item) => ({
-                            ...item,
-                            onClick: () => handlePublishStatusChange(item.key),
-                        })),
-                    }}
-                >
-                    发布状态
-                </Dropdown.Button>
+                <Space size={20}>
+                    <Button size={'small'} type={'primary'} onClick={showCreatePlanning}>新建规划</Button>
+                    <Dropdown.Button
+                        size={'small'}
+                        type={'primary'}
+                        icon={<DownOutlined/>}
+                        menu={{
+                            items: useStatusItems.map((item) => ({
+                                ...item,
+                                onClick: () => handleUseStatusChange(item.key),
+                            })),
+                        }}
+                    >
+                        更改状态
+                    </Dropdown.Button>
+                    <Dropdown.Button
+                        size={'small'}
+                        type={'primary'}
+                        icon={<DownOutlined/>}
+                        menu={{
+                            items: publishStatusItems.map((item) => ({
+                                ...item,
+                                onClick: () => handlePublishStatusChange(item.key),
+                            })),
+                        }}
+                    >
+                        发布状态
+                    </Dropdown.Button>
+                </Space>
             </>
         );
     };
 
-    const columns: ColumnsType<Detail> = [
+    const columns1: ColumnsType<Api.Detail> = [
         {
             title: '序号',
             dataIndex: 'id',
-            key: 'id',
-            width: 80,
+            width: 70,
             render: (v, r, i) => (pageNum - 1) * pageSize + i + 1,
         },
         {
             title: '服务',
             dataIndex: 'productName',
-            key: 'productName',
             width: 95,
             ellipsis: true,
         },
         {
             title: 'API分组',
             dataIndex: 'apiGroup',
-            key: 'apiGroup',
             width: 150,
             ellipsis: true,
         },
         {
             title: 'API名称',
             dataIndex: 'apiName',
-            key: 'apiName',
-            width: '30%',
+            width: '27%',
             ellipsis: true,
-            render: (v, record)=> v + ' / ' + record.apiNameEn,
+            render: (v, row) => openApiExplorer(row.productName, row.apiNameEn, row.uri, v + ' / ' + row.apiNameEn),
         },
         {
+            title: 'URI',
+            dataIndex: 'uri',
+            ellipsis: true,
+            render: (v, row) => {
+                return (
+                    <>
+                        <Tag>{row.method}</Tag> {row.uri}
+                    </>
+                );
+            },
+        },
+    ];
+
+    const columns2: ColumnsType<Api.Detail> = [];
+    if (queryParams.cloudName === CloudName.HuaweiCloud) {
+        columns2.push({
             title: '覆盖状态',
             dataIndex: 'useRemark',
-            key: 'useRemark',
-            width: 100,
+            align: 'center',
+            width: 90,
             render: (val) => {
                 switch (val) {
                     case 'used':
@@ -201,34 +365,25 @@ const ApiDialogList: React.FC<queryParams> = (queryParams) => {
                 }
                 return <Tag>{val}</Tag>;
             },
-        },
-        /*{
-                title: '资源个数',
-                dataIndex: 'providerList',
-                key: 'providerList',
-                width: 100,
-                align: 'center',
-                render: (providerList) => {
-                    return <a href="#">{(providerList || []).length}</a>;
-                },
-            },*/
+        });
+    }
+
+    const columns3: ColumnsType<Api.Detail> = [
         {
-            title: 'URI',
-            dataIndex: 'uri',
-            key: 'uri',
+            title: <>备注<EditOutlined style={{color: '#6d6d6d'}}/></>,
+            dataIndex: 'remark',
+            width: '15%',
             ellipsis: true,
-            render: (v, row) => {
-                return (
-                    <>
-                        <Tag>{row.method}</Tag> {row.uri}
-                    </>
-                );
-            },
+            render: (v: any, row) => {
+                return <Input defaultValue={v}
+                              bordered={false}
+                              onBlur={(e) => onRemarkChange(e.target.value, row)}/>
+            }
         },
         {
             title: '发布状态',
             dataIndex: 'publishStatus',
-            key: 'publishStatus',
+            align: 'center',
             width: 100,
             render: (val) => {
                 switch (val) {
@@ -245,24 +400,27 @@ const ApiDialogList: React.FC<queryParams> = (queryParams) => {
         {
             title: '操作',
             dataIndex: 'operate',
-            key: 'operate',
-            width: 200,
+            width: 100,
+            align: 'center',
             render: (v, row) => {
                 return (
                     <>
                         <a type="button" onClick={() => handleRowClick(row)}>
                             变更历史&ensp;&ensp;
                         </a>
-                        {openApiExplorer(row.productName, row.apiNameEn, row.uri)}
                     </>
                 );
             },
         },
     ];
 
+    const columns: ColumnsType<Api.Detail> = [...columns1, ...columns2, ...columns3];
+
     return (
         <>
-            <div className={'search-plan'}>{getCreatePlan()}</div>
+            {contextHolder}
+            <SearchForm owner={queryParams.owner} onSearch={onSearch}/>
+            <div className={'search-plan'}>{getToolbar()}</div>
             <div>
                 <Table
                     className={'api-table'}
@@ -277,7 +435,7 @@ const ApiDialogList: React.FC<queryParams> = (queryParams) => {
                         size: 'default',
                         pageSize: pageSize,
                         current: pageNum,
-                        showTotal: (total) => `总条数: ${total}`,
+                        showTotal: (num) => `总条数: ${num}`,
                         onShowSizeChange: (current, size) => {
                             setPageSize(size);
                         },
@@ -294,9 +452,77 @@ const ApiDialogList: React.FC<queryParams> = (queryParams) => {
                 transitionName={''}
                 footer={null}
                 onCancel={handleCancel}
-                width={1650}
+                width={1750}
             >
-                <ApiChangeList id={id} />
+                <ApiChangeList id={id}/>
+            </Modal>
+            <Modal
+                title="新建资源规划"
+                open={isPlanningDialogOpen}
+                transitionName={''}
+                onCancel={() => setIsPlanningDialogOpen(false)}
+                footer={[
+                    <Button key="close" onClick={() => setIsPlanningDialogOpen(false)}>关闭</Button>,
+                    <Button type={'primary'} key="save" onClick={savePlanning}>保存</Button>
+                ]}>
+
+                <div style={{height: '20px'}}/>
+                <Space direction={'vertical'} size={20}>
+                    <div>
+                        <div>规划类型：</div>
+                        <Radio.Group onChange={(e) => setPlanningTitle(e.target.value)} value={planningTitle}>
+                            <Radio value={'新增资源'}>新增资源</Radio>
+                            <Radio value={'增强已有资源'}>增强已有资源</Radio>
+                        </Radio.Group>
+                    </div>
+                    <div>
+                        <Space.Compact style={{width: '100%'}}>
+                            <Select
+                                defaultValue="DataSource"
+                                options={options}
+                                style={{width: '120px'}}
+                                value={providerType}
+                                onChange={(v) => setProviderType(v)}
+                            />
+                            <Input
+                                placeholder={'请输入 Resource 或 DataSource 名称'}
+                                value={providerName}
+                                style={{width: '320px'}}
+                                onChange={(e) => {
+                                    setProviderName(e.currentTarget.value);
+                                }}
+                            />
+                        </Space.Compact>
+                        <div>关联已有资源，或计划创建新资源</div>
+                    </div>
+                </Space>
+                <div style={{height: '20px'}}/>
+            </Modal>
+            <Modal title={'请填写不适合的原因'}
+                   transitionName={''}
+                   open={isRemarkDialogOpen}
+                   onCancel={() => setRemarkDialogOpen(false)}
+                   width={600}
+                   footer={[
+                       <Button key={'close'} onClick={updateUseStatusToIgnore}>不填原因</Button>,
+                       <Button key="save" type="primary" onClick={updateUseStatusToIgnore}>提交</Button>
+                   ]}>
+                <div style={{height: '10px'}}/>
+                <Input
+                    placeholder={'请填写不适合的原因'}
+                    value={remark}
+                    style={{width: '320px'}}
+                    onChange={(e) => {
+                        setRemark(e.currentTarget.value);
+                    }}
+                />
+                <div style={{marginTop: '10px'}}>
+                    <span>常用：</span>
+                    <Space size={10}>
+                        <a onClick={() => setRemark('即将废弃')}>即将废弃</a>
+                        <a onClick={() => setRemark('已用高本版')}>已用高本版</a>
+                    </Space>
+                </div>
             </Modal>
         </>
     );

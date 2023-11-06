@@ -1,5 +1,5 @@
 import {Space, Table, Tag} from 'antd';
-import {ColumnsType} from 'antd/es/table';
+import type {ColumnsType} from 'antd/es/table';
 import React from 'react';
 // @ts-ignore
 import {Scrollbars} from 'react-custom-scrollbars';
@@ -57,7 +57,7 @@ const ProviderApiList: React.FC<{ data: Api.Detail[] }> = ({data}) => {
     ];
     if (data) {
         data.forEach((t, n) => {
-            if(t.id === 0){
+            if (t.id === 0) {
                 t.id = -1 - n
             }
         });

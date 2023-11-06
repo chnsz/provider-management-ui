@@ -1,13 +1,14 @@
 import React, {useRef} from "react";
-import {Tabs, TabsProps} from "antd";
+import type {TabsProps} from "antd";
+import {Tabs} from "antd";
 import RelationApi from "@/pages/ProviderPlanning/components/creation-dialog/relation-api";
 import RelationProvider from "@/pages/ProviderPlanning/components/creation-dialog/relation-provider";
-import {CreateOptions} from "@/pages/ProviderPlanning/components/creation-dialog/provider-planning-editor";
+import type {CreateOptions} from "@/pages/ProviderPlanning/components/creation-dialog/provider-planning-editor";
 
 const RelationTabs: React.FC<{
     createOptions: CreateOptions,
-    onApiRelationChange: (list: Api.Detail[]) =>any,
-    onProviderRelationChange: (list: Relation.ProviderRelation[]) =>any,
+    onApiRelationChange: (list: Api.Detail[]) => any,
+    onProviderRelationChange: (list: Relation.ProviderRelation[]) => any,
 }> = (props) => {
     const apiRef = useRef<HTMLDivElement>(null);
     const providerRef = useRef<HTMLDivElement>(null);
@@ -26,7 +27,8 @@ const RelationTabs: React.FC<{
         },
         {
             key: '2',
-            label: <span ref={providerRef}>预计创建的 Provider（{(props.createOptions.providerList || []).length})</span>,
+            label: <span
+                ref={providerRef}>预计创建的 Provider（{(props.createOptions.providerList || []).length})</span>,
             children: (
                 <RelationProvider
                     providerList={props.createOptions.providerList}

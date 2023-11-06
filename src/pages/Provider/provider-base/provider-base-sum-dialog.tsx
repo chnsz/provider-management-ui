@@ -1,7 +1,6 @@
 import React, {useState} from "react";
-import Provider from "@/pages/Provider";
 import {getProviderApiBaseSum} from "@/services/provider/api";
-import {ColumnsType} from "antd/es/table/interface";
+import type {ColumnsType} from "antd/es/table/interface";
 import {Button, Modal, Table} from "antd";
 import ProviderBaseDialog from "@/pages/Provider/provider-base/provider-base-dialog";
 
@@ -54,7 +53,8 @@ const ProviderBaseSumDialog: React.FC<{
         {
             title: '资源名称',
             dataIndex: 'providerName',
-            width: '14%',
+            ellipsis: true,
+            width: '15%',
         },
         {
             title: 'API名称',
@@ -66,6 +66,7 @@ const ProviderBaseSumDialog: React.FC<{
                     return <ProviderBaseDialog
                         text={row.apiDetail.apiName + ' / ' + row.apiDetail.apiNameEn}
                         apiId={row.apiId}
+                        apiName={row.apiDetail.apiName + ' / ' + row.apiDetail.apiNameEn}
                         onClosed={loadData}
                         providerType={row.providerType}
                         providerName={row.providerName}/>
@@ -88,14 +89,14 @@ const ProviderBaseSumDialog: React.FC<{
             render: renderNum,
         },
         {
-            title: '仅类型变更',
+            title: '类型变更',
             width: '7%',
             dataIndex: 'typeChange',
             align: 'center',
             render: renderNum,
         },
         {
-            title: '仅描述变更',
+            title: '描述变更',
             width: '7%',
             dataIndex: 'descChange',
             align: 'center',
@@ -120,7 +121,7 @@ const ProviderBaseSumDialog: React.FC<{
             width: '7%',
             dataIndex: 'used',
             align: 'center',
-            render:renderNum,
+            render: renderNum,
         },
     ];
 

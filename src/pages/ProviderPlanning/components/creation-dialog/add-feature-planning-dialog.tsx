@@ -1,8 +1,9 @@
 import React, {useState} from "react";
 import {Button, Modal} from "antd";
-import ProviderPlanningEditor, {
+import type {
     CreateOptions
 } from "@/pages/ProviderPlanning/components/creation-dialog/provider-planning-editor";
+import ProviderPlanningEditor from "@/pages/ProviderPlanning/components/creation-dialog/provider-planning-editor";
 import {createProviderPlanning} from "@/services/provider-planning/api";
 import {get} from "lodash";
 
@@ -28,7 +29,7 @@ const AddFeaturePlanningDialog: React.FC<{ productName: string, onClosed: () => 
         setIsModalOpen(true);
     };
 
-    const closeModel = ()=>{
+    const closeModel = () => {
         setPlanning({
             syncToKanboard: 'yes',
             productName: props.productName,
@@ -61,7 +62,7 @@ const AddFeaturePlanningDialog: React.FC<{ productName: string, onClosed: () => 
             status: planning.status,
             title: planning.title
         }).then((rsp) => {
-            if(get(rsp, 'code', '200')){
+            if (get(rsp, 'code', '200')) {
                 setIsModalOpen(false);
                 if (props.onClosed) {
                     props.onClosed();

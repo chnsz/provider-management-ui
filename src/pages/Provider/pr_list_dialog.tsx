@@ -1,8 +1,8 @@
 import React, {useState} from "react";
 import {Button, Modal, Table} from "antd";
-import {ColumnsType} from "antd/es/table";
+import type {ColumnsType} from "antd/es/table";
 import {toLongDate} from "@/utils/common";
-import {getPrList} from "@/services/provider/api";
+import {getOwnerPrList, getPrList} from "@/services/provider/api";
 
 const PrListDialog: React.FC<{
     owner: string,
@@ -22,10 +22,17 @@ const PrListDialog: React.FC<{
     };
     const openDialog = () => {
         setIsDialogOpen(true)
-        getPrList(props.owner, props.prStatus, props.providerType, props.providerName, '2023-05-01', '')
-            .then(data => {
-                setData(data.items);
-            });
+        if (props.providerType === "") {
+            getOwnerPrList(props.owner, props.prStatus, '2023-05-01', '')
+                .then(data => {
+                    setData(data.items);
+                });
+        } else {
+            getPrList(props.owner, props.prStatus, props.providerType, props.providerName, '2023-05-01', '')
+                .then(data => {
+                    setData(data.items);
+                });
+        }
     }
 
     const columns: ColumnsType<Provider.PullRequest> = [
@@ -61,10 +68,12 @@ const PrListDialog: React.FC<{
         },
     ]
     return <>
-        <a onClick={openDialog}>{props.val} </a>
+        <div style={{cursor: 'pointer'}} onClick={openDialog}>
+            <Button type={'link'}>{props.val}</Button>
+        </div>
         <Modal title="PR列表"
                destroyOnClose
-               width={1200}
+               width={1500}
                transitionName={''}
                open={isDialogOpen}
                onOk={handleOk}
@@ -72,10 +81,7 @@ const PrListDialog: React.FC<{
                footer={[
                    <Button key="close" type="primary" onClick={handleOk}>关闭</Button>
                ]}>
-            <Table columns={columns} dataSource={data} size={'small'} pagination={{
-                defaultPageSize: 20,
-                defaultCurrent: 1
-            }}/>
+            <Table columns={columns} dataSource={data} size={'small'} pagination={false}/>
         </Modal>
     </>
 }

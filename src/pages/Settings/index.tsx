@@ -3,12 +3,11 @@ import Panel from '@/pages/Settings/components/panel';
 import ServiceConfig from '@/pages/Settings/components/service-config';
 import State from '@/pages/Settings/components/state';
 import User from '@/pages/Settings/components/user';
-import { Layout, Menu, theme } from 'antd';
-import React, { useState } from 'react';
+import {Menu,} from 'antd';
+import React, {useState} from 'react';
+import LRLayout, {Container, LeftSide} from '@/components/Layout';
 
-const { Sider } = Layout;
-
-const { Item } = Menu;
+const {Item} = Menu;
 
 type SettingsStateKeys = 'serviceConfig' | 'category' | 'user' | 'panel' | 'state';
 type SettingsState = {
@@ -20,9 +19,9 @@ const Serve: React.FC = () => {
     const menuMap: Record<string, React.ReactNode> = {
         serviceConfig: '服务配置',
         category: 'Category 与服务关系',
-        user: '用户配置',
-        panel: '看板配置',
-        state: '状态映射',
+        // user: '用户配置',
+        // panel: '看板配置',
+        // state: '状态映射',
     };
 
     const [initConfig, setInitConfig] = useState<SettingsState>({
@@ -35,34 +34,30 @@ const Serve: React.FC = () => {
     };
 
     const renderChildren = () => {
-        const { selectKey } = initConfig;
+        const {selectKey} = initConfig;
         switch (selectKey) {
             case 'serviceConfig':
-                return <ServiceConfig />;
+                return <ServiceConfig/>;
             case 'category':
-                return <Category />;
+                return <Category/>;
             case 'user':
-                return <User />;
+                return <User/>;
             case 'panel':
-                return <Panel />;
+                return <Panel/>;
             case 'state':
-                return <State />;
+                return <State/>;
             default:
                 return null;
         }
     };
 
-    const {
-        token: { colorBgContainer },
-    } = theme.useToken();
-
     return (
-        <Layout>
-            <Sider trigger={null} style={{ background: colorBgContainer }}>
+        <LRLayout className={'setting-container'} style={{marginTop: '-20px'}}>
+            <LeftSide width={300} minWidth={300} style={{padding: '15px 10px'}}>
                 <Menu
                     mode={initConfig.mode}
                     selectedKeys={[initConfig.selectKey]}
-                    onClick={({ key }) => {
+                    onClick={({key}) => {
                         setInitConfig({
                             ...initConfig,
                             selectKey: key as SettingsStateKeys,
@@ -71,11 +66,11 @@ const Serve: React.FC = () => {
                 >
                     {getMenu()}
                 </Menu>
-            </Sider>
-            <Layout>
+            </LeftSide>
+            <Container style={{padding: '0 20px 20px 20px'}}>
                 <div>{renderChildren()}</div>
-            </Layout>
-        </Layout>
+            </Container>
+        </LRLayout>
     );
 };
 

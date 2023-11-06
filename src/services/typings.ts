@@ -28,6 +28,8 @@ declare namespace Global {
         kbUserId: number;
         githubId: string;
     }
+
+    type CloudName = 'HuaweiCloud' | 'FlexibleEngineCloud' | 'G42Cloud';
 }
 declare namespace Relation {
     type ProviderRelation = {
@@ -36,8 +38,8 @@ declare namespace Relation {
         dataId: number;
         providerType: string;
         providerName: string;
-        created: string;
-        updated: string;
+        created?: string;
+        updated?: string;
     }
 
     type ApiRelation = {

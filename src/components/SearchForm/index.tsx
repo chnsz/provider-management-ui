@@ -1,7 +1,7 @@
 import {getProductList, getUserList} from '@/services/product/api';
 import {Button, Select, Space} from 'antd';
-import {ButtonType} from 'antd/es/button/buttonHelpers';
-import {SelectProps} from 'antd/es/select';
+import type {ButtonType} from 'antd/es/button/buttonHelpers';
+import type {SelectProps} from 'antd/es/select';
 import React, {useEffect, useState} from 'react';
 
 export type SearchFormProps = {
@@ -109,7 +109,7 @@ const SearchForm: React.FC<{
                         <Space>
                             {
                                 taskStatus.map(s => {
-                                    let type: ButtonType = selectedStatus.includes(s.value) ? 'primary' : 'dashed';
+                                    const type: ButtonType = selectedStatus.includes(s.value) ? 'primary' : 'dashed';
 
                                     return <Button key={s.value} size={'small'} type={type}
                                                    onClick={onStatusClick(s.value)}>
@@ -129,7 +129,7 @@ const SearchForm: React.FC<{
                         <span className={'custom-label'}>按田主：</span>
                         <Space>
                             {ownerList.map((t) => {
-                                let type: ButtonType = selectedOwner.includes(t) ? 'primary' : 'dashed';
+                                const type: ButtonType = selectedOwner.includes(t) ? 'primary' : 'dashed';
 
                                 return (
                                     <Button key={t} size={'small'} type={type} onClick={onOwnerClick(t)}>

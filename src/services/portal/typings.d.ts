@@ -106,4 +106,32 @@ declare namespace Portal {
         emergingApiCount: number;
         emergingApiUsed: number;
     }
+
+    type OwnerSum = {
+        owner: string;
+        productCount: number;
+        productBasedCount: number;
+        apiCount: number;
+        apiNeedAnalysisCount: number;
+        providerCount: number;
+        providerBasedCount: number;
+        fieldChangedCount: number;
+        fieldChangedDelayCount: number;
+        prCount: number;
+        utCount: number;
+        utFailedCount: number;
+        uTCoverageAvg: number;
+        uTCoverageMax: number;
+        uTCoverageMin: number;
+        bugCount: number;
+        providerPlanningCount: number;
+        score: number;
+        apiChangeDelayCount: number;
+        apiChangeExpired: number;
+        apiChangePadding: number;
+        apiChangeToExpired: number;
+        apiChangeUnProcessed: number;
+    }
+
+    type PartnerSum = Record<string, number>
 }

@@ -1,22 +1,24 @@
 import React, {useEffect, useState} from "react";
-import {Button, Modal, Space, Table} from "antd";
-import {ColumnsType} from "antd/es/table/interface";
+import {Button, Modal, Space, Table, Tag} from "antd";
+import type {ColumnsType} from "antd/es/table/interface";
 import {getServiceSumList} from "@/services/portal/api";
-import {ButtonType} from "antd/es/button/buttonHelpers";
 import {getUserList} from "@/services/product/api";
 import ProviderListDialog from "@/pages/Portal/components/provider-list-dialog";
 import ApiDialogList from "@/pages/Portal/components/api-dialog-list";
+import {useModel} from 'umi';
+import type {ButtonType} from "antd/lib/button";
 
 interface ServiceSumProps {
     productGroup: string;
     data: Portal.ProductSum[];
+    partner?: boolean;
 }
 
-const ServiceSum: React.FC<ServiceSumProps> = ({productGroup, data}) => {
+const ServiceSum: React.FC<ServiceSumProps> = ({productGroup, data, partner}) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectProductName, setSelectProductName] = useState<string>('');
 
-    const columns: ColumnsType<Portal.ProductSum> = [
+    const allColumns: ColumnsType<Portal.ProductSum> = [
         {
             title: '序号',
             dataIndex: 'sn',
@@ -28,28 +30,34 @@ const ServiceSum: React.FC<ServiceSumProps> = ({productGroup, data}) => {
             title: '服务分级',
             dataIndex: 'level',
             width: '150px',
+            render: v => v === '' ? '其他服务' : v
         },
         {
             title: '服务简称/名称',
             dataIndex: 'productName',
             width: '280px',
-            render: (val, record) =>
-                <a href={`/service#/productName/${val}`} target={'_blank'} rel="noreferrer">
+            render: (val, record) => {
+                if (record.huaweiCloudProviderCount === 0 && record.huaweiCloudDataSourceCount === 0) {
+                    return <Tag style={{fontSize: '14px'}}>{val} / {record.productNameZh}</Tag>
+                }
+
+                return <a href={`/service#/productName/${val}`} target={'_blank'} rel="noreferrer">
                     {val} / {record.productNameZh}
-                </a>,
+                </a>
+            },
         },
         {
-            title: () => <>华为云<br/>Resource</>,
+            title: () => <>Resource</>,
             dataIndex: 'huaweiCloudProviderCount',
             align: 'center',
         },
         {
-            title: () => <>华为云<br/>DataSource</>,
+            title: () => <>DataSource</>,
             dataIndex: 'huaweiCloudDataSourceCount',
             align: 'center',
         },
         {
-            title: () => <>华为云</>,
+            title: () => <>资源总数</>,
             dataIndex: 'huaweiCloudProviderCount',
             align: 'center',
             render: (v, row) => {
@@ -58,56 +66,6 @@ const ServiceSum: React.FC<ServiceSumProps> = ({productGroup, data}) => {
                 </a>
                 return <ProviderListDialog productName={row.productName} text={text} selectedKey={"1"}/>
             }
-        },
-        {
-            title: () => <>G42</>,
-            dataIndex: 'g42ProviderCount',
-            align: 'center',
-            render: (v, row) => {
-                const hwCount = row.huaweiCloudProviderCount + row.huaweiCloudDataSourceCount
-                let count = row.g42ProviderCount + row.g42DataSourceCount;
-                if (hwCount === 0) {
-                    return <>{count}</>
-                }
-                if (hwCount < count) {
-                    count = hwCount;
-                }
-                let color = '#faad14';
-                const rate = Number(count / hwCount * 100).toFixed(2);
-                if (rate === '100.00') {
-                    color = '#40a9ff';
-                }
-
-                const text = <span style={{color: color}}>
-                    {row.g42ProviderCount + row.g42DataSourceCount} <br/> {rate} %
-                </span>
-                return <ProviderListDialog productName={row.productName} text={text} selectedKey={"3"}/>
-            }
-        },
-        {
-            title: () => <>法电</>,
-            dataIndex: 'feProviderCount',
-            align: 'center',
-            render: (v, row) => {
-                const hwCount = row.huaweiCloudProviderCount + row.huaweiCloudDataSourceCount
-                let count = row.feProviderCount + row.feDataSourceCount
-                if (hwCount === 0) {
-                    return <>{count}</>
-                }
-                if (hwCount < count) {
-                    count = hwCount;
-                }
-                let color = '#faad14';
-                const rate = Number(count / hwCount * 100).toFixed(2);
-                if (rate === '100.00') {
-                    color = '#40a9ff';
-                }
-
-                const text = <span title={'xxxxx'} style={{color: color}}>
-                    {row.feProviderCount + row.feDataSourceCount} <br/> {rate} %
-                </span>
-                return <ProviderListDialog productName={row.productName} text={text} selectedKey={"2"}/>
-            },
         },
         {
             title: 'API 对接率',
@@ -126,17 +84,16 @@ const ServiceSum: React.FC<ServiceSumProps> = ({productGroup, data}) => {
             title: 'API 数据',
             dataIndex: 'apiUsagesSums',
             align: 'center',
-            width: '380px',
+            // width: '480px',
             render: (v, record) => {
                 return <div className={'row'}>
                     <div className={'col'}>
-                        <div className={'blue'}>{record.apiUsed}</div>
-                        <div className={'custom-label'}>已对接</div>
+                        <div>{record.apiCount}</div>
+                        <div className={'custom-label'}>总数</div>
                     </div>
                     <div className={'col'}>
-                        <div
-                            className={record.apiOfflineInUse === 0 ? '' : 'orange'}>{record.apiOfflineInUse}</div>
-                        <div className={'custom-label'}>使用废弃API</div>
+                        <div className={'blue'}>{record.apiUsed}</div>
+                        <div className={'custom-label'}>已对接</div>
                     </div>
                     <div className={'col'}>
                         <div
@@ -144,16 +101,12 @@ const ServiceSum: React.FC<ServiceSumProps> = ({productGroup, data}) => {
                         <div className={'custom-label'}>待分析</div>
                     </div>
                     <div className={'col'}>
-                        <div>{record.apiCount}</div>
-                        <div className={'custom-label'}>总数</div>
+                        <div
+                            className={record.apiOfflineInUse === 0 ? '' : 'orange'}>{record.apiOfflineInUse}</div>
+                        <div className={'custom-label'}>使用废弃API</div>
                     </div>
                 </div>
             },
-        },
-        {
-            title: '特性覆盖率',
-            dataIndex: 'featureCoverage',
-            align: 'center',
         },
         /*{
             title: '资源规划',
@@ -222,10 +175,110 @@ const ServiceSum: React.FC<ServiceSumProps> = ({productGroup, data}) => {
             width: '5%',
         },
     ];
+
+    const partnerColumns: ColumnsType<Portal.ProductSum> = [
+        {
+            title: '序号',
+            dataIndex: 'sn',
+            align: 'center',
+            width: '4%',
+            render: (v, r, i) => i + 1,
+        },
+        {
+            title: '服务分级',
+            dataIndex: 'level',
+            width: '150px',
+            render: v => v === '' ? '其他服务' : v
+        },
+        {
+            title: '服务简称/名称',
+            dataIndex: 'productName',
+            width: '280px',
+            render: (val, record) => {
+                if (record.huaweiCloudProviderCount === 0 && record.huaweiCloudDataSourceCount === 0) {
+                    return <Tag style={{fontSize: '14px'}}>{val} / {record.productNameZh}</Tag>
+                }
+
+                return <a href={`/service#/productName/${val}`} target={'_blank'} rel="noreferrer">
+                    {val} / {record.productNameZh}
+                </a>
+            },
+        },
+        {
+            title: () => <>华为云资源数</>,
+            dataIndex: 'huaweiCloudProviderCount',
+            align: 'center',
+            render: (v, row) => {
+                const text = <a>
+                    {row.huaweiCloudProviderCount + row.huaweiCloudDataSourceCount}
+                </a>
+                return <ProviderListDialog productName={row.productName} text={text} selectedKey={"1"}/>
+            }
+        },
+        {
+            title: () => <>G42</>,
+            dataIndex: 'g42ProviderCount',
+            align: 'center',
+            render: (v, row) => {
+                const hwCount = row.huaweiCloudProviderCount + row.huaweiCloudDataSourceCount
+                let count = row.g42ProviderCount + row.g42DataSourceCount;
+                if (hwCount === 0) {
+                    return <>{count}</>
+                }
+                if (hwCount < count) {
+                    count = hwCount;
+                }
+                let color = '#faad14';
+                let rate = Number(count / hwCount * 100).toFixed(2);
+                if (rate === '100.00') {
+                    rate = '100';
+                    color = '#40a9ff';
+                }
+
+                const text = <div style={{color: color, textAlign: 'center'}}>
+                    {row.g42ProviderCount + row.g42DataSourceCount}&nbsp; <br/> {rate}%
+                </div>
+                return <ProviderListDialog productName={row.productName} text={text} selectedKey={"3"}/>
+            }
+        },
+        {
+            title: () => <>法电</>,
+            dataIndex: 'feProviderCount',
+            align: 'center',
+            render: (v, row) => {
+                const hwCount = row.huaweiCloudProviderCount + row.huaweiCloudDataSourceCount
+                let count = row.feProviderCount + row.feDataSourceCount
+                if (hwCount === 0) {
+                    return <>{count}</>
+                }
+                if (hwCount < count) {
+                    count = hwCount;
+                }
+                let color = '#faad14';
+                let rate = Number(count / hwCount * 100).toFixed(2);
+                if (rate === '100.00') {
+                    rate = '100';
+                    color = '#40a9ff';
+                }
+
+                const text = <div style={{color: color, textAlign: 'center'}}>
+                    {row.feProviderCount + row.feDataSourceCount}&nbsp; <br/> {rate}%
+                </div>
+                return <ProviderListDialog productName={row.productName} text={text} selectedKey={"2"}/>
+            },
+        },
+        {
+            title: '田主',
+            dataIndex: 'owner',
+            width: '5%',
+        },
+    ];
+
     return <>
         <div className={'service-group'}>{productGroup}</div>
         <Table
-            columns={columns}
+            columns={partner ? partnerColumns : allColumns}
+            size={'middle'}
             dataSource={data}
             pagination={false}
             rowKey={(record) => record.productGroup + record.productName}
@@ -237,7 +290,7 @@ const ServiceSum: React.FC<ServiceSumProps> = ({productGroup, data}) => {
             destroyOnClose
             footer={null}
             onCancel={() => setIsModalOpen(false)}
-            width={'80%'}
+            width={'85%'}
         >
             <ApiDialogList productName={selectProductName}/>
         </Modal>
@@ -245,16 +298,26 @@ const ServiceSum: React.FC<ServiceSumProps> = ({productGroup, data}) => {
 }
 
 const SearchForm: React.FC<{ onSearch: (owner: string[], level: string[]) => any }> = ({onSearch}) => {
+    const {initialState} = useModel('@@initialState');
+    let owner: string[] = [];
+    if (!['Developer', '程相栋', '牛振国', '解义超', '王泽鹏'].includes(initialState?.currentUser?.realName || '')) {
+        owner = [initialState?.currentUser?.realName || '']
+    }
+
     const [ownerList, setOwnerList] = useState<string[]>([]);
-    const [selectedOwner, setSelectedOwner] = useState<string[]>([]);
+    const [selectedOwner, setSelectedOwner] = useState<string[]>(owner);
     const [selectedLevel, setSelectedLevel] = useState<string[]>([]);
     const levelList: { value: string, label: string }[] = [{value: '主力服务', label: '主力服务'},
         {value: '核心服务', label: '核心服务'},
-        {value: '新兴服务', label: '新兴服务'}];
+        {value: 'other', label: '其他服务'}];
 
     useEffect(() => {
-        getUserList().then((rsp) => {
-            setOwnerList(rsp.items.map((u: Product.User) => u.username));
+        getUserList().then((rsp: Global.List<Product.User[]>) => {
+            const arr = rsp.items.map((u: Product.User) => u.username)
+            setOwnerList(arr);
+            if (owner[0] === initialState?.currentUser?.realName && !arr.includes(initialState?.currentUser?.realName)) {
+                setSelectedOwner([]);
+            }
         });
     }, []);
 
@@ -291,7 +354,7 @@ const SearchForm: React.FC<{ onSearch: (owner: string[], level: string[]) => any
             <span className={'filter-label'}>按田主过滤：</span>
             <Space>
                 {ownerList.map((t) => {
-                    let type: ButtonType = selectedOwner.includes(t) ? 'primary' : 'dashed';
+                    const type: ButtonType = selectedOwner.includes(t) ? 'primary' : 'dashed';
 
                     return (
                         <Button key={t} size={'small'} type={type} onClick={onOwnerClick(t)}>
@@ -308,7 +371,7 @@ const SearchForm: React.FC<{ onSearch: (owner: string[], level: string[]) => any
             <span className={'filter-label'}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;按级别：</span>
             <Space>
                 {levelList.map((t) => {
-                    let type: ButtonType = selectedLevel.includes(t.value) ? 'primary' : 'dashed';
+                    const type: ButtonType = selectedLevel.includes(t.value) ? 'primary' : 'dashed';
 
                     return (
                         <Button key={t.value} size={'small'} type={type} onClick={onLevelClick(t.value)}>
@@ -321,10 +384,14 @@ const SearchForm: React.FC<{ onSearch: (owner: string[], level: string[]) => any
     </div>
 }
 
-const ServiceSumList: React.FC<{ onload: (data: Portal.PortalSum) => any }> = ({onload}) => {
+const ServiceSumList: React.FC<{
+    onload: (data: Portal.PortalSum) => any,
+    partner?: boolean,
+}> = ({onload, partner}) => {
     const [productList, setProductList] = useState<ServiceSumProps[]>([]);
 
     const onSearch = (ownerArr: string[], levelArr: string[]) => {
+        console.log("xxx")
         getServiceSumList(ownerArr, levelArr).then(rsp => {
             setProductList([]);
             onload(rsp);
@@ -333,20 +400,32 @@ const ServiceSumList: React.FC<{ onload: (data: Portal.PortalSum) => any }> = ({
             }
 
             const arr: ServiceSumProps[] = [];
-            let tmpArr: Portal.ProductSum[] = [];
-            let productGroup: string = '';
+            const productGroupList: Record<string, Portal.ProductSum[]> = {}
 
-            rsp.productSumList.forEach((t: Portal.ProductSum) => {
-                if (productGroup !== t.productGroup && productGroup !== '') {
-                    arr.push({productGroup: productGroup, data: tmpArr});
-                    tmpArr = [];
-                    productGroup = '';
+            rsp.productSumList
+                .forEach((t: Portal.ProductSum) => {
+                    const tmpArr = productGroupList[t.productGroup] || [];
+                    tmpArr.push(t);
+                    productGroupList[t.productGroup] = tmpArr;
+                });
+
+            for (const key in productGroupList) {
+                if (!productGroupList.hasOwnProperty(key)) {
+                    continue;
                 }
-                productGroup = t.productGroup;
-                tmpArr.push(t);
-            });
-            if (tmpArr.length > 0) {
-                arr.push({productGroup: productGroup, data: tmpArr});
+                const data = productGroupList[key] || [];
+                data.sort((a, b) => {
+                    let s1 = a.productName;
+                    let s2 = b.productName;
+                    if (a.huaweiCloudProviderCount === 0 && a.huaweiCloudDataSourceCount === 0) {
+                        s1 = 'zzz_' + s1
+                    }
+                    if (b.huaweiCloudProviderCount === 0 && b.huaweiCloudDataSourceCount === 0) {
+                        s2 = 'zzz_' + s2
+                    }
+                    return s1.localeCompare(s2);
+                });
+                arr.push({productGroup: key, data: data});
             }
 
             for (let i = 0; i < arr.length; i++) {
@@ -363,7 +442,7 @@ const ServiceSumList: React.FC<{ onload: (data: Portal.PortalSum) => any }> = ({
         <Space direction={'vertical'} style={{width: '100%'}} size={20}>
             {
                 productList.map(p =>
-                    <ServiceSum productGroup={p.productGroup} data={p.data} key={p.productGroup}/>
+                    <ServiceSum partner={partner} productGroup={p.productGroup} data={p.data} key={p.productGroup}/>
                 )
             }
         </Space>

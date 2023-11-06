@@ -1,20 +1,20 @@
 import ApiChangeList from '@/pages/api/components/api-change-list';
 import ApiGroup from '@/pages/api/components/api-group';
-import { openApiExplorer } from '@/pages/Portal';
+import {openApiExplorer} from '@/pages/Portal';
 import {
     getApiDetailList,
     getApiGroupList,
     updatePublishStatus,
     updateUseStatus,
 } from '@/services/api/api';
-import { getProductList } from '@/services/product/api';
-import { DownOutlined } from '@ant-design/icons';
-import { ProFormSelect, ProFormText } from '@ant-design/pro-components';
-import { QueryFilter } from '@ant-design/pro-form';
-import { ProSchemaValueEnumObj } from '@ant-design/pro-utils/es/typing';
-import { Button, Dropdown, Modal, Table, Tag } from 'antd';
-import { ColumnsType } from 'antd/es/table';
-import React, { useEffect, useState } from 'react';
+import {getProductList} from '@/services/product/api';
+import {DownOutlined} from '@ant-design/icons';
+import {ProFormSelect, ProFormText} from '@ant-design/pro-components';
+import {QueryFilter} from '@ant-design/pro-form';
+import type {ProSchemaValueEnumObj} from '@ant-design/pro-utils/es/typing';
+import {Button, Dropdown, Modal, Table, Tag} from 'antd';
+import type {ColumnsType} from 'antd/es/table';
+import React, {useEffect, useState} from 'react';
 import '../api.less';
 
 type ApiSearchListProp = {
@@ -69,16 +69,16 @@ const ApiList: React.FC<{ productName: string; onSearch: (val: FormProps) => any
                 label="产品服务"
                 showSearch
                 initialValue={props.productName}
-                rules={[{ required: true }]}
+                rules={[{required: true}]}
                 fieldProps={{
                     allowClear: false,
                     onChange: onProductNameChange,
                 }}
                 valueEnum={productNameMap}
             />
-            <ProFormSelect name="apiGroup" label="分组名称" showSearch valueEnum={apiGroupMap} />
-            <ProFormText name="apiName" label="API 名称" />
-            <ProFormText name="uri" label="URI" />
+            <ProFormSelect name="apiGroup" label="分组名称" showSearch valueEnum={apiGroupMap}/>
+            <ProFormText name="apiName" label="API 名称"/>
+            <ProFormText name="uri" label="URI"/>
             <ProFormSelect
                 name="publishStatus"
                 label="发布状态"
@@ -183,17 +183,17 @@ const ApiSearchList: React.FC<ApiSearchListProp> = (props) => {
     };
 
     const useStatusItems = [
-        { label: '已使用', key: 'used' },
-        { label: '待分析', key: 'need_analysis' },
-        { label: '不合适', key: 'ignore' },
-        { label: '缺少API', key: 'missing_api' },
-        { label: '未分析', key: 'planning' },
+        {label: '已使用', key: 'used'},
+        {label: '待分析', key: 'need_analysis'},
+        {label: '不适合', key: 'ignore'},
+        {label: '缺少API', key: 'missing_api'},
+        {label: '未分析', key: 'planning'},
     ];
 
     const publishStatusItems = [
-        { label: '开放中', key: 'online' },
-        { label: '已下线', key: 'offline' },
-        { label: '线下API', key: 'unpublished' },
+        {label: '开放中', key: 'online'},
+        {label: '已下线', key: 'offline'},
+        {label: '线下API', key: 'unpublished'},
     ];
 
     const handleUseStatusChange = (status: string) => {
@@ -202,7 +202,7 @@ const ApiSearchList: React.FC<ApiSearchListProp> = (props) => {
             updateUseStatus(selectedRow.id, newUseStatus).then(() => {
                 const newData = data.map((item) => {
                     if (item.id === selectedRow.id) {
-                        return { ...item, useRemark: newUseStatus };
+                        return {...item, useRemark: newUseStatus};
                     }
                     return item;
                 });
@@ -217,7 +217,7 @@ const ApiSearchList: React.FC<ApiSearchListProp> = (props) => {
             updatePublishStatus(selectedRow.id, newPublishStatus).then(() => {
                 const newData = data.map((item) => {
                     if (item.id === selectedRow.id) {
-                        return { ...item, publishStatus: newPublishStatus };
+                        return {...item, publishStatus: newPublishStatus};
                     }
                     return item;
                 });
@@ -236,7 +236,7 @@ const ApiSearchList: React.FC<ApiSearchListProp> = (props) => {
                     className={'search-update'}
                     size={'small'}
                     type={'primary'}
-                    icon={<DownOutlined />}
+                    icon={<DownOutlined/>}
                     menu={{
                         items: useStatusItems.map((item) => ({
                             ...item,
@@ -249,7 +249,7 @@ const ApiSearchList: React.FC<ApiSearchListProp> = (props) => {
                 <Dropdown.Button
                     size={'small'}
                     type={'primary'}
-                    icon={<DownOutlined />}
+                    icon={<DownOutlined/>}
                     menu={{
                         items: publishStatusItems.map((item) => ({
                             ...item,
@@ -379,11 +379,11 @@ const ApiSearchList: React.FC<ApiSearchListProp> = (props) => {
 
     return (
         <>
-            <ApiList productName={props.providerName || ''} onSearch={onSearch} />
-            <div style={{ height: '16px' }} />
-            <div style={{ display: 'flex' }}>
+            <ApiList productName={props.providerName || ''} onSearch={onSearch}/>
+            <div style={{height: '16px'}}/>
+            <div style={{display: 'flex'}}>
                 <div>
-                    <ApiGroup productName={productName} />
+                    <ApiGroup productName={productName}/>
                 </div>
                 <div>
                     <div className={'search-header'}>查询结果</div>
@@ -419,7 +419,7 @@ const ApiSearchList: React.FC<ApiSearchListProp> = (props) => {
                         onCancel={handleCancel}
                         width={1600}
                     >
-                        <ApiChangeList id={id} />
+                        <ApiChangeList id={id}/>
                     </Modal>
                 </div>
             </div>

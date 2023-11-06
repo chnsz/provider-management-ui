@@ -1,5 +1,8 @@
-import {request} from '@@/exports';
-import {ItemType} from 'antd/es/menu/hooks/useItems';
+import {request} from 'umi';
+import type {ItemType} from 'antd/es/menu/hooks/useItems';
+
+export const PMS_PATH: string = "/pms";
+export const PGS_PATH: string = "/pgs";
 
 /** 查询菜单 GET /data/menu-changes.json */
 export async function getMenu(name: string) {

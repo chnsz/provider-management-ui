@@ -10,15 +10,17 @@ import {
     getTaskList,
     updateTask,
 } from '@/services/task/api';
-import {useLocation} from '@@/exports';
+import {useLocation} from 'umi';
 import {ExclamationCircleFilled, SendOutlined} from '@ant-design/icons';
 import {Breadcrumb, Button, message, Modal, Space} from 'antd';
 import React, {useEffect, useState} from 'react';
 import './task.less';
 // @ts-ignore
 import {Scrollbars} from 'react-custom-scrollbars';
-import SearchForm, {SearchFormProps} from "@/components/SearchForm";
+import type {SearchFormProps} from "@/components/SearchForm";
+import SearchForm from "@/components/SearchForm";
 import AddFeaturePlanningDialog from "@/pages/ProviderPlanning/components/creation-dialog/add-feature-planning-dialog";
+import CustomBreadcrumb from "@/components/Breadcrumb";
 
 const {confirm} = Modal;
 const defaultTaskTitle = '新建的待办任务';
@@ -224,7 +226,7 @@ const Task: React.FC = () => {
 
     return (
         <LRLayout className={'task'}>
-            <Breadcrumb items={[{title: '首页'}, {title: '待办任务'}]}/>
+            <CustomBreadcrumb items={[{title: '首页'}, {title: '待办任务'}]}/>
             <Header>
                 {contextHolder}
                 <div style={{background: '#fff', padding: '20px 20px'}}>

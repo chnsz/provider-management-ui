@@ -2,9 +2,9 @@ import {getApiDetailList, getApiGroupList} from '@/services/api/api';
 import {getProductList} from '@/services/product/api';
 import {ProFormSelect, ProFormText} from '@ant-design/pro-components';
 import {QueryFilter} from '@ant-design/pro-form';
-import {ProSchemaValueEnumObj} from '@ant-design/pro-utils/es/typing';
+import type {ProSchemaValueEnumObj} from '@ant-design/pro-utils/es/typing';
 import {Button, Divider, Modal, Table, Tag} from 'antd';
-import {ColumnsType} from 'antd/es/table/interface';
+import type {ColumnsType} from 'antd/es/table/interface';
 import React, {useEffect, useState} from 'react';
 
 type ApiListDialogProp = {
@@ -228,7 +228,7 @@ const ApiListDialog: React.FC<ApiListDialogProp> = (props) => {
                 onOk={handle('ok')}
                 onCancel={handle('cancel')}
             >
-                <SearchForm onSearch={onSearch} productName={props.providerName||''}/>
+                <SearchForm onSearch={onSearch} productName={props.providerName || ''}/>
                 <Divider/>
                 <Table
                     rowSelection={rowSelection}

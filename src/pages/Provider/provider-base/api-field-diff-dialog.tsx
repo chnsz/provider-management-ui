@@ -1,6 +1,5 @@
 import React from "react";
-import {ColumnsType} from "antd/es/table/interface";
-import Provider from "@/pages/Provider";
+import type {ColumnsType} from "antd/es/table/interface";
 import {Table} from "antd";
 import './api-field-diff-dialog.less'
 import TextArea from "antd/es/input/TextArea";

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Button, Form, Input, Select, Space, Radio, Modal} from 'antd';
 import {getProductList} from "@/services/product/api";
-import {SelectProps} from "antd/es/select";
+import type {SelectProps} from "antd/es/select";
 import {getCloudName} from "@/global";
 import {addApiMonitor, updateApiMonitor} from "@/services/provider/api";
 import {undefined} from "@umijs/utils/compiled/zod";

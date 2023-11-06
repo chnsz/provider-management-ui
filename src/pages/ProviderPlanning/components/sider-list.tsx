@@ -1,5 +1,5 @@
-import { getTaskStatus } from '@/pages/Task/components/task-detail';
-import { toShortDate } from '@/utils/common';
+import {getTaskStatus} from '@/pages/Task/components/task-detail';
+import {toShortDate} from '@/utils/common';
 import classNames from 'classnames';
 import React from 'react';
 

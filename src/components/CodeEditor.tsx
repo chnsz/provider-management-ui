@@ -1,8 +1,9 @@
 import React from 'react';
 import * as monaco from 'monaco-editor';
-import Editor, {OnChange, loader} from '@monaco-editor/react';
+import type {OnChange} from '@monaco-editor/react';
+import Editor, {loader} from '@monaco-editor/react';
 
-loader.config({ monaco });
+loader.config({monaco});
 
 const CodeEditor: React.FC<{
     defaultValue?: string;

@@ -1,13 +1,13 @@
-import { getApiGroupList } from '@/services/api/api';
-import { BookOutlined } from '@ant-design/icons';
-import { useEffect, useState } from 'react';
+import {getApiGroupList} from '@/services/api/api';
+import {BookOutlined} from '@ant-design/icons';
+import {useEffect, useState} from 'react';
 import '../api.less';
 
 type changeProductName = {
     productName: string;
 };
 
-const ApiGroup: React.FC<changeProductName> = ({ productName }) => {
+const ApiGroup: React.FC<changeProductName> = ({productName}) => {
     const [data, setData] = useState<ApiGroups[]>([]);
     const [sum, setSum] = useState<number>();
     const size = 250;
@@ -63,33 +63,33 @@ const ApiGroup: React.FC<changeProductName> = ({ productName }) => {
                 <div key={idx}>
                     <div className={'group-card'}>
                         <div className={'whiteboard'}>
-                            <BookOutlined />
+                            <BookOutlined/>
                         </div>
                         <div className={'progress-right'}>
                             <div className={'progress-header'}>{item.apiGroup}</div>
                             <div className={'progress'}>
                                 <div
                                     className={'used'}
-                                    style={{ width: (item.usedCount / item.sum) * size + 'px' }}
-                                ></div>
+                                    style={{width: (item.usedCount / item.sum) * size + 'px'}}
+                                />
                                 <div
                                     className={'need-analysis'}
                                     style={{
                                         width: (item.needAnalysisCount / item.sum) * size + 'px',
                                     }}
-                                ></div>
+                                />
                                 <div
                                     className={'missing'}
-                                    style={{ width: (item.missingCount / item.sum) * size + 'px' }}
-                                ></div>
+                                    style={{width: (item.missingCount / item.sum) * size + 'px'}}
+                                />
                                 <div
                                     className={'planning'}
-                                    style={{ width: (item.planningCount / item.sum) * size + 'px' }}
-                                ></div>
+                                    style={{width: (item.planningCount / item.sum) * size + 'px'}}
+                                />
                                 <div
                                     className={'ignore'}
-                                    style={{ width: (item.ignoreCount / item.sum) * size + 'px' }}
-                                ></div>
+                                    style={{width: (item.ignoreCount / item.sum) * size + 'px'}}
+                                />
                                 {getSum()}
                             </div>
                         </div>

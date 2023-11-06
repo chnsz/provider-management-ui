@@ -28,7 +28,7 @@ const ApiChangeView: React.FC<{
         .replace('normal;font-size: 16px;', 'normal;font-size: 14px;')
         .replace('<div class="content">', '<div class="diff-content">');
 
-    let providers = JSON.parse(props.providers || "[]");
+    const providers = JSON.parse(props.providers || "[]");
 
     const onChangeStatus = (status: string, remark: string | undefined) => {
         modifyApiChangeStatus(props.id, status, remark || '').then(() => {

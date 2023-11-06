@@ -1,8 +1,8 @@
 import React from "react";
 import {Button, Modal} from "antd";
-import {ButtonType} from "antd/es/button/buttonHelpers";
+import type {ButtonType} from "antd/es/button/buttonHelpers";
 import {ExclamationCircleFilled} from "@ant-design/icons";
-import {SizeType} from "antd/es/config-provider/SizeContext";
+import type {SizeType} from "antd/es/config-provider/SizeContext";
 
 const {confirm} = Modal;
 

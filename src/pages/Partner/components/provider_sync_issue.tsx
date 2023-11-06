@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from "react";
 import {Table} from "antd";
-import {ColumnsType} from "antd/es/table";
+import type {ColumnsType} from "antd/es/table";
 import ProviderSyncIssueDialog, {getSyncTypeName} from "@/pages/Partner/components/provider_sync_issue_dialog";
 import {CloudName} from "@/global";
 
 export const getProviderIssuesData = (
     data: Provider.ProviderSyncSum[],
-    preData: { [type: string]: Provider.ProviderSyncSum }
+    preData: Record<string, Provider.ProviderSyncSum>
 ) => {
     data.forEach(t => {
         if (!preData.hasOwnProperty(t.type)) {
@@ -16,7 +16,7 @@ export const getProviderIssuesData = (
     });
 
     const arr: Provider.ProviderSyncSum[] = [];
-    for (let key in preData) {
+    for (const key in preData) {
         if (!preData.hasOwnProperty(key)) {
             continue;
         }
@@ -70,7 +70,7 @@ export const columnRender = (cloudName: Global.CloudName, loadData?: () => any, 
     }
 }
 
-const preSyncData: { [type: string]: Provider.ProviderSyncSum } = {
+const preSyncData: Record<string, Provider.ProviderSyncSum> = {
     PartnerMissingField: getDefaultSyncSum('PartnerMissingField'),
     PartnerFieldOutNum: getDefaultSyncSum('PartnerFieldOutNum'),
     PartnerFieldConflict: getDefaultSyncSum('PartnerFieldConflict'),

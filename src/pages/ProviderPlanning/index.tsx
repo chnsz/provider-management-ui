@@ -8,17 +8,17 @@ import {
     getProviderPlanning,
     getProviderPlanningList,
 } from '@/services/provider-planning/api';
-import {ExclamationCircleFilled, SendOutlined} from '@ant-design/icons';
-import {Breadcrumb, Button, message, Modal, notification, Space} from 'antd';
+import {SendOutlined} from '@ant-design/icons';
+import {Button, message, Space} from 'antd';
 import React, {useEffect, useState} from 'react';
 import './provider-planning.less';
 // @ts-ignore
 import {Scrollbars} from 'react-custom-scrollbars';
-import SearchForm, {SearchFormProps} from "@/components/SearchForm";
-import {useLocation} from "@@/exports";
+import type {SearchFormProps} from "@/components/SearchForm";
+import SearchForm from "@/components/SearchForm";
+import {useLocation} from "umi";
 import DeleteBtn from "@/components/delete";
-
-const {confirm} = Modal;
+import CustomBreadcrumb from "@/components/Breadcrumb";
 
 export const defaultVal = {
     created: '',
@@ -146,7 +146,7 @@ const ProviderPlanning: React.FC = () => {
         return detailTitle;
     }
 
-    const getProductName = ()=>{
+    const getProductName = () => {
         const hashArr = location.hash.split('/');
         if (hashArr.length === 2) {
             return [hashArr[1]];
@@ -156,7 +156,7 @@ const ProviderPlanning: React.FC = () => {
 
     return (
         <LRLayout className={'provider-planning'}>
-            <Breadcrumb items={[{title: '首页'}, {title: '资源规划'}]}/>
+            <CustomBreadcrumb items={[{title: '首页'}, {title: '资源规划'}]}/>
             <Header>
                 <div style={{background: '#fff', padding: '20px 20px'}}>
                     <SearchForm onSearch={onSearch} defaultValue={{productName: getProductName()}}/>
@@ -198,7 +198,7 @@ const ProviderPlanning: React.FC = () => {
                                 >
                                     推送卡片
                                 </Button>
-                                <DeleteBtn size={'small'}  text={'删除规划'} onOk={deletePlanning}
+                                <DeleteBtn size={'small'} text={'删除规划'} onOk={deletePlanning}
                                            disabled={selectedPlanning.id === 0}
                                            title={'删除资源规划'}
                                            content={

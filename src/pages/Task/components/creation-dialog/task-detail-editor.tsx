@@ -1,7 +1,7 @@
 import Editor from '@/components/editor';
 import {getProductList, getUserList} from '@/services/product/api';
 import {Badge, DatePicker, Descriptions, Input, Select} from 'antd';
-import {SelectProps} from 'antd/es/select';
+import type {SelectProps} from 'antd/es/select';
 import React, {useEffect, useState} from 'react';
 import dayjs from "dayjs";
 
@@ -157,33 +157,33 @@ const TaskDetailEditor: React.FC<TaskDetailProps> = ({task, onChange}) => {
                             value={task.productName}
                             onChange={onValChange('productName')}
                             options={productList}
-                    ></Select>
+                    />
                 </Descriptions.Item>
                 <Descriptions.Item label="优先级" span={1}>
                     <Select size={'small'} style={{width: '200px'}}
                             value={task.priority}
                             onChange={onValChange('priority')}
                             options={priorityOptions}
-                    ></Select>
+                    />
                 </Descriptions.Item>
                 <Descriptions.Item label="责任人" span={1}>
                     <Select size={'small'} style={{width: '200px'}}
                             value={task.assignee}
                             onChange={onValChange('assignee')}
                             options={ownerList}
-                    ></Select>
+                    />
                 </Descriptions.Item>
                 <Descriptions.Item label="待办状态" span={1}>
                     <Select size={'small'} style={{width: '200px'}}
                             value={task.status}
                             onChange={onValChange('status')}
                             options={statusOptions}
-                    ></Select>
+                    />
                 </Descriptions.Item>
                 <Descriptions.Item label="标题" span={2}>
                     <Input value={task.title} onChange={onValChange('title')} size={'small'}
                            style={{width: '615px'}}
-                    ></Input>
+                    />
                 </Descriptions.Item>
                 <Descriptions.Item label="截止日期" span={1}>
                     <DatePicker value={task.deadline ? dayjs(task.deadline, 'YYYY-MM-DD') : undefined}

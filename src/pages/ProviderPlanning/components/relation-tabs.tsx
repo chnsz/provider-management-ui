@@ -1,7 +1,8 @@
 import RelationApi from '@/pages/ProviderPlanning/components/relation-api';
 import RelationProvider from '@/pages/ProviderPlanning/components/relation-provider';
-import { Tabs, TabsProps } from 'antd';
-import React, { useRef } from 'react';
+import type {TabsProps} from 'antd';
+import {Tabs} from 'antd';
+import React, {useRef} from 'react';
 
 type RelationTabsProps = {
     planning: ProviderPlanning.ProviderPlanning;
@@ -37,11 +38,11 @@ const RelationTabs: React.FC<RelationTabsProps> = (props) => {
         },
         {
             key: '2',
-            label: <span ref={providerRef}>预计创建的 Provider（{(props.planning.providerList||[]).length})</span>,
+            label: <span ref={providerRef}>预计创建的 Provider（{(props.planning.providerList || []).length})</span>,
             children: (
                 <RelationProvider
                     planningId={props.planning.id}
-                    providerList={props.planning.providerList||[]}
+                    providerList={props.planning.providerList || []}
                     onChange={(a) => {
                         if (providerRef.current) {
                             providerRef.current.innerHTML = `预计创建的 Provider（${a.length})`;

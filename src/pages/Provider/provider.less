@@ -18,6 +18,7 @@
     .process-bar {
 
     }
+
     .n-used {
         height: 4px;
         background: #1890ff;
@@ -40,7 +41,7 @@
     .n-planning {
         height: 4px;
         background: #36cbcb;
-        border: 1px solid#36cbcb;
+        border: 1px solid #36cbcb;
     }
 
     .n-ignore {
@@ -48,5 +49,43 @@
         background: #975fe4;
         border: 1px solid #975fe4;
         border-radius: 0 10px 10px 0;
+    }
+}
+
+.quality-sum {
+    .red {
+        color: #ff4d4f;
+    }
+
+    .gold {
+        color: #faad14;
+    }
+
+
+    .green {
+        color: #52c41a;
+    }
+
+    .blue {
+        color: #1677ff;
+    }
+
+    .column-cell {
+        padding: 0 15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .cell {
+            flex: 1;
+            text-align: center;
+        }
+
+        .label {
+            font-size: 11px;
+            text-align: center;
+            color: #00000073;
+            line-height: 1.57142857;
+        }
     }
 }

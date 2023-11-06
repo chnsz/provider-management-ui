@@ -2,7 +2,7 @@ import OverviewItem from '@/pages/api/changes/components/overview-item';
 import {getApiChangeReport} from '@/services/api';
 import {useEmotionCss} from '@ant-design/use-emotion-css';
 import {Col, Collapse, Row, Timeline} from 'antd';
-import {TimelineItemProps} from 'antd/es/timeline/TimelineItem';
+import type {TimelineItemProps} from 'antd/es/timeline/TimelineItem';
 import React, {useEffect, useState} from 'react';
 // @ts-ignore
 import {Scrollbars} from 'react-custom-scrollbars';
@@ -27,7 +27,7 @@ const Overview: React.FC = () => {
 
     useEffect(() => {
         getApiChangeReport().then((data) => {
-            let items: TimelineItemProps[] = [];
+            const items: TimelineItemProps[] = [];
             data.sort((a: Api.Report, b: Api.Report) => 0 - a!.label!.localeCompare(b!.label));
 
             data.forEach((t) => {
@@ -35,7 +35,7 @@ const Overview: React.FC = () => {
 
                 if (t.add && t.add.length > 0) {
                     labelSet = true;
-                    let addChild: JSX.Element[] = t.add!.flatMap((t) => (
+                    const addChild: JSX.Element[] = t.add!.flatMap((t) => (
                         <OverviewItem text={t} pageType={'define'}/>
                     ));
 
@@ -50,8 +50,8 @@ const Overview: React.FC = () => {
                 }
 
                 if (t.update && t.update.length > 0) {
-                    let label = t.label;
-                    let updateChild: JSX.Element[] = t.update!.flatMap((t) => (
+                    const label = t.label;
+                    const updateChild: JSX.Element[] = t.update!.flatMap((t) => (
                         <OverviewItem text={`/${label}/${t}`} pageType={'changes'}/>
                     ));
 
@@ -67,7 +67,7 @@ const Overview: React.FC = () => {
                 }
 
                 if (t.delete && t.delete.length > 0) {
-                    let deleteChild: JSX.Element[] = t.delete!.flatMap((t) => (
+                    const deleteChild: JSX.Element[] = t.delete!.flatMap((t) => (
                         <OverviewItem text={t} pageType={'define'}/>
                     ));
 
@@ -104,7 +104,7 @@ const Overview: React.FC = () => {
                             <Timeline style={{paddingTop: '24px'}} mode={'left'} items={items}/>
                         </div>
                     </Col>
-                    <Col span={12}></Col>
+                    <Col span={12}/>
                 </Scrollbars>
             </Row>
         </>

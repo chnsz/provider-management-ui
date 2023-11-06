@@ -1,20 +1,19 @@
-import {request} from '@@/exports';
-
-const basePath = '/pms';
+import {request} from 'umi';
+import {PMS_PATH} from "@/services/api";
 
 /** 创建动态 POST /pms/notice */
 export async function createNotice() {
-    return request<Notice.Notice>(`${basePath}/notice`, {method: 'POST'});
+    return request<Notice.Notice>(`${PMS_PATH}/notice`, {method: 'POST'});
 }
 
 /** 删除通知动态 DELETE /pms/notice/{id} */
 export async function removeNotice(id: string) {
-    return request<Global.AffectResponse>(`${basePath}/notice/${id}`, {method: 'DELETE'});
+    return request<Global.AffectResponse>(`${PMS_PATH}/notice/${id}`, {method: 'DELETE'});
 }
 
 /** 查询通知动态明细 GET /pms/notice */
 export async function getNotice(id: string) {
-    return request<Notice.Notice>(`${basePath}/notice/${id}`, {method: 'GET'});
+    return request<Notice.Notice>(`${PMS_PATH}/notice/${id}`, {method: 'GET'});
 }
 
 /** 查询通知动态列表 GET /pms/notice */
@@ -25,7 +24,7 @@ export async function getNoticeList(params: {
     const offset = (pageNum - 1) * pageSize;
 
     return request<Global.List<Notice.Notice[]>>(
-        `${basePath}/notice/list/${limit}/${offset}`,
+        `${PMS_PATH}/notice/list/${limit}/${offset}`,
         {
             method: 'GET',
             params: {...params}
@@ -35,12 +34,12 @@ export async function getNoticeList(params: {
 
 /** 修改阅读状态 POST /pms/notice */
 export async function markNoticeRead(id: string) {
-    return request<Global.AffectResponse>(`${basePath}/notice/state/${id}/yes`, {
+    return request<Global.AffectResponse>(`${PMS_PATH}/notice/state/${id}/yes`, {
         method: 'PATCH',
     });
 }
 
 /** 修改阅读状态 POST /pms/notice */
 export async function markNoticeNotRead(id: string) {
-    return request<Global.AffectResponse>(`${basePath}/notice/state/${id}/no`, {method: 'PATCH'});
+    return request<Global.AffectResponse>(`${PMS_PATH}/notice/state/${id}/no`, {method: 'PATCH'});
 }

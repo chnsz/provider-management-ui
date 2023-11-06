@@ -1,5 +1,7 @@
-import React, {CSSProperties, ReactElement, useEffect, useRef, useState} from 'react';
-import {Resizable, ResizeCallbackData} from 'react-resizable';
+import type {CSSProperties, ReactElement} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
+import type {ResizeCallbackData} from 'react-resizable';
+import {Resizable} from 'react-resizable';
 import './index.less';
 // @ts-ignore
 import {Scrollbars} from 'react-custom-scrollbars';
@@ -97,7 +99,7 @@ const LRLayout: React.FC<LRLayoutProps> = (props) => {
                     handle={<div className={`splitter`}/>}
                     onResize={onResize}
                 >
-                    <div></div>
+                    <div/>
                 </Resizable>
                 <div className={'container'} style={{width: 'calc(100% - ' + (dragWidth + 20) + 'px)'}}>
                     <Scrollbars>

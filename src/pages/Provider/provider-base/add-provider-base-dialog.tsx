@@ -1,14 +1,15 @@
 import React, {useEffect, useState} from "react";
-import {ColumnsType} from "antd/es/table/interface";
+import type {ColumnsType} from "antd/es/table/interface";
 import {Button, Divider, Modal, Select, Space, Table, Tag} from "antd";
 import {getApiDetailList, getApiGroupList} from "@/services/api/api";
-import {ProSchemaValueEnumObj} from "@ant-design/pro-utils/es/typing";
+import type {ProSchemaValueEnumObj} from "@ant-design/pro-utils/es/typing";
 import {getProductList} from "@/services/product/api";
 import {QueryFilter} from "@ant-design/pro-form";
 import {ProFormSelect, ProFormText} from "@ant-design/pro-components";
 import ProviderBaseDialog from "@/pages/Provider/provider-base/provider-base-dialog";
-import {SelectProps} from "rc-select/lib/Select";
+import type {SelectProps} from "rc-select/lib/Select";
 import {getProviderList} from "@/services/provider/api";
+import {CloudName} from "@/global";
 
 type FormProps = {
     productName: string;
@@ -162,9 +163,10 @@ const AddProviderBaseDialog: React.FC<{
             dataIndex: 'id',
             width: 120,
             align: 'center',
-            render: (val) => <ProviderBaseDialog
+            render: (val, row) => <ProviderBaseDialog
                 model={'button'}
                 apiId={val}
+                apiName={row.apiName + ' / ' + row.apiNameEn}
                 providerType={providerType}
                 providerName={providerName}
             />,
@@ -200,7 +202,7 @@ const AddProviderBaseDialog: React.FC<{
     }, [pageNum, pageSize, queryParams]);
 
     const loadProviderOption = () => {
-        getProviderList({cloudName: 'HuaweiCloud', type: providerType}, 2000, 1)
+        getProviderList({cloudName: CloudName.HuaweiCloud, type: providerType}, 2000, 1)
             .then(data => {
                 const option = data.items.map(t => {
                     return {value: t.name, label: t.name};

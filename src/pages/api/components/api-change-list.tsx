@@ -1,7 +1,7 @@
 import {getApiChangeHistory} from '@/services/api/api';
 import {toShortDate} from '@/utils/common';
 import {Table, Tag} from 'antd';
-import {ColumnsType} from 'antd/es/table';
+import type {ColumnsType} from 'antd/es/table';
 import React, {useEffect, useState} from 'react';
 
 type changeId = {

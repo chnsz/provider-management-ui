@@ -4,13 +4,14 @@ import {getProductList} from '@/services/product/api';
 import {toShortDate} from '@/utils/common';
 import {ProFormSelect, ProFormText} from '@ant-design/pro-components';
 import {QueryFilter} from '@ant-design/pro-form';
-import {ProSchemaValueEnumObj} from '@ant-design/pro-utils/es/typing';
+import type {ProSchemaValueEnumObj} from '@ant-design/pro-utils/es/typing';
 import {Breadcrumb, Button, message, Modal, notification, Space, Table, Tag} from 'antd';
 import type {ColumnsType} from 'antd/es/table';
 import type {TableRowSelection} from 'antd/es/table/interface';
 import React, {useEffect, useState} from 'react';
 import './api-change.less';
 import ApiChange from "@/pages/api/api-change";
+import CustomBreadcrumb from "@/components/Breadcrumb";
 
 type FormProps = {
     productName: string;
@@ -286,10 +287,7 @@ const ApiChangeList: React.FC<{
 
     return (
         <>
-            <Breadcrumb
-                items={[{title: '首页'}, {title: 'API 变更分析'}]}
-                style={{margin: '10px 0'}}
-            />
+            <CustomBreadcrumb items={[{title: '首页'}, {title: 'API 变更分析'}]}/>
             <ApiChangeSearch productGroup={props.providerName || ''} onSearch={onSearch}/>
             <div style={{height: '16px'}}/>
             <Table

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import './portal.less'
 import './partner.less'
-import { Collapse, Space, Tooltip} from "antd";
+import {Collapse, Space, Tooltip} from "antd";
 import ServiceSumList from "@/pages/Portal/components/service-sum-list";
 import {InfoCircleOutlined} from "@ant-design/icons";
 import {CloudName, getCloudName} from "@/global";
@@ -9,7 +9,7 @@ import {getPartnerSum} from "@/services/portal/api";
 import ProviderDocsIssue from "@/pages/Partner/components/provider_docs_issue";
 import ProviderSyncIssue from "@/pages/Partner/components/provider_sync_issue";
 import {getProviderSyncSum} from "@/services/provider/api";
-import { useModel } from 'umi';
+import {useModel} from 'umi';
 import OwnerApiDialog from "@/pages/Provider/components/owner-api-dialog";
 import ProviderSyncSumDialog from "@/pages/Partner/components/provider_sync_sum_dialog";
 import CustomBreadcrumb from "@/components/Breadcrumb";
@@ -38,7 +38,7 @@ const PanelCol: React.FC<{
 }
 
 const SplitLine: React.FC<{ half?: boolean }> = ({half}) => {
-    return <div className={half ? 'split-half' : 'split'}></div>
+    return <div className={half ? 'split-half' : 'split'}/>
 }
 
 const SumPanel: React.FC<{ cloudName: Global.CloudName }> = ({cloudName}) => {

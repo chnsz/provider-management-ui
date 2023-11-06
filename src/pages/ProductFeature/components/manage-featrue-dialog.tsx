@@ -13,7 +13,7 @@ const ManageFeatureDialog: React.FC<{ productName: string, onClosed: () => any }
 
     const handleCancel = () => {
         setIsModalOpen(false);
-        if(props.onClosed){
+        if (props.onClosed) {
             props.onClosed();
         }
     };

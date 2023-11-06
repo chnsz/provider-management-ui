@@ -1,246 +1,146 @@
-import type { InputRef } from 'antd';
-import { Breadcrumb, Button, Form, Input, Popconfirm, Table } from 'antd';
-import type { FormInstance } from 'antd/es/form';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import {Breadcrumb, Button, Popconfirm, Select, Table} from 'antd';
+import type {ColumnsType} from 'antd/es/table';
+import React, {useEffect, useState} from 'react';
 import '../settings.less';
+import {
+    addCategoryProduct,
+    deleteCategoryProduct,
+    listCategoryProduct,
+    updateCategoryProduct
+} from "@/services/provider/api";
+import {getProductList} from "@/services/product/api";
+import CustomBreadcrumb from "@/components/Breadcrumb";
 
-const EditableContext = React.createContext<FormInstance<any> | null>(null);
+const CategoryProductConfig: React.FC = () => {
+    const [data, setData] = useState<Provider.CategoryProductDto[]>([]);
+    const [productOptions, setProductOptions] = useState<{ value: string; label: string }[]>([]);
 
-interface DataType {
-    key: React.Key;
-    category: string;
-    productName: string;
-    operation: string;
-}
-
-const EditableRow: React.FC = (props) => {
-    const [form] = Form.useForm();
-    return (
-        <Form form={form} component={false}>
-            <EditableContext.Provider value={form}>
-                <tr {...props} />
-            </EditableContext.Provider>
-        </Form>
-    );
-};
-
-interface EditableCellProps {
-    title: React.ReactNode;
-    editable: boolean;
-    children: React.ReactNode;
-    dataIndex: keyof DataType;
-    record: DataType;
-    handleSave: (record: DataType) => void;
-}
-
-const EditableCell: React.FC<EditableCellProps> = ({
-    title,
-    editable,
-    children,
-    dataIndex,
-    record,
-    handleSave,
-    ...restProps
-}) => {
-    const [editing, setEditing] = useState<boolean>(false);
-    const inputRef = useRef<InputRef>(null);
-    const form = useContext(EditableContext)!;
-
-    useEffect(() => {
-        if (editing) {
-            inputRef.current!.focus();
-        }
-    }, [editing]);
-
-    const toggleEdit = () => {
-        setEditing(!editing);
-        form.setFieldsValue({ [dataIndex]: record[dataIndex] });
-    };
-
-    const save = async () => {
-        try {
-            const values = await form.validateFields();
-
-            toggleEdit();
-            handleSave({ ...record, ...values });
-        } catch (errInfo) {
-            console.error('Save failed:', errInfo);
-        }
-    };
-
-    let childNode;
-
-    if (editable) {
-        if (editing) {
-            childNode = (
-                <Form.Item
-                    style={{ margin: 0 }}
-                    name={dataIndex}
-                    rules={[
-                        {
-                            required: true,
-                            message: `${title} is required.`,
-                        },
-                    ]}
-                >
-                    <Input ref={inputRef} onPressEnter={save} onBlur={save} />
-                </Form.Item>
-            );
-        } else {
-            childNode = (
-                <div
-                    className="editable-cell-value-wrap"
-                    style={{ paddingRight: 24 }}
-                    onClick={toggleEdit}
-                >
-                    {children}
-                </div>
-            );
-        }
-    } else {
-        childNode = children;
+    const loadData = () => {
+        listCategoryProduct().then(r => {
+            r.items.sort((a, b) => a.productName.localeCompare(b.productName));
+            setData(r.items);
+        });
     }
 
-    return <td {...restProps}>{childNode}</td>;
-};
+    useEffect(() => {
+        loadData();
 
-type EditableTableProps = Parameters<typeof Table>[0];
+        getProductList().then((r) => {
+            const mapper: Record<string, string> = {};
+            r.items.forEach(t => {
+                mapper[t.productName] = t.productName + ' / ' + t.productNameZh;
+                mapper[t.productNameC] = t.productNameC + ' / ' + t.productNameCZh;
+            });
 
-type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
+            const arr: { value: string; label: string }[] = [];
+            for (const key in mapper) {
+                if (mapper.hasOwnProperty(key)) {
+                    arr.push({value: key, label: mapper[key]})
+                }
+            }
+            setProductOptions(arr);
+        });
+    }, []);
 
-const Category: React.FC = () => {
-    const [dataSource, setDataSource] = useState<DataType[]>([
+    const saveData = (productName: any, row: Provider.CategoryProductDto) => {
+        if (row.id === 0) {
+            addCategoryProduct(row.categoryName, productName).then(loadData);
+            return;
+        }
+        updateCategoryProduct(row.id, productName).then(loadData);
+    }
+
+    const columns: ColumnsType<Provider.CategoryProductDto> = [
         {
-            key: '0',
-            category: 'API Gateway(Shared APIG)',
-            productName: 'APIG',
-            operation: '',
+            title: '序号',
+            dataIndex: 'sn',
+            align: 'center',
+            width: 80,
+            render: (v, r, i) => i + 1,
         },
-        {
-            key: '1',
-            category: 'API Gateway(Shared APIG)',
-            productName: 'APIG',
-            operation: '',
-        },
-    ]);
-
-    const [count, setCount] = useState<number>(2);
-
-    const handleDelete = (key: React.Key) => {
-        const newData = dataSource.filter((item) => item.key !== key);
-        setDataSource(newData);
-    };
-
-    const getDelete = (_: any, record: { key?: React.Key }) =>
-        dataSource.length >= 1 ? (
-            <Popconfirm
-                title="Sure to delete?"
-                onConfirm={() => record.key && handleDelete(record.key)}
-            >
-                <a>删除</a>
-            </Popconfirm>
-        ) : null;
-
-    const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
         {
             title: 'Category',
-            dataIndex: 'category',
-            editable: true,
+            dataIndex: 'categoryName',
+            width: '20%',
         },
         {
-            title: '服务简称',
+            title: '服务',
             dataIndex: 'productName',
-            editable: true,
+            width: '20%',
+            render: (v: any, row) => {
+                return (
+                    <Select
+                        defaultValue={v}
+                        style={{width: '100%'}}
+                        bordered={false}
+                        showSearch
+                        onChange={(v) => saveData(v, row)}
+                        options={productOptions}
+                    />
+                );
+            },
+        },
+        {
+            title: '备注',
+            dataIndex: 'tags',
+            render: (v, row) => {
+                if (v === 'unused') {
+                    return <span style={{color: '#faad14'}}>该 Category 已不再使用</span>;
+                }
+                if (row.productName === '' && row.categoryName !== 'Deprecated') {
+                    return <span style={{color: '#ff4d4f'}}>服务名称为空，请配置</span>
+                }
+                return v;
+            },
         },
         {
             title: '操作',
-            dataIndex: 'operation',
-            render: getDelete,
+            dataIndex: 'id',
+            width: 100,
+            align: 'center',
+            render: v => {
+                return <Popconfirm
+                    title="删除 Category 配置"
+                    description="确定要删除该条数据？"
+                    onConfirm={() => {
+                        deleteCategoryProduct(v).then(() => {
+                            const arr = data.filter(t => t.id !== v)
+                            setData(arr);
+                        });
+                    }}
+                    okText="确定"
+                    cancelText="取消"
+                >
+                    <Button danger type={'link'}>删除</Button>
+                </Popconfirm>
+            },
         },
     ];
 
-    const handleAdd = () => {
-        const newData: DataType = {
-            key: count,
-            category: `API Gateway(Shared APIG)`,
-            productName: 'APIG',
-            operation: ``,
-        };
-        setDataSource([...dataSource, newData]);
-        setCount(count + 1);
-    };
-
-    const handleSave = (row: DataType) => {
-        const newData = dataSource.map((t) => {
-            if (t.key === row.key) {
-                return row;
-            }
-            return t;
-        });
-        setDataSource(newData);
-    };
-
-    const components = {
-        body: {
-            row: EditableRow,
-            cell: EditableCell,
-        },
-    };
-
-    const columns = defaultColumns.map((col) => {
-        if (!col.editable) {
-            return col;
-        }
-        return {
-            ...col,
-            onCell: (record: DataType) => ({
-                record,
-                editable: col.editable,
-                dataIndex: col.dataIndex,
-                title: col.title,
-                handleSave,
-            }),
-        };
-    });
-
     return (
-        <>
-            <div>
-                <Breadcrumb
-                    style={{ marginTop: '20px' }}
+        <div>
+            <div style={{marginTop: '20px'}}>
+                <CustomBreadcrumb
                     items={[
-                        {
-                            title: '首页',
-                        },
-                        {
-                            title: <a href="">Category 映射</a>,
-                        },
+                        {title: '首页'},
+                        {title: <a href="">系统配置</a>},
+                        {title: <a href="">Category 配置</a>},
                     ]}
                 />
             </div>
             <div className={'serve-card'}>
-                <h1>Category列表</h1>
-                <Button
-                    className={'serve-button'}
-                    size={'small'}
-                    onClick={handleAdd}
-                    type="primary"
-                    style={{ marginBottom: 16 }}
-                >
-                    添加
-                </Button>
+                <h3>Category 配置列表</h3>
                 <Table
-                    size={'middle'}
                     pagination={false}
-                    components={components}
                     rowClassName={() => 'editable-row'}
                     bordered
-                    dataSource={dataSource}
-                    columns={columns as ColumnTypes}
+                    size={'small'}
+                    dataSource={data}
+                    columns={columns}
                 />
             </div>
-        </>
+        </div>
     );
 };
 
-export default Category;
+export default CategoryProductConfig;

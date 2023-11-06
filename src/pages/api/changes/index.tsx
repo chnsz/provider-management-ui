@@ -2,9 +2,10 @@ import ApiChangeView from '@/pages/api/changes/components/change-view';
 import Overview from '@/pages/api/changes/components/overview';
 import {getApiChanges, getMenu} from '@/services/api';
 import {useEmotionCss} from '@ant-design/use-emotion-css';
-import {Col, Menu, MenuProps, Row, theme} from 'antd';
-import {ItemType} from 'antd/es/menu/hooks/useItems';
-import {SelectInfo} from 'rc-menu/es/interface';
+import type {MenuProps} from 'antd';
+import {Col, Menu, Row, theme} from 'antd';
+import type {ItemType} from 'antd/es/menu/hooks/useItems';
+import type {SelectInfo} from 'rc-menu/es/interface';
 import {useEffect, useState} from 'react';
 // @ts-ignore
 import {Scrollbars} from 'react-custom-scrollbars';

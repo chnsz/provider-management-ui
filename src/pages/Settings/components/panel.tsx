@@ -1,8 +1,9 @@
-import type { InputRef } from 'antd';
-import { Breadcrumb, Button, Form, Input, Popconfirm, Table } from 'antd';
-import type { FormInstance } from 'antd/es/form';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import type {InputRef} from 'antd';
+import {Breadcrumb, Button, Form, Input, Popconfirm, Table} from 'antd';
+import type {FormInstance} from 'antd/es/form';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import '../settings.less';
+import CustomBreadcrumb from "@/components/Breadcrumb";
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
 
@@ -38,14 +39,14 @@ interface EditableCellProps {
 }
 
 const EditableCell: React.FC<EditableCellProps> = ({
-    title,
-    editable,
-    children,
-    dataIndex,
-    record,
-    handleSave,
-    ...restProps
-}) => {
+                                                       title,
+                                                       editable,
+                                                       children,
+                                                       dataIndex,
+                                                       record,
+                                                       handleSave,
+                                                       ...restProps
+                                                   }) => {
     const [editing, setEditing] = useState<boolean>(false);
     const inputRef = useRef<InputRef>(null);
     const form = useContext(EditableContext)!;
@@ -58,7 +59,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
 
     const toggleEdit = () => {
         setEditing(!editing);
-        form.setFieldsValue({ [dataIndex]: record[dataIndex] });
+        form.setFieldsValue({[dataIndex]: record[dataIndex]});
     };
 
     const save = async () => {
@@ -66,7 +67,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
             const values = await form.validateFields();
 
             toggleEdit();
-            handleSave({ ...record, ...values });
+            handleSave({...record, ...values});
         } catch (errInfo) {
             console.error('Save failed:', errInfo);
         }
@@ -78,7 +79,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
         if (editing) {
             childNode = (
                 <Form.Item
-                    style={{ margin: 0 }}
+                    style={{margin: 0}}
                     name={dataIndex}
                     rules={[
                         {
@@ -87,14 +88,14 @@ const EditableCell: React.FC<EditableCellProps> = ({
                         },
                     ]}
                 >
-                    <Input ref={inputRef} onPressEnter={save} onBlur={save} />
+                    <Input ref={inputRef} onPressEnter={save} onBlur={save}/>
                 </Form.Item>
             );
         } else {
             childNode = (
                 <div
                     className="editable-cell-value-wrap"
-                    style={{ paddingRight: 24 }}
+                    style={{paddingRight: 24}}
                     onClick={toggleEdit}
                 >
                     {children}
@@ -245,8 +246,7 @@ const Panel: React.FC = () => {
     return (
         <>
             <div>
-                <Breadcrumb
-                    style={{ marginTop: '20px' }}
+                <CustomBreadcrumb
                     items={[
                         {
                             title: '首页',
@@ -264,7 +264,7 @@ const Panel: React.FC = () => {
                     size={'small'}
                     onClick={handleAdd}
                     type="primary"
-                    style={{ marginBottom: 16 }}
+                    style={{marginBottom: 16}}
                 >
                     添加
                 </Button>
