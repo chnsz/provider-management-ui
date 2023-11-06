@@ -14,12 +14,13 @@ const DeleteBtn: React.FC<{
 
     type?: ButtonType,
     size?: SizeType,
-    disabled?:boolean,
+    disabled?: boolean,
+    link?: boolean,
 }> = (props) => {
 
     const onClick = () => {
         confirm({
-                title: '删除资源规划',
+                title: props.title,
                 icon: <ExclamationCircleFilled/>,
                 maskTransitionName: '',
                 width: 600,
@@ -32,14 +33,18 @@ const DeleteBtn: React.FC<{
     }
 
     return <>
-        <Button danger
-                type={props.type}
-                size={props.size}
-                onClick={onClick}
-                disabled={props.disabled}
-        >
-            {props.text}
-        </Button>
+        {
+            props.link ? <a style={{color: 'red'}} onClick={onClick}> {props.text}</a>
+                :
+                <Button danger
+                        type={props.type}
+                        size={props.size}
+                        onClick={onClick}
+                        disabled={props.disabled}
+                >
+                    {props.text}
+                </Button>
+        }
     </>
 }
 

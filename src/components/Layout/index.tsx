@@ -79,7 +79,7 @@ const LRLayout: React.FC<LRLayoutProps> = (props) => {
     const bread = breadcrumb ? <div style={{marginTop: '10px'}}>{breadcrumb}</div> : <></>
 
     return (
-        <div className={props.className} style={{height: 'calc(100vh - 130px)'}}>
+        <div className={props.className} style={{height: 'calc(100vh - 170px)'}}>
             <div ref={topRef}>
                 {bread}
                 <div style={{padding: '10px 0 15px 0px', background: 'transparent'}}>

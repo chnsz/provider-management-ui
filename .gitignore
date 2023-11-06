@@ -16,8 +16,10 @@ yarn-error.log
 
 /coverage
 .idea
+yarn.lock
+package-lock.json
+pnpm-lock.yaml
 *bak
-.vscode
 
 
 # visual studio code
@@ -29,7 +31,8 @@ functions/*
 # umi
 .umi
 .umi-production
-.umi-test
+/src/.umi
+/src/.umi-production
 
 # screenshot
 screenshot

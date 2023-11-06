@@ -1,117 +1,134 @@
-﻿/**
- * @name umi 的路由配置
- * @description 只支持 path,component,routes,redirect,wrappers,name,icon 的配置
- * @param path  path 只支持两种占位符配置，第一种是动态参数 :id 的形式，第二种是 * 通配符，通配符只能出现路由字符串的最后。
- * @param component 配置 location 和 path 匹配后用于渲染的 React 组件路径。可以是绝对路径，也可以是相对路径，如果是相对路径，会从 src/pages 开始找起。
- * @param routes 配置子路由，通常在需要为多个路径增加 layout 组件时使用。
- * @param redirect 配置路由跳转
- * @param wrappers 配置路由组件的包装组件，通过包装组件可以为当前的路由组件组合进更多的功能。 比如，可以用于路由级别的权限校验
- * @param name 配置路由的标题，默认读取国际化文件 menu.ts 中 menu.xxxx 的值，如配置 name 为 login，则读取 menu.ts 中 menu.login 的取值作为标题
- * @param icon 配置路由的图标，取值参考 https://ant.design/components/icon-cn， 注意去除风格后缀和大小写，如想要配置图标为 <StepBackwardOutlined /> 则取值应为 stepBackward 或 StepBackward，如想要配置图标为 <UserOutlined /> 则取值应为 user 或者 User
- * @doc https://umijs.org/docs/guides/routes
- */
-export default [
-    {
-        path: '/',
-        redirect: '/home',
-    },
-    {
-        path: '/home',
-        name: 'home',
-        component: './Portal/index',
-    },
-    {
-        path: '/provider',
-        name: 'provider',
-        component: './Provider/index',
-    },
-    {
-        path: '/provider-base',
-        name: 'provider_base',
-        component: './Provider/provider-base',
-    },
-    {
-        path: '/service',
-        hideInMenu: true,
-        name: 'portal',
-        component: './Portal/service_portal',
-    },
-    /*   {
-           path: '/api/definition',
-           name: 'api-definition',
-           hideInMenu: true,
-           component: './api/definition/index',
-       },
-       {
-           path: '/api/changes',
-           name: 'api-changes',
-           hideInMenu: true,
-           component: './api/changes/index',
-       },*/
-    // {
-    //     path: '/api/definition',
-    //     name: 'api-analysis',
-    //     component: './api/definition/index',
-    // },
-    // {
-    //     path: '/api/changes',
-    //     name: 'provider-analysis',
-    //     component: './api/changes/index',
-    // },
-    {
-        path: '/api/definition',
-        name: 'api-definition',
-        hideInMenu: true,
-        component: './api/index',
-    },
-    {
-        path: '/api/api-change',
-        name: 'api-changes',
-        hideInMenu: true,
-        component: './api/api-change',
-    },
-    {
-        path: '/api-change',
-        name: 'api-changes',
-        hideInMenu: true,
-        component: './api/api-change',
-    },
-    {
-        path: '/product-feature',
-        name: 'product_feature',
-        hideInMenu: true,
-        component: './ProductFeature/index',
-    },
-    {
-        path: '/provider-planning',
-        name: 'provider_planning',
-        component: './ProviderPlanning/index',
-    },
-    {
-        path: '/settings',
-        name: 'settings',
-        hideInMenu: true,
-        component: './Settings/index',
-    },
-    {
-        path: '/task',
-        name: 'task',
-        component: './Task/index',
-    },
-    {
-        path: '/notice',
-        name: 'notice',
-        hideInMenu: true,
-        component: './Notice/index',
-    },
-    {
-        path: '*',
-        layout: false,
+﻿export default [
+  {
+    path: '/',
+    redirect: '/huaweicloud',
+  },
+  {
+    path: '/home',
+    redirect: '/huaweicloud',
+  },
+  {
+    path: '/huaweicloud',
+    name: 'huaweicloud',
+    component: './Portal/index',
+  },
+  {
+    path: '/partner-cloud',
+    name: 'partnerCloud',
+    // component: './Partner/portal',
+    component: './Partner/index',
+  },
+  {
+    path: '/quality-portal',
+    name: 'qualityPortal',
+    component: './Provider/quality-portal',
+  },
+  {
+    path: '/api-change-analysis',
+    name: 'api-change-analysis',
+    component: './ApiChange/index',
+  },
+  {
+    path: '/tools',
+    name: 'tools',
+    // access: 'partnerRole',
+    routes: [
+      {
+        path: '/tools/ut-code-conversion',
+        name: 'convertProviderName',
+        component: './Partner/convert-provider-name',
+        // access: 'partnerRole',
+      },
+      {
+        path: '/tools/pr-validator',
+        name: 'pr-validator',
+        component: './Partner/pr-validator',
+        access: 'prValidatorRole',
+      },
+    ],
+  },
+  {
+    path: '/settings',
+    name: 'settings',
+    component: './Settings/index',
+    access: 'settingRole',
+  },
+  {
+    path: '/account/settings',
+    name: 'account.settings',
+    hideInMenu: true,
+    component: './user/user-setting',
+  },
+  {
+    path: '/account/changePwd',
+    name: 'account.changePwd',
+    hideInMenu: true,
+    component: './user/change-pwd',
+  },
+  //------------------------------------
+  {
+    path: '/provider-base',
+    redirect: '/quality-portal',
+  },
+  {
+    path: '/service',
+    hideInMenu: true,
+    name: 'portal',
+    component: './Portal/service_portal',
+  },
+  {
+    path: '/product-feature',
+    name: 'product_feature',
+    hideInMenu: true,
+    component: './ProductFeature/index',
+  },
+  {
+    path: '/provider-planning',
+    name: 'provider_planning',
+    hideInMenu: true,
+    component: './ProviderPlanning/index',
+  },
+  {
+    path: '/task',
+    name: 'task',
+    hideInMenu: true,
+    component: './Task/index',
+  },
+  {
+    path: '/notice',
+    name: 'notice',
+    hideInMenu: true,
+    component: './Notice/index',
+  },
+  //-----------------------------------------------------------------
+  {
+    path: '/user',
+    layout: false,
+    routes: [
+      {
+        name: 'login',
+        path: '/user/login',
+        component: './user/Login',
+      },
+      {
         component: './404',
-    },
-    {
-        path: '/api-change-analysis',
-        name: 'api-change-analysis',
-        component: './ApiChange/index',
-    },
+      },
+    ],
+  },
+  {
+    path: '/admin',
+    name: 'admin',
+    icon: 'crown',
+    access: 'canAdmin',
+    routes: [
+      {
+        path: '/admin/sub-page',
+        name: 'sub-page',
+        component: './Welcome',
+      },
+    ],
+  },
+  {
+    component: './404',
+  },
 ];

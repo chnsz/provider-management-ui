@@ -32,11 +32,9 @@ const SearchForm: React.FC<{
 }> = (props) => {
     const [ownerList, setOwnerList] = useState<string[]>([]);
     const [serviceOptions, setServiceOptions] = useState<SelectProps['options']>([]);
-    const [selectedOwner, setSelectedOwner] = useState<string[]>([]);
+    const [selectedOwner, setSelectedOwner] = useState<string[]>(props.defaultValue?.owner || []);
     const [selectedProduct, setSelectedProduct] = useState<string[]>(props.defaultValue?.productName || []);
     const [selectedStatus, setSelectedStatus] = useState<string[]>([]);
-
-    console.log('defaultValue', props.defaultValue)
 
     useEffect(() => {
         getProductList().then((data) => {

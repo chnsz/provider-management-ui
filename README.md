@@ -7,6 +7,12 @@ This project is initialized with [Ant Design Pro](https://pro.ant.design). Follo
 Install `node_modules`:
 
 ```bash
+npm install
+```
+
+or
+
+```bash
 yarn
 ```
 
@@ -49,7 +55,3 @@ npm test
 ## More
 
 You can view full document on our [official website](https://pro.ant.design). And welcome any feedback in our [github](https://github.com/ant-design/ant-design-pro).
-
-| 服务名称 | API 分组 | API 名称                   | 方法 | 操作                  |
-| -------- | -------- | -------------------------- | ---- | --------------------- |
-| ECS      | 人脸搜索 | 人脸搜索 / SearchFaceByUrl | POST | 查看详情 API Explorer |
