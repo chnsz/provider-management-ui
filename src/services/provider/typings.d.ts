@@ -154,6 +154,7 @@ declare namespace Provider {
         huaweiCloud: ProviderIssueCount;
         g42Cloud: ProviderIssueCount;
         flexibleEngineCloud: ProviderIssueCount;
+        ctYun: ProviderIssueCount;
     }
 
     type ProviderIssueSum = {
@@ -167,6 +168,7 @@ declare namespace Provider {
         isReference: boolean;
         feTestJobRecord: Product.TestJobRecord;
         g42TestJobRecord: Product.TestJobRecord;
+        ctYunTestJobRecord: Product.TestJobRecord;
     }
 
     type ProviderSchema = {

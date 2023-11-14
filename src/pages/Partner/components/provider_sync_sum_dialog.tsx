@@ -17,6 +17,7 @@ import {
 import {Scrollbars} from 'react-custom-scrollbars';
 import {useModel} from 'umi';
 import Txt from "@/components/Txt/Txt";
+import CodeEditor from "@/components/CodeEditor";
 
 
 const getRecord = (cloudName: string, row: Provider.ProviderIssueSum) => {
@@ -40,6 +41,9 @@ const getRecord = (cloudName: string, row: Provider.ProviderIssueSum) => {
             break;
         case CloudName.G42Cloud:
             record = row.g42TestJobRecord || record;
+            break;
+        case CloudName.CTYun:
+            record = row.ctYunTestJobRecord || record;
             break;
     }
     return record;
@@ -164,7 +168,7 @@ const ProviderSyncSumDialog: React.FC<{
             dataIndex: 'count',
         },];
 
-    if (location.hash === '#/ac' && (initialState?.currentUser?.username === '程相栋' || process.env.NODE_ENV === 'development')) {
+    if (location.hash === '#/ac' && (initialState?.currentUser?.realName === '程相栋' || process.env.NODE_ENV === 'development')) {
         columns.push({
             title: 'UT检查',
             width: 100,
@@ -297,18 +301,8 @@ const ProviderSyncSumDialog: React.FC<{
                    onCancel={() => setIsLogModalOpen(false)}
                    width={'80%'}
                    footer={[]}>
-                <div style={{
-                    height: '75vh',
-                    background: '#2b2b2b',
-                    color: '#fff',
-                    fontSize: '16px',
-                    padding: '12px 24px',
-                    whiteSpace: 'pre',
-                    fontFamily: 'Consolas,Courier New,monospace'
-                }}>
-                    <Scrollbars>
-                        <pre>{logContent}</pre>
-                    </Scrollbars>
+                <div style={{height: '60vh'}}>
+                    <CodeEditor language={'shell'} height={'60vh'} value={logContent}/>
                 </div>
             </Modal>
         </>
