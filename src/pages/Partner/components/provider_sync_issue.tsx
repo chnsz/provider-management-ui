@@ -47,6 +47,7 @@ export const getDefaultSyncSum = (typeName: string) => {
         huaweiCloud: getDefaultProviderIssueCount(),
         g42Cloud: getDefaultProviderIssueCount(),
         flexibleEngineCloud: getDefaultProviderIssueCount(),
+        ctYun: getDefaultProviderIssueCount(),
     }
 }
 
@@ -56,13 +57,16 @@ export const columnRender = (cloudName: Global.CloudName, loadData?: () => any, 
 
         switch (cloudName) {
             case CloudName.HuaweiCloud:
-                sumData = row.huaweiCloud
+                sumData = row.huaweiCloud;
                 break
             case CloudName.FlexibleEngineCloud:
-                sumData = row.flexibleEngineCloud
+                sumData = row.flexibleEngineCloud;
                 break
             case CloudName.G42Cloud:
-                sumData = row.g42Cloud
+                sumData = row.g42Cloud;
+                break
+            case CloudName.CTYun:
+                sumData = row.ctYun || getDefaultProviderIssueCount();
                 break
         }
         return <ProviderSyncIssueDialog sumData={sumData} cloudName={cloudName} syncType={row.type}
@@ -95,16 +99,23 @@ const ProviderSyncIssue: React.FC<{ data: Provider.ProviderSyncSum[], loadData?:
         {
             title: '法电',
             dataIndex: 'flexibleEngineCloud',
-            width: '45%',
+            width: '30%',
             align: 'center',
             render: columnRender(CloudName.FlexibleEngineCloud, loadData),
         },
         {
             title: 'G42',
             dataIndex: 'g42Cloud',
-            width: '45%',
+            width: '30%',
             align: 'center',
             render: columnRender(CloudName.G42Cloud, loadData),
+        },
+        {
+            title: '天翼云',
+            dataIndex: 'ctYun',
+            width: '30%',
+            align: 'center',
+            render: columnRender(CloudName.CTYun, loadData),
         },
     ];
 

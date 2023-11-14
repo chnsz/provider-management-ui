@@ -29,7 +29,7 @@ declare namespace Global {
         githubId: string;
     }
 
-    type CloudName = 'HuaweiCloud' | 'FlexibleEngineCloud' | 'G42Cloud';
+    type CloudName = 'HuaweiCloud' | 'FlexibleEngineCloud' | 'G42Cloud' | 'CTYun';
 }
 declare namespace Relation {
     type ProviderRelation = {

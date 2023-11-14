@@ -94,6 +94,7 @@ export enum CloudName {
     HuaweiCloud = 'HuaweiCloud',
     FlexibleEngineCloud = 'FlexibleEngineCloud',
     G42Cloud = 'G42Cloud',
+    CTYun = 'CTYun',
 }
 
 export const openDocsInRegistry = (cloudName: string, providerType: string, providerName: string, txt?: any) => {
