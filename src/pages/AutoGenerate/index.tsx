@@ -376,7 +376,7 @@ const AutoGenerate: React.FC = () => {
                         <ApiConfig setData={onApiChange} baseInfo={baseInfo} dataId={dataId} apiDataPar={apiData} />
                     </div>
                 </div>
-                
+
                 <Row>
                     <Col flex="calc(50% - 20px)">
                         <div className={'portal-card'}>
