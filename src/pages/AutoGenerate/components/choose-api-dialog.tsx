@@ -96,7 +96,6 @@ const SearchForm: React.FC<{ productName: string, onSearch: (val: FormProps) => 
 
     useEffect(() => {
         getProductList().then((d) => {
-            console.log(d)
             const map: ProSchemaValueEnumObj = {};
             d.items.map((p) => p.productName)
                 .sort()
@@ -185,7 +184,6 @@ const ChooseApiDialog: React.FC<ApiListDialogProp> = (props) => {
             if (props.handle) {
                 const idArr = selectedRowKeys.map((t) => parseInt(t.toString()));
                 props.handle(option, selectedRows, idArr);
-                console.log(props)
             }
         };
     };
@@ -204,7 +202,6 @@ const ChooseApiDialog: React.FC<ApiListDialogProp> = (props) => {
 
     useEffect(() => {
         getApiDetailList(queryParams, pageSize, pageNum).then((d) => {
-            console.log(d)
             setData(d.items);
             setTotal(d.total);
         });
