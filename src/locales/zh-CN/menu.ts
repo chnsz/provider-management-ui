@@ -65,6 +65,7 @@ export default {
     'menu.api-change-analysis': '查询 API 变更',
     'menu.provider_base': '资源基线管理',
     'menu.auto-generate-provider': '自动生成',
+    'menu.auto-generate-provider-list': '自动生成',
     'menu.huaweicloud': '华为云',
     'menu.flexibleEngineCloud': '法电',
     'menu.g42Cloud': 'G42',

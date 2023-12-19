@@ -120,8 +120,20 @@ declare namespace Api {
         created: string;
         updated: string;
 
-        providerList: null;
+        providerList: Field[];
     };
+
+    type Field = {
+        id: number;
+        apiId: number;
+        paramType: 'input'|'output';
+        fieldName: string;
+        fieldType: string;
+        fieldRequired: string;
+        fieldIn: string;
+        fieldDesc: string;
+        ignore: string;
+    }
 
     type Group = {
         apiGroup: string;

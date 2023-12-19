@@ -54,6 +54,11 @@
     access: 'settingRole',
   },
   {
+    path: '/auto-generate-provider-list',
+    name: 'auto-generate-provider-list',
+    component: './AutoGenerateList/index',
+  },
+  {
     path: '/account/settings',
     name: 'account.settings',
     hideInMenu: true,
@@ -99,6 +104,12 @@
     name: 'notice',
     hideInMenu: true,
     component: './Notice/index',
+  },
+  {
+    path: '/auto-generate-provider',
+    name: 'auto-generate-provider',
+    hideInMenu: true,
+    component: './AutoGenerate/index',
   },
   //-----------------------------------------------------------------
   {
