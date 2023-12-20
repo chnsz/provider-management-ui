@@ -8,7 +8,7 @@ import DeleteBtn from "@/components/delete";
 import './auto-generate-list.less';
 
 // ID、服务名称、类型、资源名称、API数量、最后修改、修改日期、创建人、创建日期、操作（编辑、删除）
-type AutoGenerateList = {
+export type AutoGenerateList = {
     id: number;
     serviceName: string;
     providerType: string;

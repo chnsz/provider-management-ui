@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import './index.less'
 import CustomBreadcrumb from "@/components/Breadcrumb";
-import { Button, Space, Select, Input, Row, Col, message } from "antd";
+import { Button, Space, Row, Col, message } from "antd";
 import FunArrange, { allFunData, funData } from "./step1/fun-arrange";
 import BaseInfo from "./step1/base-info";
 import FuncOrch from "./step1/func-orch";

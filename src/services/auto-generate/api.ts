@@ -1,5 +1,6 @@
 import {request} from 'umi';
 import {PGS_PATH} from "@/services/api";
+import { AutoGenerateList } from '@/pages/AutoGenerateList';
 
 export async function getApiFieldList(id: number[]) {
     return request<Global.List<Api.Detail[]>>(`${PGS_PATH}/api/field`, {
@@ -25,7 +26,7 @@ export async function getAutoGenerateList(
     const limit = pageSize;
     const offset = (pageNum - 1) * pageSize;
 
-    return request(
+    return request<AutoGenerateList[]>(
         `${PGS_PATH}/provider-generate/list/${limit}/${offset}`,
         {
             method: 'GET',
