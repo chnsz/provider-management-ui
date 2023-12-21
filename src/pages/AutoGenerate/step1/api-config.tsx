@@ -1,4 +1,4 @@
-import { Button, Checkbox, Col, Collapse, Input, Row, Select, Space, Table, Tag } from 'antd';
+import { Button, Checkbox, Col, Collapse, Input, Row, Select, Space, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import React, { useEffect, useState } from 'react';
 import { EditOutlined } from "@ant-design/icons";
@@ -235,8 +235,8 @@ const ApiFieldView: React.FC<{
             }
         },
         {
-            title: <>sensitive<EditOutlined style={{ color: '#6d6d6d' }} /></>,
-            dataIndex: 'Sensitive',
+            title: <>Sensitive<EditOutlined style={{ color: '#6d6d6d' }} /></>,
+            dataIndex: 'sensitive',
             align: 'center',
             width: 100,
             render: (v, row) => {
@@ -347,7 +347,7 @@ const ApiFieldView: React.FC<{
     </div>;
 }
 
-const ApiInfo: React.FC<{ api: ApiDetail, onSchemaTypeChange: (v: string) => any, deleteApiData:() => any }> = ({ api, onSchemaTypeChange, deleteApiData }) => {
+const ApiInfo: React.FC<{ api: ApiDetail, onSchemaTypeChange: (v: string) => any, deleteApiData: () => any }> = ({ api, onSchemaTypeChange, deleteApiData }) => {
     return <Row>
         <Col span={12}>
             <Select
@@ -425,7 +425,7 @@ const ApiConfig: React.FC<{ setData: (data: ApiDetail[]) => any, baseInfo: any, 
                     }
                 });
             }
-            
+
             setApiData(mergedArray);
             setData(mergedArray);
 

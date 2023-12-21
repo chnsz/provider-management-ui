@@ -195,7 +195,7 @@ const BaseInfo: React.FC<{ setData: (data: any) => any, baseInfoPar: any }> = ({
                                     deleteTimeout
                                 });
                             }}
-                            placeholder="请输入" style={{ width: '290px' }} />
+                            placeholder="请输入，默认单位为分" style={{ width: '290px' }} />
                     </div>
                 </div>
                 <div className={'info-item'}>
@@ -219,7 +219,7 @@ const BaseInfo: React.FC<{ setData: (data: any) => any, baseInfoPar: any }> = ({
                                     deleteTimeout
                                 });
                             }}
-                            style={{ width: '290px' }} placeholder='请输入' />
+                            style={{ width: '290px' }} placeholder='请输入，默认单位为分' />
                     </div>
                 </div>
                 <div className={'info-item'}>
@@ -243,7 +243,7 @@ const BaseInfo: React.FC<{ setData: (data: any) => any, baseInfoPar: any }> = ({
                                     deleteTimeout
                                 });
                             }}
-                            style={{ width: '290px' }} placeholder='请输入' />
+                            style={{ width: '290px' }} placeholder='请输入，默认单位为分' />
                     </div>
                 </div>
                 <div className={'info-item'}>
@@ -267,7 +267,7 @@ const BaseInfo: React.FC<{ setData: (data: any) => any, baseInfoPar: any }> = ({
                                     deleteTimeout: e.target.value
                                 });
                             }}
-                            style={{ width: '290px' }} placeholder='请输入' />
+                            style={{ width: '290px' }} placeholder='请输入，默认单位为分' />
                     </div>
                 </div>
             </div>

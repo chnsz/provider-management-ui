@@ -1,5 +1,4 @@
-import { Checkbox, Col, Collapse, Input, Row, Select, Space, Table, Tag } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
+import { Collapse, Space, Table } from 'antd';
 import React, { useEffect, useState, useRef } from 'react';
 import '../api-config.less';
 import { ApiDetail } from './api-config';
@@ -372,7 +371,7 @@ const FunArrange: React.FC<{
                             })
                         }
                     </Collapse> :
-                    <div></div>
+                    <div className={'no-data'}>暂无编排函数</div>
             }
 
         </>;

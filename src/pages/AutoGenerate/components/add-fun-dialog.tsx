@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Form, Input, Modal, Select, Tabs, Radio, Table } from 'antd';
+import { Button, Form, Input, Modal, Tabs, Radio, Table } from 'antd';
 import CodeEditor from "@/components/CodeEditor";
 import { funData } from '../step1/fun-arrange';
 

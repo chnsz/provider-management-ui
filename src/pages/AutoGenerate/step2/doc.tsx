@@ -1,4 +1,4 @@
-import { Col, Form, Input, Row, Space, Table, Tabs } from 'antd';
+import { Col, Form, Input, Row, Space, Table } from 'antd';
 import React, { useState } from 'react';
 import CodeEditor from "@/components/CodeEditor";
 import AddExampleDialog from '../components/add-example-dialog';
@@ -10,7 +10,7 @@ export type exampleDate = {
     script: string;
 };
 
-const Doc: React.FC<{ setData: (data: any) => any, docDataPar: any}> = ({ setData, docDataPar }) => {
+const Doc: React.FC<{ setData: (data: any) => any, docDataPar: any }> = ({ setData, docDataPar }) => {
 
     const [category, setCategory] = useState<string>(docDataPar?.category || '');
     const [overview, setOverview] = useState<string>(docDataPar?.overview || '');
