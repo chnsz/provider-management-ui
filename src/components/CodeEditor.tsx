@@ -44,6 +44,8 @@ const CodeEditor: React.FC<{
                     lineNumbers: 'on', // 行号 取值： "on" | "off" | "relative" | "interval" | function
                     lineNumbersMinChars: 5, // 行号最小字符   number
                     readOnly: props.readOnly, //是否只读  取值 true | false
+                    formatOnPaste: true,
+                    formatOnType: true,
                 }}
             />
         </div>

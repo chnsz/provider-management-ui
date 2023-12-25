@@ -121,6 +121,10 @@ declare namespace Api {
         updated: string;
 
         providerList: Field[];
+        providerList: null;
+
+        inputFieldList: Field[];
+        outputFieldList: Field[];
     };
 
     type Field = {

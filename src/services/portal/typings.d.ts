@@ -131,6 +131,34 @@ declare namespace Portal {
         apiChangePadding: number;
         apiChangeToExpired: number;
         apiChangeUnProcessed: number;
+
+        productSumList: ProductSum[];
+    }
+
+    type ProductSum = {
+        productName: string;
+        owner: string;
+        providerCount: number;
+        resourceCount: number;
+        dataSourceCount: number;
+        providerBaseCount: number;
+        apiCount: number;
+        apiUsedCount: number;
+        apiIgnoreCount: number;
+        apiNeedAnalysisCount: number;
+        apiDeprecatedUsed: number;
+        utTestCount: number;
+        utTestFailedCount: number;
+        utCoverageMax: number;
+        utCoverageAvg: number;
+        utCoverageMin: number;
+        apiChangeCount: number;
+        apiChangeOpenCount: number;
+        apiChangePendingCount: number;
+        planningCount: number;
+        planningClosedCount: number;
+        bugCount: number;
+        score: number;
     }
 
     type PartnerSum = Record<string, number>

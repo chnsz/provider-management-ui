@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Button, Modal, Space, Table, Tag} from "antd";
+import {Button, Modal, Space, Table, Tag, Tooltip} from "antd";
 import type {ColumnsType} from "antd/es/table/interface";
 import {getServiceSumList} from "@/services/portal/api";
 import {getUserList} from "@/services/product/api";
@@ -7,12 +7,30 @@ import ProviderListDialog from "@/pages/Portal/components/provider-list-dialog";
 import ApiDialogList from "@/pages/Portal/components/api-dialog-list";
 import {useModel} from 'umi';
 import type {ButtonType} from "antd/lib/button";
+import {InfoCircleOutlined} from "@ant-design/icons";
 
 interface ServiceSumProps {
     productGroup: string;
     data: Portal.ProductSum[];
     partner?: boolean;
 }
+
+const apiCoverageTooltip = (
+    <span style={{color: 'rgba(0, 0, 0, 0.45)'}}>
+        <Tooltip
+            title={
+                <div>
+                    对接率：
+                    <br/>
+                    已对接 / （总数 - 不适合），规划中、未分析状态的都按照未对接统计。
+                </div>
+            }
+        >
+            <InfoCircleOutlined/>
+        </Tooltip>
+    </span>
+);
+
 
 const ServiceSum: React.FC<ServiceSumProps> = ({productGroup, data, partner}) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -68,7 +86,7 @@ const ServiceSum: React.FC<ServiceSumProps> = ({productGroup, data, partner}) =>
             }
         },
         {
-            title: 'API 对接率',
+            title: <>API 对接率 {apiCoverageTooltip}</>,
             dataIndex: 'apiCoverage',
             align: 'center',
             render: (v, row) => {
@@ -172,7 +190,8 @@ const ServiceSum: React.FC<ServiceSumProps> = ({productGroup, data, partner}) =>
         {
             title: '田主',
             dataIndex: 'owner',
-            width: '5%',
+            align: 'center',
+            width: 140,
         },
     ];
 
@@ -391,7 +410,6 @@ const ServiceSumList: React.FC<{
     const [productList, setProductList] = useState<ServiceSumProps[]>([]);
 
     const onSearch = (ownerArr: string[], levelArr: string[]) => {
-        console.log("xxx")
         getServiceSumList(ownerArr, levelArr).then(rsp => {
             setProductList([]);
             onload(rsp);

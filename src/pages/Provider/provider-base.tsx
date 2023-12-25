@@ -23,7 +23,15 @@ const ProviderBase: React.FC = () => {
                 setData(data.items);
                 return;
             }
-            const arr = data.items.filter(t => owners.includes(t.owner))
+            const arr = data.items.filter(t => {
+                for (let i = 0; i < owners.length; i++) {
+                    if(t.owner.includes(owners[i])){
+                        return true;
+                    }
+                }
+                return false;
+                // owners.includes(t.owner)
+            })
             setData(arr.length === 0 ? data.items : arr);
         });
     };

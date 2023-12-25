@@ -221,7 +221,7 @@ const ChooseApiDialog: React.FC<ApiListDialogProp> = (props) => {
                 transitionName={''}
                 destroyOnClose
                 title="新选API"
-                width={1400}
+                width={'80%'}
                 cancelText={'取消'}
                 okText={'确定'}
                 open={isDialogOpen}

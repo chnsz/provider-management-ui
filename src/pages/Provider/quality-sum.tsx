@@ -1,6 +1,6 @@
 import './provider.less'
 import React, {useEffect, useState} from "react";
-import {Space, Table,} from "antd";
+import {Space, Table, TableColumnsType, Tooltip,} from "antd";
 import type {ColumnsType} from "antd/es/table/interface";
 import {getOwnerSumList} from "@/services/portal/api";
 import IndicatorsIntroDialog from "@/pages/Provider/indicators-dialog";
@@ -13,6 +13,7 @@ import OwnerBugListDialog from "@/pages/Provider/components/owner-bug-dialog";
 import OwnerUtListDialog from "@/pages/Provider/components/owner-ut-dialog";
 import OwnerApiFieldChangeDialog from "@/pages/Provider/components/owner-api-field-change-dialog";
 import {CloudName} from "@/global";
+import {InfoCircleOutlined, LikeOutlined, SmileOutlined, SmileTwoTone, TrophyOutlined} from "@ant-design/icons";
 
 export const getColor = (val: number) => {
     let color = '';
@@ -139,6 +140,24 @@ const renderApiChange = (v: any, row: Portal.OwnerSum, onClosed: () => any) => {
     return <OwnerApiFieldChangeDialog content={viewer} owner={row.owner} onClosed={onClosed}/>
 }
 
+const todoTooltips = (
+    <span style={{color: 'rgba(0, 0, 0, 0.45)'}}>
+        <Tooltip
+            title={
+                <div>
+                    <p style={{fontWeight: 'bold'}}>待办项：</p>
+                    <p>（1）资源基线：如有未基线的 Resource，则算一项;</p>
+                    <p>（2）API 分析：如有待分析的，即待分析个数大于0，则算一项;</p>
+                    <p>（3）资源规划：如有未完成的，即未完成个数大于0，则算一项;</p>
+                    <p>（4）API 变更：如有待处理的，即待处理个数大于0，则算一项;</p>
+                </div>
+            }
+        >
+            <InfoCircleOutlined/>
+        </Tooltip>
+    </span>
+);
+
 const QualitySum: React.FC = () => {
     const [data, setData] = useState<Portal.OwnerSum[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -151,6 +170,17 @@ const QualitySum: React.FC = () => {
     }
     useEffect(loadData, []);
 
+    const teamMapper = {
+        '张继舒': '一组: 鲲鹏',
+        '侯鹏': '二组: 天狼',
+        '黄子强': '三组: 猎鹰',
+        '鹿晓航': '四组: 雷霆',
+        '时长阔': '五组: 战神',
+        '靳杨洋': '六组: 翼龙',
+        '华铭': '七组: 暗影'
+    }; //
+    // 鲲鹏、猎鹰、战神、朱雀、风翼、雷霆之翼、冰牙、夜影、烈焰狮、星狼、龙翔、暗影猎手、铁翼、烈焰骑士
+
     const columns: ColumnsType<Portal.OwnerSum> = [
         {
             title: '序号',
@@ -160,10 +190,16 @@ const QualitySum: React.FC = () => {
             render: (v, r, i) => i + 1,
         },
         {
-            title: '责任人',
+            title: '交付小组',
             dataIndex: 'owner',
             align: 'center',
-            width: 90,
+            width: 150,
+            render: v => {
+                return <div>
+                    <div>{teamMapper[v] || v}</div>
+                    <div style={{color: '#00000073'}}>组长：{v}</div>
+                </div>;
+            },
         },
         {
             title: '量化分',
@@ -173,21 +209,21 @@ const QualitySum: React.FC = () => {
             render: v => <span style={{color: getColor(v)}}>{v}</span>
         },
         {
-            title: '服务基线率',
+            title: '服务基线',
             dataIndex: 'productCount',
             align: 'center',
             width: '11%',
             render: renderService,
         },
         {
-            title: '资源基线率',
+            title: '资源基线',
             dataIndex: 'providerBasedCount',
             align: 'center',
             width: '11%',
             render: renderProvider,
         },
         {
-            title: 'API 分析率',
+            title: 'API 分析',
             dataIndex: 'apiCount',
             align: 'center',
             width: '11%',
@@ -229,7 +265,7 @@ const QualitySum: React.FC = () => {
             title: 'API 变更',
             dataIndex: 'fieldChangedDelayCount',
             align: 'center',
-            width: '15%',
+            width: '14%',
             // render: () => '',
             render: (v, row) => renderApiChange(v, row, loadData),
         },
@@ -243,9 +279,219 @@ const QualitySum: React.FC = () => {
         },
     ];
 
+    const expandedRowRender = (row) => {
+        const columns: TableColumnsType<Portal.ProductSum> = [{
+            title: '序号',
+            dataIndex: 'sn',
+            align: 'center',
+            width: 70,
+            render: (v, r, i) => i + 1,
+        }, {
+            title: '服务名称',
+            dataIndex: 'productName',
+            align: 'center',
+            ellipsis: true,
+            width: 160,
+        }, {
+            title: <>待办项 {todoTooltips}</>,
+            dataIndex: 'score',
+            align: 'center',
+            render: v => {
+                if (v === 0) {
+                    return <SmileTwoTone twoToneColor={'#40a9ff'} style={{fontSize: '20px'}}/>;
+                }
+                return <span className={'red'}>{v}</span>;
+            },
+        }, {
+            title: '责任人',
+            dataIndex: 'owner',
+            align: 'center',
+            width: 100,
+        }, {
+            title: '资源基线',
+            dataIndex: 'providerBaseCount',
+            align: 'center',
+            width: '12%',
+            render: (v, row) => {
+                let rate = 100;
+                if (row.resourceCount > 0) {
+                    rate = Math.round(row.providerBaseCount / (row.resourceCount) * 100);
+                }
+                const color = getColor(rate);
+                let resource = <span className={'gold'}>{row.providerBaseCount} / {row.resourceCount}</span>
+                if (row.providerBaseCount === row.resourceCount) {
+                    resource = <span className={'green'}>{row.resourceCount || '-'}</span>;
+                }
+                const view = <div className={'column-cell'}>
+                    <div className={'cell note'}>
+                        <div className={'cell ' + color}>{rate} %</div>
+                        <div className={'label'}>基线率</div>
+                    </div>
+                    <div className={'cell'}>
+                        <div className={'cell'}>{resource}</div>
+                        <div className={'label'}>R</div>
+                    </div>
+                    <div className={'cell'}>
+                        <div className={'cell'}>{row.dataSourceCount || '-'}</div>
+                        <div className={'label'}>D</div>
+                    </div>
+                </div>;
+                return view;
+            }
+        }, {
+            title: 'API 分析',
+            dataIndex: 'providerBaseCount',
+            align: 'center',
+            width: '14%',
+            render: (v, row) => {
+                let rate = 100;
+                if (row.apiCount > 0) {
+                    rate = Math.round(row.apiUsedCount / (row.apiCount - row.apiIgnoreCount) * 100);
+                }
+                const color = getColor(rate);
+                const view = <div className={'column-cell'}>
+                        <div className={'cell note'}>
+                            <div className={'cell ' + color}>{rate} %</div>
+                            <div className={'label'}>进度</div>
+                        </div>
+                        <div className={'cell'}>
+                            <div className={'cell gold'}>{row.apiNeedAnalysisCount}</div>
+                            <div className={'label'}>待分析</div>
+                        </div>
+                        <div className={'cell'}>
+                            <div className={'cell ' + (row.apiDeprecatedUsed > 0 ? 'red' : '')}>
+                                {row.apiDeprecatedUsed}
+                            </div>
+                            <div className={'label'}>使用废弃</div>
+                        </div>
+                        <div className={'cell'}>
+                            <div className={'cell'}>{row.apiCount}</div>
+                            <div className={'label'}>总数</div>
+                        </div>
+                    </div>
+                ;
+                return view;
+            }
+        }, {
+            title: '资源规划',
+            dataIndex: 'providerBaseCount',
+            align: 'center',
+            width: '12%',
+            render: (v, row) => {
+                const view = <div className={'column-cell'}>
+                    <div className={'cell note'}>
+                        <div className={'cell'}>{(row.planningCount - row.planningClosedCount) || 0}</div>
+                        <div className={'label'}>进行中</div>
+                    </div>
+                    <div className={'cell'}>
+                        <div className={'cell'}>{row.planningClosedCount || 0}</div>
+                        <div className={'label'}>已完成</div>
+                    </div>
+                    <div className={'cell'}>
+                        <div className={'cell'}>{row.planningCount || 0}</div>
+                        <div className={'label'}>总数</div>
+                    </div>
+                </div>;
+                return view;
+            }
+        }, {
+            title: '单元测试质量',
+            dataIndex: 'providerBaseCount',
+            align: 'center',
+            width: '12%',
+            render: (v, row) => {
+                if (row.utTestCount === 0) {
+                    return '';
+                }
+
+                let rate = 100;
+                if (row.utTestCount > 0) {
+                    rate = Math.round((row.utTestCount - row.utTestFailedCount) / row.utTestCount * 100);
+                }
+                const color = getColor(rate);
+                const view = <div className={'column-cell'}>
+                    <div className={'cell'}>
+                        <div className={'cell ' + color}>{rate} %</div>
+                        <div className={'label'}>成功率</div>
+                    </div>
+                    <div className={'cell'}>
+                        <div className={'cell ' + getColor(row.utTestFailedCount)}>{row.utTestFailedCount}</div>
+                        <div className={'label'}>失败</div>
+                    </div>
+                    <div className={'cell'}>
+                        <div className={'cell'}>{row.utTestCount}</div>
+                        <div className={'label'}>总数</div>
+                    </div>
+                </div>;
+                return view;
+            }
+        }, {
+            title: 'UT 覆盖率',
+            dataIndex: 'utCoverageMax',
+            align: 'center',
+            width: '12%',
+            render: (v, row) => {
+                if (row.utCoverageAvg === 0) {
+                    return '';
+                }
+
+                const view = <div className={'column-cell'}>
+                    <div className={'cell'}>
+                        <div className={'cell ' + getColor(row.utCoverageAvg)}>{row.utCoverageAvg} %</div>
+                        <div className={'label'}>平均</div>
+                    </div>
+                    <div className={'cell'}>
+                        <div className={'cell ' + getColor(row.utCoverageAvg)}>{row.utCoverageMax} %</div>
+                        <div className={'label'}>最高</div>
+                    </div>
+                    <div className={'cell'}>
+                        <div className={'cell ' + getColor(row.utCoverageAvg)}>{row.utCoverageMin} %</div>
+                        <div className={'label'}>最低</div>
+                    </div>
+                </div>;
+                return view;
+            }
+        }, {
+            title: 'API 变更',
+            dataIndex: 'utCoverageMax',
+            align: 'center',
+            width: '10%',
+            render: (v, row) => {
+                const view = <div className={'column-cell note'}>
+                    <div className={'cell'}>
+                        <div className={'cell ' + (row.apiChangeOpenCount > 0 ? ' gold' : '')}>
+                            {row.apiChangeOpenCount}
+                        </div>
+                        <div className={'label'}>待处理</div>
+                    </div>
+                    <div className={'cell'}>
+                        <div className={'cell'}>{row.apiChangePendingCount}</div>
+                        <div className={'label'}>挂起</div>
+                    </div>
+                </div>;
+                return view;
+            }
+        }, {
+            title: '资源问题',
+            dataIndex: 'bugCount',
+            align: 'center',
+            render: v => {
+                return <div className={v > 0 ? getColor(0) : ''}>{v}</div>
+            }
+        }];
+
+        return <div style={{marginBottom: '20px'}}>
+            <Table columns={columns} dataSource={row.productSumList} pagination={false} size={'small'}/>
+        </div>;
+    };
+
     return <div className={'quality-sum'} style={{padding: '20px'}}>
         <div style={{textAlign: 'right', margin: '-6px 0 12px 0'}}><IndicatorsIntroDialog/></div>
-        <Table columns={columns} dataSource={data} size={'middle'} pagination={false} loading={loading}
+        <Table columns={columns}
+               dataSource={data}
+               size={'middle'}
+               pagination={false} loading={loading}
+               expandable={{expandedRowRender}}
                rowKey={(record) => record.owner}/>
         <div style={{marginTop: '20px'}}>
             <Space size={20}>

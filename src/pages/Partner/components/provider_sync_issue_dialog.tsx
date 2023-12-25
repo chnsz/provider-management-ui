@@ -522,7 +522,7 @@ const ProviderSyncIssueDialog: React.FC<{
         }
         return cloudName;
     }
-    console.log(cloudName, sumData)
+
     let view = <div style={{display: 'flex'}}>
         <div onClick={showModal} style={{width: '90%', display: 'flex', cursor: 'pointer'}}>
             <div style={{width: '11.11%'}}>

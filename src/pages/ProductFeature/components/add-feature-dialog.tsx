@@ -31,7 +31,6 @@ const AddFeatureDialog: React.FC<{
     };
 
     const handleOk = () => {
-        console.log({productName, name, actualCoverage})
         createProductFeature({productName, name, actualCoverage}).then(rsp => {
             setIsModalOpen(false);
             props.onSuccess(rsp);

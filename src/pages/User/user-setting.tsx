@@ -29,7 +29,6 @@ const waitTime = (time: number = 100) => {
 const UserSetting = () => {
     const {initialState} = useModel('@@initialState');
 
-    console.log(initialState.currentUser)
     const formRef = useRef<
         ProFormInstance<{
             username: string;
