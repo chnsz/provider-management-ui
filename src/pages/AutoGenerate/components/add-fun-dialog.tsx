@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Form, Input, Modal, Tabs, Radio, Table } from 'antd';
 import CodeEditor from "@/components/CodeEditor";
 import { funData } from '../step1/fun-arrange';
+import { valueMap } from '@/services/auto-generate/constants';
 
 const { TabPane } = Tabs;
 
@@ -48,12 +49,6 @@ const AddFunDialog: React.FC<AddFunDialogProp> = (props) => {
                 }
             }
         };
-    };
-
-    const valueMap = {
-        callApi: 'Call API',
-        fun: '自定义函数',
-        code: '代码块'
     };
 
     const columns = [

@@ -7,6 +7,7 @@ import { MenuOutlined } from '@ant-design/icons';
 import { arrayMoveImmutable } from "@ant-design/pro-components";
 import type { SortableContainerProps, SortEnd } from 'react-sortable-hoc';
 import AddFunDialog from '../components/add-fun-dialog';
+import { valueMap } from '@/services/auto-generate/constants';
 
 const { Panel } = Collapse;
 
@@ -32,7 +33,7 @@ const FunArrange: React.FC<{
 }> = ({
     setData, handleFunOrchData, apiData, funcOrchData, allFunDataPar
 }) => {
-        let [activeKey, setActiveKey] = useState<number[]>([]);
+        let [activeKey, setActiveKey] = useState<number[]>();
         let [allContext, setAllContext] = useState<allFunData[]>([]);
         allContext = allFunDataPar;
         const tableRef = useRef<HTMLDivElement>(null);
@@ -48,11 +49,6 @@ const FunArrange: React.FC<{
         }, [apiData]);
 
         const DragHandle = SortableHandle(() => <MenuOutlined style={{ cursor: 'grab', color: '#999' }} />);
-        const valueMap = {
-            callApi: 'Call API',
-            fun: '自定义函数',
-            code: '代码块'
-        };
 
         const columns = [
             {

@@ -2,16 +2,12 @@ import React, { useState } from 'react';
 import { Space, Table } from "antd";
 import { funData } from "./fun-arrange";
 import AddFunDialog from '../components/add-fun-dialog';
+import { valueMap } from '@/services/auto-generate/constants';
 
 const FuncOrch: React.FC<{ setData: (data: funData[]) => any, funcOrchDataPar: funData[] }> = ({ setData, funcOrchDataPar }) => {
     let [funcOrchData, setFuncOrchData] = useState<funData[]>([]);
     funcOrchData = funcOrchDataPar;
     const isTable = true;
-    const valueMap = {
-        callApi: 'Call API',
-        fun: '自定义函数',
-        code: '代码块'
-    };
     const columns = [
         {
             title: '类型',

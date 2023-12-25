@@ -1,6 +1,6 @@
 import { Button, Checkbox, Col, Collapse, Input, Row, Select, Space, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { EditOutlined } from "@ant-design/icons";
 import '../api-config.less';
 import ChooseApiDialog from '../components/choose-api-dialog';
@@ -425,7 +425,7 @@ const ApiConfig: React.FC<{ setData: (data: ApiDetail[]) => any, baseInfo: any, 
                     }
                 });
             }
-
+            
             setApiData(mergedArray);
             setData(mergedArray);
 
@@ -526,7 +526,7 @@ const ApiConfig: React.FC<{ setData: (data: ApiDetail[]) => any, baseInfo: any, 
         setData([...apiData]);
     }
 
-    const deleteApiData = (apiId: number, event) => {
+    const deleteApiData = (apiId: number, event: { stopPropagation: () => void; }) => {
         event.stopPropagation();
         if (!apiId) {
             return;
