@@ -101,6 +101,7 @@ const AutoGenerate: React.FC = () => {
             return false;
         }
 
+        // Tag路径和版本都输入or都不输入
         if (!baseInfo.tagPath && baseInfo.tagVersion || baseInfo.tagPath && !baseInfo.tagVersion) {
             message.error('Tag路径和版本必须都输入，请完善！');
             return false;
@@ -182,6 +183,7 @@ const AutoGenerate: React.FC = () => {
     }
 
     const checkSecond = () => {
+        // Category、Overview、Example是必填项
         if (!docData) {
             message.error('请填写文档描述！');
             return false;
@@ -251,6 +253,7 @@ const AutoGenerate: React.FC = () => {
 
                     return result;
                 }, {});
+
                 obj.schemas['id'] = {
                     relation: api.resourceId
                 };
@@ -310,6 +313,7 @@ const AutoGenerate: React.FC = () => {
             schema.push(obj);
         });
 
+        // tag版本号跟随在schema中传入
         if (baseInfo.tagPath && baseInfo.tagVersion) {
             schema.push({
                 schemaType: "tag",
@@ -372,6 +376,7 @@ const AutoGenerate: React.FC = () => {
                         <ApiConfig setData={onApiChange} baseInfo={baseInfo} dataId={dataId} apiDataPar={apiData} />
                     </div>
                 </div>
+                
                 <Row>
                     <Col flex="calc(50% - 20px)">
                         <div className={'portal-card'}>
