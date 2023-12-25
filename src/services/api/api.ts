@@ -97,3 +97,10 @@ export async function updateUseStatus(id: number, status: string, remark?: strin
         params: {remark},
     });
 }
+
+export async function getApiFieldList(id: number[]) {
+    return request<Global.List<Api.Detail[]>>(`${PGS_PATH}/api/field`, {
+        method: 'GET',
+        params: {id},
+    });
+}

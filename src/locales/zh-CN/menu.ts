@@ -60,7 +60,7 @@ export default {
     'menu.provider_planning': '资源规划',
     'menu.task': '待办任务',
     'menu.product_feature': '特性分析',
-    'menu.qualityPortal': '质量看板',
+    'menu.qualityPortal': '工作看板',
     'menu.settings': '系统配置',
     'menu.api-change-analysis': '查询 API 变更',
     'menu.provider_base': '资源基线管理',

@@ -112,7 +112,6 @@ const Task: React.FC = () => {
         const hashArr = location.hash.split('/');
         if (hashArr.length === 3) {
             getTask(hashArr[2]).then((data: Task.Task) => {
-                console.log('got task', data);
                 setTask(data);
                 // setSelectedPlanning(data);
             });

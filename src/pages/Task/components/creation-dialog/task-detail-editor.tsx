@@ -89,7 +89,6 @@ const TaskDetailEditor: React.FC<TaskDetailProps> = ({task, onChange}) => {
             return;
         }
         return (val: any) => {
-            console.log(val)
             const updateOpts: Task.CreateOpts = {
                 productName: task.productName,
                 title: task.title,

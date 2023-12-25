@@ -3,6 +3,7 @@
 npm run build
 
 current_path=$(pwd)
+echo "workdir: ${current_path}"
 # 本地文件夹路径
 local_folder="${current_path}/dist"
 local_dockerfile="${current_path}/Dockerfile"

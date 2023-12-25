@@ -40,7 +40,7 @@ const ProviderDocsIssueView = () => {
 const Provider: React.FC = () => {
     return (
         <div className={'provider'}>
-            <CustomBreadcrumb items={[{title: '首页'}, {title: '质量看板'}]}/>
+            <CustomBreadcrumb items={[{title: '首页'}, {title: '工作看板'}]}/>
             <div style={{background: '#fff', margin: '15px 0'}}>
                 <QualitySum/>
             </div>

@@ -11,6 +11,7 @@ const OwnerUtListDialog: React.FC<{ content: any, owner: string }> = ({content, 
         const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
         const [isLogModalOpen, setIsLogModalOpen] = useState<boolean>(false);
         const [logContent, setLogContent] = useState<string>('');
+        const [pageNum, setPageNum] = useState<number>(1);
 
         const showModal = () => {
             getOwnerUtRecordList(owner).then((d) => {
@@ -37,7 +38,7 @@ const OwnerUtListDialog: React.FC<{ content: any, owner: string }> = ({content, 
                 dataIndex: 'sn',
                 align: 'center',
                 width: 80,
-                render: (v, r, i) => i + 1,
+                render: (v, r, i) => i + 1 + (pageNum - 1) * 20,
             },
             {
                 title: '产品服务',
@@ -114,7 +115,18 @@ const OwnerUtListDialog: React.FC<{ content: any, owner: string }> = ({content, 
                        footer={[
                            <Button key="close" type="primary" onClick={handleOk}>关闭</Button>
                        ]}>
-                    <Table columns={columns} dataSource={data} size={'middle'} pagination={false} rowKey={r => r.id}/>
+                    <Table
+                        columns={columns}
+                        dataSource={data}
+                        size={'middle'}
+                        pagination={{
+                            defaultCurrent: 1,
+                            total: data.length,
+                            size: 'default',
+                            pageSize: 20,
+                            onChange: setPageNum,
+                        }}
+                        rowKey={r => r.id}/>
                 </Modal>
 
                 <Modal title={'控制台日志'}
