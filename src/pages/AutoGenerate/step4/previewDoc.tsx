@@ -1,14 +1,15 @@
-import { Col, Row, Space, Tabs } from 'antd';
-import React, { useEffect, useState } from 'react';
+import {Col, Row, Space, Tabs} from 'antd';
+import React, {useEffect, useState} from 'react';
 import CodeEditor from "@/components/CodeEditor";
-const { TabPane } = Tabs;
+
+const {TabPane} = Tabs;
 
 export type exampleDate = {
     title: string;
     script: string;
 };
 
-const PreviewDoc: React.FC<{ previewDataPar: any }> = ({ previewDataPar }) => {
+const PreviewDoc: React.FC<{ previewDataPar: any }> = ({previewDataPar}) => {
     const [codeContent, setCodeContent] = useState<string>();
     const [docsContent, setDocsContent] = useState<string>();
     const [testCodeContent, setTestCodeContent] = useState<string>();
@@ -22,33 +23,27 @@ const PreviewDoc: React.FC<{ previewDataPar: any }> = ({ previewDataPar }) => {
 
 
     return <>
-        <Space direction={"vertical"} size={20} style={{ width: '100%' }}>
-            <Row>
-                <Col flex="100%">
-                    <div className={'portal-card'}>
-                        <div className={'header'}>预览</div>
-                        <div className={'container'}>
-                            {
-                                !previewDataPar ?
-                                    <div className={'no-data'}>暂无文档</div> :
-                                    <Tabs defaultActiveKey={defaultActiveKey}>
-                                        <TabPane tab="代码" key="tab1">
-                                            <CodeEditor language={'go'} readOnly value={codeContent} />
-                                        </TabPane>
+        <div className={'portal-card'}>
+            <div className={'header'}>预览</div>
+            <div className={'container'}>
+                {
+                    !previewDataPar ?
+                        <div className={'no-data'}>暂无文档</div> :
+                        <Tabs defaultActiveKey={defaultActiveKey}>
+                            <TabPane tab="代码" key="tab1">
+                                <CodeEditor language={'go'} readOnly value={codeContent}/>
+                            </TabPane>
 
-                                        <TabPane tab="文档" key="tab2">
-                                            <CodeEditor language={'go'} readOnly value={docsContent} />
-                                        </TabPane>
-                                        <TabPane tab="单元测试" key="tab3">
-                                            <CodeEditor language={'go'} readOnly value={testCodeContent} />
-                                        </TabPane>
-                                    </Tabs>
-                            }
-                        </div>
-                    </div>
-                </Col>
-            </Row>
-        </Space>
+                            <TabPane tab="文档" key="tab2">
+                                <CodeEditor language={'go'} readOnly value={docsContent}/>
+                            </TabPane>
+                            <TabPane tab="单元测试" key="tab3">
+                                <CodeEditor language={'go'} readOnly value={testCodeContent}/>
+                            </TabPane>
+                        </Tabs>
+                }
+            </div>
+        </div>
     </>
 }
 

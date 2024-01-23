@@ -105,7 +105,7 @@ const ProviderBaseDialog: React.FC<{
         saveProviderBase(props.apiId || 0,
             props.providerType || '',
             props.providerName || '',
-            originData1.filter(t => t.useStatus !== ''),
+            data1.filter(t => t.useStatus !== ''),
             data2.filter(t => t.useStatus !== '')
         ).then((d: any) => {
             if (d === 'success') {
@@ -368,14 +368,14 @@ const ProviderBaseDialog: React.FC<{
         },
         {
             title: '操作标记',
-            width: 170,
+            width: 240,
             align: 'center',
             dataIndex: 'remark',
             render: (v, row) =>
                 <>
                     <Space direction={'horizontal'}>
                         <a onClick={() => markUsed(row.paramType, row)}>已用</a>
-                        <a onClick={() => markUnused(row.paramType, row)}>未用</a>
+                        <a onClick={() => markUnused(row.paramType, row)}>未使用</a>
                         <a onClick={() => markIgnore(row.paramType, row)}>不关注</a>
                         <a onClick={() => clean(row.paramType, row)}>清空</a>
                         {/*<a onClick={() => remove(row.paramType, row)}>删除</a>*/}
