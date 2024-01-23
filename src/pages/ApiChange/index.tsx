@@ -1,14 +1,14 @@
-import {getApiChangeAnalysis} from '@/services/api-change/api';
-import {getApiGroupList, modifyApiChangeStatus} from '@/services/api/api';
-import {getProductList} from '@/services/product/api';
-import {toShortDate} from '@/utils/common';
-import {ProFormSelect, ProFormText} from '@ant-design/pro-components';
-import {QueryFilter} from '@ant-design/pro-form';
-import type {ProSchemaValueEnumObj} from '@ant-design/pro-utils/es/typing';
-import {Breadcrumb, Button, message, Modal, notification, Space, Table, Tag} from 'antd';
-import type {ColumnsType} from 'antd/es/table';
-import type {TableRowSelection} from 'antd/es/table/interface';
-import React, {useEffect, useState} from 'react';
+import { getApiChangeAnalysis } from '@/services/api-change/api';
+import { getApiGroupList, modifyApiChangeStatus } from '@/services/api/api';
+import { getProductList } from '@/services/product/api';
+import { toShortDate } from '@/utils/common';
+import { ProFormSelect, ProFormText } from '@ant-design/pro-components';
+import { QueryFilter } from '@ant-design/pro-form';
+import type { ProSchemaValueEnumObj } from '@ant-design/pro-utils/es/typing';
+import { Breadcrumb, Button, message, Modal, notification, Space, Table, Tag, Spin } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
+import type { TableRowSelection } from 'antd/es/table/interface';
+import React, { useEffect, useState } from 'react';
 import './api-change.less';
 import ApiChange from "@/pages/api/api-change";
 import CustomBreadcrumb from "@/components/Breadcrumb";
@@ -60,14 +60,14 @@ const ApiChangeSearch: React.FC<{ productGroup: string; onSearch: (val: FormProp
                 label="产品服务"
                 showSearch
                 initialValue={props.productGroup}
-                rules={[{required: true}]}
+                rules={[{ required: true }]}
                 fieldProps={{
                     allowClear: false,
                     onChange: onProductGroupChange,
                 }}
                 valueEnum={productGroupMap}
             />
-            <ProFormSelect name="apiGroup" label="分组名称" showSearch valueEnum={apiGroupMap}/>
+            <ProFormSelect name="apiGroup" label="分组名称" showSearch valueEnum={apiGroupMap} />
             <ProFormSelect
                 name="affectStatus"
                 label="状态"
@@ -79,7 +79,7 @@ const ApiChangeSearch: React.FC<{ productGroup: string; onSearch: (val: FormProp
                     closed: '已关闭',
                 }}
             />
-            <ProFormText name="apiName" label="API 名称"/>
+            <ProFormText name="apiName" label="API 名称" />
         </QueryFilter>
     );
 };
@@ -97,9 +97,10 @@ const ApiChangeList: React.FC<{
     const [pageSize, setPageSize] = useState<number>(20);
     const [pageNum, setPageNum] = useState<number>(1);
     const [selectedRow, setSelectedRow] = useState<ApiChange.ApiChange | null>(null);
-    const [queryParams, setQueryParams] = useState<ApiChange.queryListParams>({affectStatus: 'need_analysis'});
+    const [queryParams, setQueryParams] = useState<ApiChange.queryListParams>({ affectStatus: 'need_analysis' });
     const [messageApi, contextHolder] = message.useMessage();
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const loadData = (params: ApiChange.queryListParams, pageSize: number, pageNum: number) => {
         getApiChangeAnalysis(queryParams, pageSize, pageNum).then((d) => {
@@ -146,12 +147,35 @@ const ApiChangeList: React.FC<{
         onChange: onSelectChange,
     };
 
+    const hasSelected = selectedRowKeys.length > 0;
+
     const onChangeStatus = (id: number, status: string, remark: string | undefined) => {
         modifyApiChangeStatus(id, status, remark || '').then(() => {
             messageApi.info('操作成功');
             loadData(queryParams, pageSize, pageNum);
         });
     };
+
+    const onBatchChangeStatus = (status: string) => {
+        if (!hasSelected) {
+            return;
+        }
+        let returnCount = 0;
+        setLoading(true);
+        selectedRowKeys.forEach(item => {
+            modifyApiChangeStatus(item, status).then(() => {
+            }).finally(() => {
+                returnCount++;
+                if (returnCount === selectedRowKeys.length) {
+                    messageApi.info('操作成功');
+                    setSelectedRowKeys([]);
+                    setLoading(false);
+                    loadData(queryParams, pageSize, pageNum);
+                }
+            })
+        })
+
+    }
 
     const showModal = () => {
         setIsModalOpen(true);
@@ -287,32 +311,49 @@ const ApiChangeList: React.FC<{
 
     return (
         <>
-            <CustomBreadcrumb items={[{title: '首页'}, {title: 'API 变更分析'}]}/>
-            <ApiChangeSearch productGroup={props.providerName || ''} onSearch={onSearch}/>
-            <div style={{height: '16px'}}/>
-            <Table
-                rowSelection={rowSelection}
-                className={'api-change-list'}
-                columns={columns}
-                dataSource={data}
-                size={'middle'}
-                rowKey={(record) => record.id}
-                pagination={{
-                    defaultCurrent: 1,
-                    total: total,
-                    size: 'default',
-                    pageSize: pageSize,
-                    current: pageNum,
-                    showTotal: (total) => `总条数: ${total}`,
-                    onShowSizeChange: (current, size) => {
-                        setPageSize(size);
-                    },
-                    onChange: (page, size) => {
-                        setPageSize(size);
-                        setPageNum(page);
-                    },
-                }}
-            />
+            <CustomBreadcrumb items={[{ title: '首页' }, { title: 'API 变更分析' }]} />
+            <ApiChangeSearch productGroup={props.providerName || ''} onSearch={onSearch} />
+            <div style={{ height: '16px' }} />
+            <Spin spinning={loading}>
+                <div className={'api-change-list'}>
+                    <div className={'batch-operate'}>
+                        <Button disabled={!hasSelected}
+                            onClick={() => onBatchChangeStatus('need_analysis')}>
+                            开启
+                        </Button>
+
+                        <Button disabled={!hasSelected}
+                            onClick={() => onBatchChangeStatus('closed')}
+                            style={{ marginLeft: '8px' }}>
+                            关闭
+                        </Button>
+                    </div>
+                    <Table
+                        rowSelection={rowSelection}
+                        columns={columns}
+                        dataSource={data}
+                        size={'middle'}
+                        rowKey={(record) => record.id}
+                        pagination={{
+                            defaultCurrent: 1,
+                            total: total,
+                            size: 'default',
+                            pageSize: pageSize,
+                            current: pageNum,
+                            showTotal: (total) => `总条数: ${total}`,
+                            onShowSizeChange: (current, size) => {
+                                setPageSize(size);
+                            },
+                            onChange: (page, size) => {
+                                setSelectedRowKeys([]);
+                                setPageSize(size);
+                                setPageNum(page);
+                            },
+                        }}
+                    />
+                </div>
+            </Spin>
+
             <Modal
                 transitionName={''}
                 destroyOnClose
@@ -321,7 +362,7 @@ const ApiChangeList: React.FC<{
                 footer={null}
                 width={'80%'}
             >
-                <ApiChange changeId={selectedRow?.id}/>
+                <ApiChange changeId={selectedRow?.id} />
             </Modal>
             {contextHolder}
         </>

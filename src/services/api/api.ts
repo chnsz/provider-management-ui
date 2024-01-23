@@ -78,7 +78,7 @@ export async function getApiChangeHistory(id: number | string) {
     });
 }
 
-export async function modifyApiChangeStatus(id: number, status: string, remark: string) {
+export async function modifyApiChangeStatus(id: number | string, status: string, remark?: string) {
     return request<Global.List<Api.ChangeHistory[]>>(`${PGS_PATH}/api/change-detail/${id}/status/${status}`, {
         method: 'PATCH',
         params: {remark},
