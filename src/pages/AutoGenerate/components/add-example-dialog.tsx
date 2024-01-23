@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Form, Input, Modal } from 'antd';
+import React, {useEffect, useState} from 'react';
+import {Button, Form, Input, Modal} from 'antd';
 import CodeEditor from "@/components/CodeEditor";
-import { exampleDate } from '../step2/doc';
+import {exampleDate} from '../step2/doc';
 
 
 type AddFunDialogProp = {
@@ -28,12 +28,11 @@ const AddExampleDialog: React.FC<AddFunDialogProp> = (props) => {
         return () => {
             setIsModalOpen(false);
             if (props.handle) {
-                const row = { title, script };
+                const row = {title, script};
                 props.handle(option, row);
             }
         };
     };
-
 
 
     return (
@@ -43,26 +42,26 @@ const AddExampleDialog: React.FC<AddFunDialogProp> = (props) => {
                     <a onClick={showModal}>编辑</a> :
                     <Button onClick={showModal} size={'small'} type={'primary'}>新增Example</Button>
             }
-            <Modal title="新增Example"
-                destroyOnClose
-                transitionName={''}
-                open={isModalOpen}
-                onOk={handleOk('ok')}
-                onCancel={handleOk('cancel')}
-                width={'50%'}>
+            <Modal title="新增 / 维护 Example"
+                   destroyOnClose
+                   transitionName={''}
+                   open={isModalOpen}
+                   onOk={handleOk('ok')}
+                   onCancel={handleOk('cancel')}
+                   width={'80%'}>
                 <Form
                     name="basic"
-                    labelCol={{ span: 2 }}
-                    wrapperCol={{ span: 20 }}
+                    labelCol={{span: 2}}
+                    wrapperCol={{span: 20}}
                     autoComplete="off"
                 >
                     <Form.Item
                         label="Title"
                         name="title"
                         initialValue={title}
-                        rules={[{ required: true, message: '请输入title' }]}>
+                        rules={[{required: true, message: '请输入title'}]}>
 
-                        <Input placeholder='请输入title' value={title} onChange={e => setTitle(e.target.value)} />
+                        <Input placeholder='请输入title' value={title} onChange={e => setTitle(e.target.value)}/>
                     </Form.Item>
 
                     <Form.Item
@@ -70,8 +69,8 @@ const AddExampleDialog: React.FC<AddFunDialogProp> = (props) => {
                         name="script"
                         initialValue={script}
                     >
-                        <div style={{ height: '20vh' }}>
-                            <CodeEditor language={'go'} height={'20vh'} value={script} onChange={e => setScript(e)} />
+                        <div style={{height: '40vh'}}>
+                            <CodeEditor language={'go'} height={'40vh'} value={script} onChange={e => setScript(e)}/>
                         </div>
                     </Form.Item>
                 </Form>

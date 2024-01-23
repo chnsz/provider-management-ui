@@ -66,7 +66,7 @@ export type Field = {
     selectSchemaName?: string;
 }
 
-const FieldTypeOption = [
+export const FieldTypeOption = [
     { value: 'string', label: 'schema.TypeString' },
     { value: 'integer', label: 'schema.TypeInt' },
     { value: 'float', label: 'schema.TypeFloat' },
@@ -425,7 +425,7 @@ const ApiConfig: React.FC<{ setData: (data: ApiDetail[]) => any, baseInfo: any, 
                     }
                 });
             }
-            
+
             setApiData(mergedArray);
             setData(mergedArray);
 

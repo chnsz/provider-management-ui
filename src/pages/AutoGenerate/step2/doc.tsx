@@ -22,7 +22,7 @@ const Doc: React.FC<{ setData: (data: any) => any, docDataPar: any }> = ({ setDa
             title: 'title',
             dataIndex: 'title',
             align: 'left',
-            width: 150,
+            width: 200,
         },
         {
             title: 'script',
@@ -32,11 +32,11 @@ const Doc: React.FC<{ setData: (data: any) => any, docDataPar: any }> = ({ setDa
         {
             title: '操作',
             key: 'action',
-            align: 'left',
-            with: 150,
+            align: 'center',
+            with: 90,
             render: (_, record: exampleDate) => {
                 const isEdit = true;
-                return <Space size="middle">
+                return <Space size="middle" style={{width: '90px', alignItems: 'center'}}>
                     <span>
                         <AddExampleDialog
                             handle={(option: 'ok' | 'cancel', row: exampleDate) => {
@@ -105,16 +105,16 @@ const Doc: React.FC<{ setData: (data: any) => any, docDataPar: any }> = ({ setDa
                         <div className={'container'}>
                             <Form
                                 name="basic"
-                                labelCol={{ flex: '110px' }}
+                                labelCol={{flex: '110px'}}
                                 labelAlign="left"
-                                wrapperCol={{ span: 20 }}
+                                wrapperCol={{span: 20}}
                                 autoComplete="off"
                             >
                                 <Form.Item
                                     label="Category"
                                     name="category"
                                     initialValue={category}
-                                    rules={[{ required: true, message: '请输入category' }]}
+                                    rules={[{required: true, message: '请输入category'}]}
                                 >
                                     <Input placeholder='请输入category' value={category} onChange={e => {
                                         setCategory(e.target.value);
@@ -125,14 +125,14 @@ const Doc: React.FC<{ setData: (data: any) => any, docDataPar: any }> = ({ setDa
                                             exampleDate
                                         })
                                     }
-                                    } />
+                                    }/>
                                 </Form.Item>
 
                                 <Form.Item
                                     label="Overview"
                                     name="overview"
                                     initialValue={overview}
-                                    rules={[{ required: true, message: '请输入overview' }]}
+                                    rules={[{required: true, message: '请输入overview'}]}
                                 >
                                     <TextArea rows={3} value={overview} onChange={e => {
                                         setOverview(e.target.value);
@@ -142,29 +142,12 @@ const Doc: React.FC<{ setData: (data: any) => any, docDataPar: any }> = ({ setDa
                                             imports,
                                             exampleDate
                                         })
-                                    }} placeholder='请输入overview' />
-                                </Form.Item>
-
-                                <Form.Item
-                                    label="Imports"
-                                    name="imports"
-                                >
-                                    <div style={{ height: '20vh' }}>
-                                        <CodeEditor language={'go'} height={'20vh'} value={imports} onChange={e => {
-                                            setImports(e);
-                                            setData({
-                                                category,
-                                                overview,
-                                                imports: e,
-                                                exampleDate
-                                            })
-                                        }} />
-                                    </div>
+                                    }} placeholder='请输入overview'/>
                                 </Form.Item>
 
                                 <div>
-                                    <div><span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>* </span>Example:</div>
-                                    <div style={{ paddingLeft: '110px' }}>
+                                    <div><span style={{color: '#ff4d4f', fontWeight: 'bold'}}>* </span>Example:</div>
+                                    <div style={{paddingLeft: '110px'}}>
                                         <AddExampleDialog
                                             handle={(option: 'ok' | 'cancel', row: exampleDate) => {
                                                 if (option === 'ok') {
@@ -174,7 +157,7 @@ const Doc: React.FC<{ setData: (data: any) => any, docDataPar: any }> = ({ setDa
                                         >
                                         </AddExampleDialog>
                                         <Table
-                                            style={{ marginTop: '20px' }}
+                                            style={{marginTop: '20px'}}
                                             columns={columns}
                                             dataSource={exampleDate}
                                             size={'small'}
@@ -184,6 +167,24 @@ const Doc: React.FC<{ setData: (data: any) => any, docDataPar: any }> = ({ setDa
                                     </div>
 
                                 </div>
+
+                                <Form.Item
+                                    label="Imports"
+                                    name="imports"
+                                >
+                                    <div style={{height: '30vh', marginTop: '25px'}}>
+                                        <CodeEditor language={'go'} height={'30vh'} value={imports} onChange={e => {
+                                            setImports(e);
+                                            setData({
+                                                category,
+                                                overview,
+                                                imports: e,
+                                                exampleDate
+                                            })
+                                        }}/>
+                                    </div>
+                                </Form.Item>
+
                             </Form>
                         </div>
                     </div>

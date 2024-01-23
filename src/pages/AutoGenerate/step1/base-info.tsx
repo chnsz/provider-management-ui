@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import '../index.less'
-import { Space, Select, Input } from "antd";
+import {Space, Select, Input} from "antd";
 
 const resourceOption = [
-    { value: 'Resource', label: 'Resource' },
-    { value: 'DataSource', label: 'DataSource' },
+    {value: 'Resource', label: 'Resource'},
+    {value: 'DataSource', label: 'DataSource'},
 ];
 
-const BaseInfo: React.FC<{ setData: (data: any) => any, baseInfoPar: any }> = ({ setData, baseInfoPar }) => {
+const BaseInfo: React.FC<{ setData: (data: any) => any, baseInfoPar: any }> = ({setData, baseInfoPar}) => {
     let [providerType, setProviderType] = useState<string>();
     let [providerName, setProviderName] = useState<string>();
     let [endpoint, setEndpoint] = useState<string>();
@@ -31,103 +31,103 @@ const BaseInfo: React.FC<{ setData: (data: any) => any, baseInfoPar: any }> = ({
         updateTimeout = baseInfoPar?.updateTimeout;
         deleteTimeout = baseInfoPar?.deleteTimeout;
     }
-    
+
 
     return <>
         <div className={'container base-info-box'}>
-            <div style={{ display: 'flex' }}>
+            <div style={{display: 'flex'}}>
                 <div className={'info-item'}>
                     <span>
-                        <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>* </span>
+                        <span style={{color: '#ff4d4f', fontWeight: 'bold'}}>* </span>
                         资源信息
                     </span>
-                    <Space.Compact style={{ width: '100%' }}>
+                    <Space.Compact style={{width: '100%'}}>
                         <Select value={providerType}
-                            onChange={(e) => {
-                                setProviderType(e);
-                                setData({
-                                    providerType: e,
-                                    providerName,
-                                    endpoint,
-                                    packageName,
-                                    tagPath,
-                                    tagVersion,
-                                    createTimeout,
-                                    readTimeout,
-                                    updateTimeout,
-                                    deleteTimeout
-                                });
-                            }}
-                            placeholder="请选择"
-                            style={{ width: '145px' }}
-                            options={resourceOption} />
+                                onChange={(e) => {
+                                    setProviderType(e);
+                                    setData({
+                                        providerType: e,
+                                        providerName,
+                                        endpoint,
+                                        packageName,
+                                        tagPath,
+                                        tagVersion,
+                                        createTimeout,
+                                        readTimeout,
+                                        updateTimeout,
+                                        deleteTimeout
+                                    });
+                                }}
+                                placeholder="请选择"
+                                style={{width: '110px'}}
+                                options={resourceOption}/>
                         <Input value={providerName}
-                            onChange={(e) => {
-                                setProviderName(e.target.value);
-                                setData({
-                                    providerType,
-                                    providerName: e.target.value,
-                                    endpoint,
-                                    packageName,
-                                    tagPath,
-                                    tagVersion,
-                                    createTimeout,
-                                    readTimeout,
-                                    updateTimeout,
-                                    deleteTimeout
-                                });
-                            }}
-                            placeholder="请输入资源名称" style={{ width: '145px' }} />
+                               onChange={(e) => {
+                                   setProviderName(e.target.value);
+                                   setData({
+                                       providerType,
+                                       providerName: e.target.value,
+                                       endpoint,
+                                       packageName,
+                                       tagPath,
+                                       tagVersion,
+                                       createTimeout,
+                                       readTimeout,
+                                       updateTimeout,
+                                       deleteTimeout
+                                   });
+                               }}
+                               placeholder="请输入资源名称" style={{width: '270px'}}/>
                     </Space.Compact>
                 </div>
                 <div className={'info-item'}>
                     <span>
-                        <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>* </span>
+                        <span style={{color: '#ff4d4f', fontWeight: 'bold'}}>* </span>
                         服务Endpoint
                     </span>
                     <div>
                         <Input value={endpoint}
-                            onChange={(e) => {
-                                setEndpoint(e.target.value);
-                                setData({
-                                    providerType,
-                                    providerName,
-                                    endpoint: e.target.value,
-                                    packageName,
-                                    tagPath,
-                                    tagVersion,
-                                    createTimeout,
-                                    readTimeout,
-                                    updateTimeout,
-                                    deleteTimeout
-                                });
-                            }}
-                            style={{ width: '290px' }} placeholder='请输入' />
+                               onChange={(e) => {
+                                   setEndpoint(e.target.value);
+                                   setData({
+                                       providerType,
+                                       providerName,
+                                       endpoint: e.target.value,
+                                       packageName,
+                                       tagPath,
+                                       tagVersion,
+                                       createTimeout,
+                                       readTimeout,
+                                       updateTimeout,
+                                       deleteTimeout
+                                   });
+                               }}
+                               style={{width: '180px'}} placeholder='请输入'/>
                     </div>
                 </div>
                 <div className={'info-item'}>
                     <span>
-                        <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>* </span>
+                        <span style={{color: '#ff4d4f', fontWeight: 'bold'}}>* </span>
                         package
                     </span>
                     <div>
                         <Input value={packageName}
-                            onChange={(e) => {
-                                setPackageName(e.target.value);
-                                setData({
-                                    providerType,
-                                    providerName,
-                                    endpoint,
-                                    packageName: e.target.value,
-                                    tagPath,
-                                    tagVersion,
-                                    createTimeout,
-                                    readTimeout,
-                                    updateTimeout,
-                                    deleteTimeout
-                                });
-                            }}
-                            style={{ width: '290px' }} placeholder='请输入' />
+                               onChange={(e) => {
+                                   setPackageName(e.target.value);
+                                   setData({
+                                       providerType,
+                                       providerName,
+                                       endpoint,
+                                       packageName: e.target.value,
+                                       tagPath,
+                                       tagVersion,
+                                       createTimeout,
+                                       readTimeout,
+                                       updateTimeout,
+                                       deleteTimeout
+                                   });
+                               }}
+                               style={{width: '180px'}} placeholder='请输入'/>
                     </div>
                 </div>
                 <div className={'info-item'}>
@@ -136,66 +136,66 @@ const BaseInfo: React.FC<{ setData: (data: any) => any, baseInfoPar: any }> = ({
                     </span>
                     <Space.Compact>
                         <Input value={tagPath}
-                            onChange={(e) => {
-                                setTagPath(e.target.value);
-                                setData({
-                                    providerType,
-                                    providerName,
-                                    endpoint,
-                                    packageName,
-                                    tagPath: e.target.value,
-                                    tagVersion,
-                                    createTimeout,
-                                    readTimeout,
-                                    updateTimeout,
-                                    deleteTimeout
-                                });
-                            }}
-                            style={{ width: '145px' }} placeholder='请输入路径' />
+                               onChange={(e) => {
+                                   setTagPath(e.target.value);
+                                   setData({
+                                       providerType,
+                                       providerName,
+                                       endpoint,
+                                       packageName,
+                                       tagPath: e.target.value,
+                                       tagVersion,
+                                       createTimeout,
+                                       readTimeout,
+                                       updateTimeout,
+                                       deleteTimeout
+                                   });
+                               }}
+                               style={{width: '145px'}} placeholder='请输入路径'/>
                         <Input value={tagVersion}
-                            onChange={(e) => {
-                                setTagVersion(e.target.value);
-                                setData({
-                                    providerType,
-                                    providerName,
-                                    endpoint,
-                                    packageName,
-                                    tagPath,
-                                    tagVersion: e.target.value,
-                                    createTimeout,
-                                    readTimeout,
-                                    updateTimeout,
-                                    deleteTimeout
-                                });
-                            }}
-                            style={{ width: '145px' }} placeholder='请输入版本' />
+                               onChange={(e) => {
+                                   setTagVersion(e.target.value);
+                                   setData({
+                                       providerType,
+                                       providerName,
+                                       endpoint,
+                                       packageName,
+                                       tagPath,
+                                       tagVersion: e.target.value,
+                                       createTimeout,
+                                       readTimeout,
+                                       updateTimeout,
+                                       deleteTimeout
+                                   });
+                               }}
+                               style={{width: '145px'}} placeholder='请输入版本'/>
                     </Space.Compact>
                 </div>
             </div>
 
-            <div style={{ display: 'flex' }} className={'mt20'}>
+            <div style={{display: 'flex'}} className={'mt20'}>
                 <div className={'info-item'}>
                     <span>
                         CreateTimeout
                     </span>
                     <div>
                         <Input value={createTimeout}
-                            onChange={(e) => {
-                                setCreateTimeout(e.target.value);
-                                setData({
-                                    providerType,
-                                    providerName,
-                                    endpoint,
-                                    packageName,
-                                    tagPath,
-                                    tagVersion,
-                                    createTimeout: e.target.value,
-                                    readTimeout,
-                                    updateTimeout,
-                                    deleteTimeout
-                                });
-                            }}
-                            placeholder="请输入，默认单位为分" style={{ width: '290px' }} />
+                               onChange={(e) => {
+                                   setCreateTimeout(e.target.value);
+                                   setData({
+                                       providerType,
+                                       providerName,
+                                       endpoint,
+                                       packageName,
+                                       tagPath,
+                                       tagVersion,
+                                       createTimeout: e.target.value,
+                                       readTimeout,
+                                       updateTimeout,
+                                       deleteTimeout
+                                   });
+                               }}
+                               placeholder="请输入，单位为分" style={{width: '180px'}}/>
                     </div>
                 </div>
                 <div className={'info-item'}>
@@ -204,22 +204,22 @@ const BaseInfo: React.FC<{ setData: (data: any) => any, baseInfoPar: any }> = ({
                     </span>
                     <div>
                         <Input value={readTimeout}
-                            onChange={(e) => {
-                                setReadTimeout(e.target.value);
-                                setData({
-                                    providerType,
-                                    providerName,
-                                    endpoint,
-                                    packageName,
-                                    tagPath,
-                                    tagVersion,
-                                    createTimeout,
-                                    readTimeout: e.target.value,
-                                    updateTimeout,
-                                    deleteTimeout
-                                });
-                            }}
-                            style={{ width: '290px' }} placeholder='请输入，默认单位为分' />
+                               onChange={(e) => {
+                                   setReadTimeout(e.target.value);
+                                   setData({
+                                       providerType,
+                                       providerName,
+                                       endpoint,
+                                       packageName,
+                                       tagPath,
+                                       tagVersion,
+                                       createTimeout,
+                                       readTimeout: e.target.value,
+                                       updateTimeout,
+                                       deleteTimeout
+                                   });
+                               }}
+                               placeholder="请输入，单位为分" style={{width: '180px'}}/>
                     </div>
                 </div>
                 <div className={'info-item'}>
@@ -228,22 +228,22 @@ const BaseInfo: React.FC<{ setData: (data: any) => any, baseInfoPar: any }> = ({
                     </span>
                     <div>
                         <Input value={updateTimeout}
-                            onChange={(e) => {
-                                setUpdateTimeout(e.target.value);
-                                setData({
-                                    providerType,
-                                    providerName,
-                                    endpoint,
-                                    packageName,
-                                    tagPath,
-                                    tagVersion,
-                                    createTimeout,
-                                    readTimeout,
-                                    updateTimeout: e.target.value,
-                                    deleteTimeout
-                                });
-                            }}
-                            style={{ width: '290px' }} placeholder='请输入，默认单位为分' />
+                               onChange={(e) => {
+                                   setUpdateTimeout(e.target.value);
+                                   setData({
+                                       providerType,
+                                       providerName,
+                                       endpoint,
+                                       packageName,
+                                       tagPath,
+                                       tagVersion,
+                                       createTimeout,
+                                       readTimeout,
+                                       updateTimeout: e.target.value,
+                                       deleteTimeout
+                                   });
+                               }}
+                               placeholder="请输入，单位为分" style={{width: '180px'}}/>
                     </div>
                 </div>
                 <div className={'info-item'}>
@@ -252,22 +252,22 @@ const BaseInfo: React.FC<{ setData: (data: any) => any, baseInfoPar: any }> = ({
                     </span>
                     <div>
                         <Input value={deleteTimeout}
-                            onChange={(e) => {
-                                setDeleteTimeout(e.target.value);
-                                setData({
-                                    providerType,
-                                    providerName,
-                                    endpoint,
-                                    packageName,
-                                    tagPath,
-                                    tagVersion,
-                                    createTimeout,
-                                    readTimeout,
-                                    updateTimeout,
-                                    deleteTimeout: e.target.value
-                                });
-                            }}
-                            style={{ width: '290px' }} placeholder='请输入，默认单位为分' />
+                               onChange={(e) => {
+                                   setDeleteTimeout(e.target.value);
+                                   setData({
+                                       providerType,
+                                       providerName,
+                                       endpoint,
+                                       packageName,
+                                       tagPath,
+                                       tagVersion,
+                                       createTimeout,
+                                       readTimeout,
+                                       updateTimeout,
+                                       deleteTimeout: e.target.value
+                                   });
+                               }}
+                               placeholder="请输入，单位为分" style={{width: '180px'}}/>
                     </div>
                 </div>
             </div>
