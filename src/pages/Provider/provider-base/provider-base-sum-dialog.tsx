@@ -1,7 +1,7 @@
-import React, {useState} from "react";
-import {getProviderApiBaseSum} from "@/services/provider/api";
-import type {ColumnsType} from "antd/es/table/interface";
-import {Button, Modal, Table} from "antd";
+import React, { useState } from "react";
+import { getProviderApiBaseSum } from "@/services/provider/api";
+import type { ColumnsType } from "antd/es/table/interface";
+import { Button, Modal, Table } from "antd";
 import ProviderBaseDialog from "@/pages/Provider/provider-base/provider-base-dialog";
 
 const ProviderBaseSumDialog: React.FC<{
@@ -69,7 +69,7 @@ const ProviderBaseSumDialog: React.FC<{
                         apiName={row.apiDetail.apiName + ' / ' + row.apiDetail.apiNameEn}
                         onClosed={loadData}
                         providerType={row.providerType}
-                        providerName={row.providerName}/>
+                        providerName={row.providerName} />
                 }
                 return ''
             },
@@ -128,15 +128,15 @@ const ProviderBaseSumDialog: React.FC<{
     return <>
         <a onClick={showModal} title={props.text}>{props.text}</a>
         <Modal title="API 字段变更分析"
-               open={isModalOpen}
-               onOk={handleOk}
-               onCancel={handleCancel}
-               transitionName={''}
-               destroyOnClose
-               width={1600}
-               footer={[
-                   <Button key="save" type="primary" onClick={handleOk}>关闭</Button>
-               ]}>
+            open={isModalOpen}
+            onOk={handleOk}
+            onCancel={handleCancel}
+            transitionName={''}
+            destroyOnClose
+            width={1600}
+            footer={[
+                <Button key="save" type="primary" onClick={handleOk}>关闭</Button>
+            ]}>
             <Table
                 columns={columns}
                 dataSource={data}
