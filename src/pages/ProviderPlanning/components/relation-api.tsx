@@ -1,14 +1,14 @@
-import {openApiExplorer} from '@/pages/Portal';
+import { openApiExplorer } from '@/pages/Portal';
 import ApiListDialog from '@/pages/ProviderPlanning/components/api-list-dialog';
-import {getApiDetailList} from '@/services/api/api';
+import { getApiDetailList } from '@/services/api/api';
 import {
     bindProviderPlanningApi,
     unbindProviderPlanningApi,
 } from '@/services/provider-planning/api';
-import {DeleteOutlined} from '@ant-design/icons';
-import {Space, Table} from 'antd';
-import type {ColumnsType} from 'antd/es/table';
-import React, {useEffect, useState} from 'react';
+import { DeleteOutlined } from '@ant-design/icons';
+import { Space, Table } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
+import React, { useEffect, useState } from 'react';
 
 interface DataType {
     key: string;
@@ -25,7 +25,7 @@ type RelationApiProps = {
     onChange: (data: DataType[]) => any;
 };
 
-const RelationApi: React.FC<RelationApiProps> = ({idList, planningId, onChange}) => {
+const RelationApi: React.FC<RelationApiProps> = ({ idList, planningId, onChange }) => {
     const [data, setData] = useState<DataType[]>([]);
 
     const onDelete = (row: DataType) => {
@@ -69,7 +69,7 @@ const RelationApi: React.FC<RelationApiProps> = ({idList, planningId, onChange})
             return;
         }
 
-        getApiDetailList({id: idList}, 1000, 1).then((rsp) => {
+        getApiDetailList({ id: idList }, 1000, 1).then((rsp) => {
             const arr = rsp.items.map((d: Api.Detail) => {
                 return {
                     key: '' + d.id,
@@ -125,7 +125,7 @@ const RelationApi: React.FC<RelationApiProps> = ({idList, planningId, onChange})
             render: (v, row) => (
                 <Space size="middle">
                     <a onClick={onDelete(row)}>
-                        <DeleteOutlined/>
+                        <DeleteOutlined />
                     </a>
                 </Space>
             ),
@@ -134,8 +134,8 @@ const RelationApi: React.FC<RelationApiProps> = ({idList, planningId, onChange})
 
     return (
         <>
-            <Table columns={columns} dataSource={data} pagination={false} scroll={{y: 400}}/>
-            <div style={{padding: '12px', textAlign: 'center'}}>
+            <Table columns={columns} dataSource={data} pagination={false} scroll={{ y: 400 }} />
+            <div style={{ padding: '12px', textAlign: 'center' }}>
                 {/*<Button size={'small'} onClick={() => setIsDialogOpen(true)}>+ 新增绑定</Button>*/}
                 <ApiListDialog
                     handle={(option: 'ok' | 'cancel', rows: Api.Detail[], idList: number[]) => {

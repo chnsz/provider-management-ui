@@ -1,15 +1,15 @@
 import EditableDes from '@/components/EditableDescription';
 import Editor from '@/components/editor';
 import RelationTabs from '@/pages/ProviderPlanning/components/relation-tabs';
-import {getTaskStatus, priorityOptions, statusOptions} from '@/pages/Task/components/task-detail';
-import {getProductFeatureList} from '@/services/product-feature/api';
-import {getProductList, getUserList} from '@/services/product/api';
-import {getProviderPlanning, updateProviderPlanning} from '@/services/provider-planning/api';
-import {toLongDate} from '@/utils/common';
-import {InfoCircleOutlined} from '@ant-design/icons';
-import {Badge, Descriptions, Tooltip} from 'antd';
-import type {SelectProps} from 'antd/es/select';
-import React, {useEffect, useState} from 'react';
+import { getTaskStatus, priorityOptions, statusOptions } from '@/pages/Task/components/task-detail';
+import { getProductFeatureList } from '@/services/product-feature/api';
+import { getProductList, getUserList } from '@/services/product/api';
+import { getProviderPlanning, updateProviderPlanning } from '@/services/provider-planning/api';
+import { toLongDate } from '@/utils/common';
+import { InfoCircleOutlined } from '@ant-design/icons';
+import { Badge, Descriptions, Tooltip } from 'antd';
+import type { SelectProps } from 'antd/es/select';
+import React, { useEffect, useState } from 'react';
 import '../provider-planning.less';
 
 type PlanningDetailProps = {
@@ -25,7 +25,7 @@ export const getPlanningStatus = (status: string) => {
             break;
         case 'processing':
         case 'merging':
-            return <Badge status={'processing'} text={status}/>;
+            return <Badge status={'processing'} text={status} />;
         case 'merged':
         case 'closed':
             color = 'green';
@@ -34,10 +34,10 @@ export const getPlanningStatus = (status: string) => {
             color = 'gold';
             break;
     }
-    return <Badge color={color} text={status}/>;
+    return <Badge color={color} text={status} />;
 };
 const defaultSaveTip = '* 失去焦点后自动保存';
-const ProviderPlanningDetail: React.FC<PlanningDetailProps> = ({providerPlanning, onChange}) => {
+const ProviderPlanningDetail: React.FC<PlanningDetailProps> = ({ providerPlanning, onChange }) => {
     const [content, setContent] = useState<string>('');
     const [featureList, setFeatureList] = useState<SelectProps['options']>([]);
     const [productList, setProductList] = useState<SelectProps['options']>([]);
@@ -46,9 +46,9 @@ const ProviderPlanningDetail: React.FC<PlanningDetailProps> = ({providerPlanning
     const [planning, setPlanning] = useState<ProviderPlanning.ProviderPlanning>(providerPlanning);
 
     const loadFeature = (productName: string) => {
-        getProductFeatureList({productName: [productName]}, 1000, 1).then((d) => {
+        getProductFeatureList({ productName: [productName] }, 1000, 1).then((d) => {
             const arr = d.items.map((t: ProductFeature.ProductFeature) => {
-                return {label: t.name, value: t.id};
+                return { label: t.name, value: t.id };
             });
             setFeatureList(arr);
         });
@@ -208,7 +208,7 @@ const ProviderPlanningDetail: React.FC<PlanningDetailProps> = ({providerPlanning
                     />
                 </Descriptions.Item>
                 <Descriptions.Item label="标题" span={2}>
-                    <EditableDes value={planning.title} onChange={onDetailChange('title')}/>
+                    <EditableDes value={planning.title} onChange={onDetailChange('title')} />
                 </Descriptions.Item>
                 <Descriptions.Item label="待办状态" span={1}>
                     <EditableDes
@@ -227,13 +227,13 @@ const ProviderPlanningDetail: React.FC<PlanningDetailProps> = ({providerPlanning
             <div className={'detail-info'}>
                 <div className={'primary-info'}>
                     <div className={'label-name custom-label'}>
-                        <div style={{display: 'flex'}}>
-                            <div style={{flex: '1'}}>详细内容</div>
-                            <div style={{flex: '1', textAlign: 'right'}}>{saveTip}</div>
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ flex: '1' }}>详细内容</div>
+                            <div style={{ flex: '1', textAlign: 'right' }}>{saveTip}</div>
                         </div>
                     </div>
-                    <div style={{height: 'calc(100% - 45px)'}}>
-                        <Editor defaultValue={content} onChange={onDetailChange('content')}/>
+                    <div style={{ height: 'calc(100% - 45px)' }}>
+                        <Editor defaultValue={content} onChange={onDetailChange('content')} />
                     </div>
                 </div>
                 <div className={'secondary-info'}>
@@ -247,10 +247,10 @@ const ProviderPlanningDetail: React.FC<PlanningDetailProps> = ({providerPlanning
                             }
                             arrow={true}
                         >
-                            <InfoCircleOutlined/>
+                            <InfoCircleOutlined />
                         </Tooltip>
                     </div>
-                    <RelationTabs className={'relation-tabs'} planning={planning}/>
+                    <RelationTabs className={'relation-tabs'} planning={planning} />
                 </div>
             </div>
             <Descriptions column={6}>

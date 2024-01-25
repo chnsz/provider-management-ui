@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from "react";
-import {Button, Modal} from "antd";
+import React, { useEffect, useState } from "react";
+import { Button, Modal } from "antd";
 import ProviderPlanningDetail from "@/pages/ProviderPlanning/components/provider-planning-detail";
-import {defaultVal} from "@/pages/ProviderPlanning";
+import { defaultVal } from "@/pages/ProviderPlanning";
 
 const PlanningViewDialog: React.FC<{
     planning: ProviderPlanning.ProviderPlanning,
@@ -33,14 +33,14 @@ const PlanningViewDialog: React.FC<{
         <>
             <Button onClick={showModal} size={'small'} type={'link'}>编辑</Button>
             <Modal title="编辑规划"
-                   transitionName={''}
-                   destroyOnClose
-                   open={isModalOpen}
-                   onCancel={handleCancel}
-                   width={1400}
-                   footer={[
-                       <Button key="close" type="primary" onClick={handleCancel}>关闭</Button>
-                   ]}
+                transitionName={''}
+                destroyOnClose
+                open={isModalOpen}
+                onCancel={handleCancel}
+                width={1400}
+                footer={[
+                    <Button key="close" type="primary" onClick={handleCancel}>关闭</Button>
+                ]}
             >
                 <ProviderPlanningDetail
                     providerPlanning={planning}
