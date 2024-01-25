@@ -1,15 +1,16 @@
-import React, {useEffect, useState} from "react";
-import type {MenuProps} from 'antd';
-import {Badge, Dropdown, Input, message, Modal, Space, Table, Tag} from "antd";
-import type {ColumnsType} from "antd/es/table";
-import {getProviderSyncIssueList, updateProviderSyncStatus} from "@/services/provider/api";
-import {QueryFilter} from "@ant-design/pro-form";
-import {ProFormSelect, ProFormText} from "@ant-design/pro-components";
-import {EditOutlined} from "@ant-design/icons";
-import {get} from "lodash";
-import {CloudName, openDocsInRegistry} from "@/global";
+import React, { useEffect, useState } from "react";
+import type { MenuProps } from 'antd';
+import { Badge, Dropdown, Input, message, Modal, Space, Table, Tag } from "antd";
+import type { ColumnsType } from "antd/es/table";
+import { getProviderSyncIssueList, updateProviderSyncStatus } from "@/services/provider/api";
+import { typeNameMap } from "@/services/partner/constants";
+import { QueryFilter } from "@ant-design/pro-form";
+import { ProFormSelect, ProFormText } from "@ant-design/pro-components";
+import { EditOutlined } from "@ant-design/icons";
+import { get } from "lodash";
+import { CloudName, openDocsInRegistry } from "@/global";
 import ProviderSyncSumDialog from "@/pages/Partner/components/provider_sync_sum_dialog";
-import type {PresetStatusColorType} from "antd/es/_util/colors";
+import type { PresetStatusColorType } from "antd/es/_util/colors";
 import MonitorDialog from "@/pages/Partner/monitor/monitor-dialog";
 import MonitorListDialog from "@/pages/Partner/monitor/monitor-list-dialog";
 import Txt from "@/components/Txt/Txt";
@@ -22,54 +23,17 @@ type FormProps = {
     status: string;
 };
 
-const typeNameMap: Record<string, string> = {
-    DocsMissingField: '文档遗漏字段',
-    InvalidDocsField: '文档中有不合法字段',
-    SchemaDocsFieldConflict: '字段与schema不一致',
-    PartnerMissingField: '伙伴云少字段',
-    PartnerFieldOutNum: '伙伴云多字段',
-    PartnerFieldConflict: '字段不一致',
-    PartnerMissingResource: '缺失资源',
-}
-
 const SearchForm: React.FC<{
     onSearch: (val: FormProps) => any,
     type: string,
     cloudName: Global.CloudName
 }> = (props) => {
-    /*
-    const [providerNameMap, setProviderNameMap] = useState<ProSchemaValueEnumObj>({});
-     useEffect(() => {
-         getProviderList({cloudName: props.cloudName}, 1000, 1).then(data => {
-             const map: ProSchemaValueEnumObj = {};
-             data.items.map((p) => p.name)
-                 .sort()
-                 .forEach(n => map[n] = n);
-             setProviderNameMap(map)
-         });
-     }, []);
-
-     const onProviderTypeChange = (v: "Resource" | "DataSource" | undefined) => {
-         if (!v) {
-             setProviderNameMap({});
-             return;
-         }
-         getProviderList({cloudName: props.cloudName, type: v}, 1000, 1).then(data => {
-             const map: ProSchemaValueEnumObj = {};
-             data.items.map((p) => p.name)
-                 .sort()
-                 .forEach(n => map[n] = n);
-             setProviderNameMap(map)
-         });
-     };
-  */
-
     return (
         <QueryFilter<FormProps>
             span={4}
             labelWidth={80}
             searchGutter={8}
-            style={{marginTop: '20px', marginBottom: '-27px'}}
+            style={{ marginTop: '20px', marginBottom: '-27px' }}
             onFinish={async (values) => props.onSearch(values)}
         >
             <ProFormSelect
@@ -95,8 +59,8 @@ const SearchForm: React.FC<{
             {/*    showSearch*/}
             {/*    valueEnum={providerNameMap}*/}
             {/*/>*/}
-            <ProFormText name="providerName" label="资源名称"/>
-            <ProFormText name="fieldName" label="字段名称" placeholder={'支持模糊搜索'}/>
+            <ProFormText name="providerName" label="资源名称" />
+            <ProFormText name="fieldName" label="字段名称" placeholder={'支持模糊搜索'} />
             <ProFormSelect
                 name="status"
                 label="状态"
@@ -158,21 +122,21 @@ const wrapperProviderName = (v: any, row: Provider.ProviderSyncIssue) => {
     }
 
     const status: PresetStatusColorType = row.isReference ? 'processing' : 'default';
-    const el = <Badge status={status} text={v} style={{color: '#1890ff'}}/>
+    const el = <Badge status={status} text={v} style={{ color: '#1890ff' }} />
     return openDocsInRegistry(row.cloudName, row.providerType, row.providerName, el)
 }
 
 const wrapperFieldName = (v: any, row: Provider.ProviderSyncIssue, callback?: () => any) => {
     return <MonitorListDialog content={v}
-                              cloudName={row.cloudName}
-                              providerType={row.providerType}
-                              providerName={row.providerName}
-                              relationType={row.type}
-                              onClose={() => {
-                                  if (callback) {
-                                      callback()
-                                  }
-                              }}
+        cloudName={row.cloudName}
+        providerType={row.providerType}
+        providerName={row.providerName}
+        relationType={row.type}
+        onClose={() => {
+            if (callback) {
+                callback()
+            }
+        }}
     />
 }
 
@@ -200,8 +164,8 @@ const renderCol = (field: string, wrapper?: (v: any, row: Provider.ProviderSyncI
         //     borderTop = '';
         // }
         return <>
-            <div style={{height: '22px'}}> {wrapper ? wrapper(v, row, callback) : v} </div>
-            <div style={{borderTop: borderTop, height: '22px', borderRadius: '0px'}} title={'schema 中的值'}>
+            <div style={{ height: '22px' }}> {wrapper ? wrapper(v, row, callback) : v} </div>
+            <div style={{ borderTop: borderTop, height: '22px', borderRadius: '0px' }} title={'schema 中的值'}>
                 {wrapper ? wrapper(diffVal, row, callback) : diffVal}
             </div>
         </>;
@@ -248,10 +212,10 @@ const getDropItems = () => {
     return items;
 }
 
-const Remark: React.FC<{ value: string, onChange: (remark: string, status: string) => any }> = ({value, onChange}) => {
+const Remark: React.FC<{ value: string, onChange: (remark: string, status: string) => any }> = ({ value, onChange }) => {
     const [val, setVal] = useState<string>(value);
 
-    const onClick: MenuProps['onClick'] = ({key}) => {
+    const onClick: MenuProps['onClick'] = ({ key }) => {
         if (!quickInputMapper.hasOwnProperty(key)) {
             return
         }
@@ -264,10 +228,10 @@ const Remark: React.FC<{ value: string, onChange: (remark: string, status: strin
     };
 
     const items = getDropItems();
-    return <Dropdown menu={{items, onClick}}>
+    return <Dropdown menu={{ items, onClick }}>
         <Input value={val}
-               onChange={e => setVal(e.target.value)}
-               onBlur={e => onChange(e.target.value, '')}
+            onChange={e => setVal(e.target.value)}
+            onBlur={e => onChange(e.target.value, '')}
         />
     </Dropdown>
 }
@@ -278,7 +242,7 @@ const ProviderSyncIssueDialog: React.FC<{
     syncType: string,
     onClosed?: () => any,
     short?: boolean,
-}> = ({sumData, cloudName, syncType, onClosed, short}) => {
+}> = ({ sumData, cloudName, syncType, onClosed, short }) => {
     const [messageApi, contextHolder] = message.useMessage();
     const [total, setTotal] = useState<number>(0);
     const [pageSize, setPageSize] = useState<number>(15);
@@ -295,7 +259,7 @@ const ProviderSyncIssueDialog: React.FC<{
     const [dataSource, setDataSource] = useState<Provider.ProviderSyncIssue[]>([]);
 
     const loadData = () => {
-        const params = {cloudName, ...formData}
+        const params = { cloudName, ...formData }
         getProviderSyncIssueList(params, pageSize, pageNum)
             .then(t => {
                 setDataSource(t.items);
@@ -454,7 +418,7 @@ const ProviderSyncIssueDialog: React.FC<{
             }
         },
         {
-            title: <>备注<EditOutlined style={{color: '#6d6d6d'}}/></>,
+            title: <>备注<EditOutlined style={{ color: '#6d6d6d' }} /></>,
             dataIndex: 'remark',
             width: 200,
             render: (v, row) => {
@@ -463,7 +427,7 @@ const ProviderSyncIssueDialog: React.FC<{
                         return;
                     }
                     modifyStatusChange(row.id, status === '' ? row.status : status, remark)
-                }}/>
+                }} />
             },
         },
         {
@@ -485,27 +449,27 @@ const ProviderSyncIssueDialog: React.FC<{
                     }
 
                     <MonitorDialog content={'监控'} option={'add'} cloudName={cloudName} field={row} onClose={loadData}
-                                   defaultValue={{
-                                       id: 0,
-                                       cloudName: cloudName,
-                                       providerType: row.providerType,
-                                       providerName: row.providerName,
-                                       type: 'API',
-                                       status: 'open',
+                        defaultValue={{
+                            id: 0,
+                            cloudName: cloudName,
+                            providerType: row.providerType,
+                            providerName: row.providerName,
+                            type: 'API',
+                            status: 'open',
 
-                                       productName: '',
-                                       method: '',
-                                       uriShort: '',
-                                       fieldIn: 'body',
-                                       fieldName: '',
+                            productName: '',
+                            method: '',
+                            uriShort: '',
+                            fieldIn: 'body',
+                            fieldName: '',
 
-                                       relationType: row.type,
-                                       relationId: row.id,
-                                       groupName: '',
-                                   }}
+                            relationType: row.type,
+                            relationId: row.id,
+                            groupName: '',
+                        }}
                     />
                     <a onClick={() => modifyStatusChange(row.id, 'manually-closed', row.remark)}
-                       style={{color: 'red'}}> 关闭 </a>
+                        style={{ color: 'red' }}> 关闭 </a>
                 </Space>
             },
         },
@@ -523,53 +487,53 @@ const ProviderSyncIssueDialog: React.FC<{
         return cloudName;
     }
 
-    let view = <div style={{display: 'flex'}}>
-        <div onClick={showModal} style={{width: '90%', display: 'flex', cursor: 'pointer'}}>
-            <div style={{width: '11.11%'}}>
-                <div style={{color: '#ff4d4f'}}>{sumData.expired}</div>
+    let view = <div style={{ display: 'flex' }}>
+        <div onClick={showModal} style={{ width: '90%', display: 'flex', cursor: 'pointer' }}>
+            <div style={{ width: '11.11%' }}>
+                <div style={{ color: '#ff4d4f' }}>{sumData.expired}</div>
                 <div className={'label'}>已超期</div>
             </div>
-            <div style={{width: '11.11%'}}>
-                <div style={{color: '#faad14'}}>{sumData.toExpired}</div>
+            <div style={{ width: '11.11%' }}>
+                <div style={{ color: '#faad14' }}>{sumData.toExpired}</div>
                 <div className={'label'}>即将超期</div>
             </div>
-            <div style={{width: '11.11%'}}>
-                <div style={{color: '#faad14'}}>{sumData.open}</div>
+            <div style={{ width: '11.11%' }}>
+                <div style={{ color: '#faad14' }}>{sumData.open}</div>
                 <div className={'label'}>待处理</div>
             </div>
-            <div style={{width: '11.11%'}}>
-                <div style={{color: '#1677ff'}}>{sumData.padding}</div>
+            <div style={{ width: '11.11%' }}>
+                <div style={{ color: '#1677ff' }}>{sumData.padding}</div>
                 <div className={'label'}>挂起</div>
             </div>
-            <div style={{width: '11.11%'}}>
-                <div style={{color: '#faad14'}}>{sumData.serviceMissing}</div>
+            <div style={{ width: '11.11%' }}>
+                <div style={{ color: '#faad14' }}>{sumData.serviceMissing}</div>
                 <div className={'label'}>服务未上线</div>
             </div>
-            <div style={{width: '11.11%'}}>
-                <div style={{color: '#faad14'}}>{sumData.apiMissing}</div>
+            <div style={{ width: '11.11%' }}>
+                <div style={{ color: '#faad14' }}>{sumData.apiMissing}</div>
                 <div className={'label'}>API未发布</div>
             </div>
-            <div style={{width: '11.11%'}}>
-                <div style={{color: '#c388fd'}}>{sumData.monitoring || 0}</div>
+            <div style={{ width: '11.11%' }}>
+                <div style={{ color: '#c388fd' }}>{sumData.monitoring || 0}</div>
                 <div className={'label'}>监控中</div>
             </div>
-            <div style={{width: '11.11%'}}>
-                <div style={{color: '#52c41a'}}>{sumData.merging}</div>
+            <div style={{ width: '11.11%' }}>
+                <div style={{ color: '#52c41a' }}>{sumData.merging}</div>
                 <div className={'label'}>待合并</div>
             </div>
-            <div style={{width: '11.11%'}}>
-                <div style={{color: '#52c41a'}}>{sumData.closed}</div>
+            <div style={{ width: '11.11%' }}>
+                <div style={{ color: '#52c41a' }}>{sumData.closed}</div>
                 <div className={'label'}>已完成</div>
             </div>
         </div>
-        <div style={{width: '10%'}}>
+        <div style={{ width: '10%' }}>
             <ProviderSyncSumDialog
                 cloudName={cloudName}
                 syncType={syncType}
                 status={['open']}
                 context={
                     <>
-                        <div style={{color: '#1677ff'}}>{sumData.resource}&nbsp;&nbsp;{sumData.dataSource} </div>
+                        <div style={{ color: '#1677ff' }}>{sumData.resource}&nbsp;&nbsp;{sumData.dataSource} </div>
                         <div className={'label'}>R & D</div>
                     </>
                 }
@@ -578,37 +542,37 @@ const ProviderSyncIssueDialog: React.FC<{
     </div>
 
     if (short) {
-        view = <div style={{display: 'flex'}}>
-            <div onClick={showModal} style={{width: '83.34%', display: 'flex', cursor: 'pointer'}}>
-                <div style={{width: '20%'}}>
-                    <div style={{color: '#ff4d4f'}}>{sumData.expired}</div>
+        view = <div style={{ display: 'flex' }}>
+            <div onClick={showModal} style={{ width: '83.34%', display: 'flex', cursor: 'pointer' }}>
+                <div style={{ width: '20%' }}>
+                    <div style={{ color: '#ff4d4f' }}>{sumData.expired}</div>
                     <div className={'label'}>已超期</div>
                 </div>
-                <div style={{width: '20%'}}>
-                    <div style={{color: '#faad14'}}>{sumData.toExpired}</div>
+                <div style={{ width: '20%' }}>
+                    <div style={{ color: '#faad14' }}>{sumData.toExpired}</div>
                     <div className={'label'}>即将超期</div>
                 </div>
-                <div style={{width: '20%'}}>
-                    <div style={{color: '#faad14'}}>{sumData.open}</div>
+                <div style={{ width: '20%' }}>
+                    <div style={{ color: '#faad14' }}>{sumData.open}</div>
                     <div className={'label'}>待处理</div>
                 </div>
-                <div style={{width: '20%'}}>
-                    <div style={{color: '#1677ff'}}>{sumData.padding}</div>
+                <div style={{ width: '20%' }}>
+                    <div style={{ color: '#1677ff' }}>{sumData.padding}</div>
                     <div className={'label'}>挂起</div>
                 </div>
-                <div style={{width: '20%'}}>
-                    <div style={{color: '#52c41a'}}>{sumData.merging}</div>
+                <div style={{ width: '20%' }}>
+                    <div style={{ color: '#52c41a' }}>{sumData.merging}</div>
                     <div className={'label'}>待合并</div>
                 </div>
             </div>
-            <div style={{width: '16.66%'}}>
+            <div style={{ width: '16.66%' }}>
                 <ProviderSyncSumDialog
                     cloudName={cloudName}
                     syncType={syncType}
                     status={['open']}
                     context={
                         <>
-                            <div style={{color: '#1677ff'}}>{sumData.resource}&nbsp;&nbsp;{sumData.dataSource} </div>
+                            <div style={{ color: '#1677ff' }}>{sumData.resource}&nbsp;&nbsp;{sumData.dataSource} </div>
                             <div className={'label'}>R & D</div>
                         </>
                     }
@@ -620,41 +584,41 @@ const ProviderSyncIssueDialog: React.FC<{
     return (
         <>
             {contextHolder}
-            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                <div style={{width: '100%', maxWidth: short ? '360px' : '680px'}}>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <div style={{ width: '100%', maxWidth: short ? '360px' : '680px' }}>
                     {view}
                 </div>
             </div>
             <Modal title={`字段列表 - ${getSyncTypeName(syncType)}【${getCloudName()}】`}
-                   transitionName={''}
-                   destroyOnClose
-                   open={isModalOpen}
-                   onOk={closeModel}
-                   onCancel={closeModel}
-                   width={'95%'}
-                   footer={[]}>
-                <Space size={20} direction={'vertical'} style={{width: '100%'}}>
+                transitionName={''}
+                destroyOnClose
+                open={isModalOpen}
+                onOk={closeModel}
+                onCancel={closeModel}
+                width={'95%'}
+                footer={[]}>
+                <Space size={20} direction={'vertical'} style={{ width: '100%' }}>
                     <SearchForm cloudName={cloudName} type={syncType} onSearch={v => {
                         setFormData(v);
                         setPageNum(1);
-                    }}/>
+                    }} />
                     <Table dataSource={dataSource} columns={columns} size={'small'}
-                           rowKey={(record) => record.id + ''}
-                           pagination={{
-                               defaultCurrent: 1,
-                               total: total,
-                               size: 'default',
-                               pageSize: pageSize,
-                               current: pageNum,
-                               showTotal: (total) => `总条数: ${total}`,
-                               onShowSizeChange: (current, size) => {
-                                   setPageSize(size);
-                               },
-                               onChange: (page, size) => {
-                                   setPageSize(size);
-                                   setPageNum(page);
-                               },
-                           }}
+                        rowKey={(record) => record.id + ''}
+                        pagination={{
+                            defaultCurrent: 1,
+                            total: total,
+                            size: 'default',
+                            pageSize: pageSize,
+                            current: pageNum,
+                            showTotal: (total) => `总条数: ${total}`,
+                            onShowSizeChange: (current, size) => {
+                                setPageSize(size);
+                            },
+                            onChange: (page, size) => {
+                                setPageSize(size);
+                                setPageNum(page);
+                            },
+                        }}
                     />
                 </Space>
             </Modal>
