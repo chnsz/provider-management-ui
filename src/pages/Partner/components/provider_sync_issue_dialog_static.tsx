@@ -1,17 +1,17 @@
-import React, {useState} from "react";
-import type {MenuProps} from 'antd';
-import {Badge, Dropdown, Input, message, Modal, Space, Table, Tag} from "antd";
-import type {ColumnsType} from "antd/es/table";
-import {updateProviderSyncStatus} from "@/services/provider/api";
-import {EditOutlined} from "@ant-design/icons";
-import {get} from "lodash";
-import {CloudName, openDocsInRegistry} from "@/global";
-import type {PresetStatusColorType} from "antd/es/_util/colors";
+import React, { useState } from "react";
+import type { MenuProps } from 'antd';
+import { Badge, Dropdown, Input, message, Modal, Space, Table, Tag } from "antd";
+import type { ColumnsType } from "antd/es/table";
+import { updateProviderSyncStatus } from "@/services/provider/api";
+import { EditOutlined } from "@ant-design/icons";
+import { get } from "lodash";
+import { CloudName, openDocsInRegistry } from "@/global";
+import type { PresetStatusColorType } from "antd/es/_util/colors";
 import MonitorDialog from "@/pages/Partner/monitor/monitor-dialog";
 import MonitorListDialog from "@/pages/Partner/monitor/monitor-list-dialog";
-import {getSyncTypeName} from "@/pages/Partner/components/provider_sync_issue_dialog";
-import {request} from "umi";
-import {PMS_PATH} from "@/services/api";
+import { getSyncTypeName } from "@/pages/Partner/components/provider_sync_issue_dialog";
+import { request } from "umi";
+import { PMS_PATH } from "@/services/api";
 
 
 const wrapperRequired = (v: any) => {
@@ -44,21 +44,21 @@ const wrapperProviderName = (v: any, row: Provider.ProviderSyncIssue) => {
     }
 
     const status: PresetStatusColorType = row.isReference ? 'processing' : 'default';
-    const el = <Badge status={status} text={v} style={{color: '#1890ff'}}/>
+    const el = <Badge status={status} text={v} style={{ color: '#1890ff' }} />
     return openDocsInRegistry(row.cloudName, row.providerType, row.providerName, el)
 }
 
 const wrapperFieldName = (v: any, row: Provider.ProviderSyncIssue, callback?: () => any) => {
     return <MonitorListDialog content={v}
-                              cloudName={row.cloudName}
-                              providerType={row.providerType}
-                              providerName={row.providerName}
-                              relationType={row.type}
-                              onClose={() => {
-                                  if (callback) {
-                                      callback()
-                                  }
-                              }}
+        cloudName={row.cloudName}
+        providerType={row.providerType}
+        providerName={row.providerName}
+        relationType={row.type}
+        onClose={() => {
+            if (callback) {
+                callback()
+            }
+        }}
     />
 }
 
@@ -86,8 +86,8 @@ const renderCol = (field: string, wrapper?: (v: any, row: Provider.ProviderSyncI
         //     borderTop = '';
         // }
         return <>
-            <div style={{height: '22px'}}> {wrapper ? wrapper(v, row, callback) : v} </div>
-            <div style={{borderTop: borderTop, height: '22px', borderRadius: '0px'}} title={'schema 中的值'}>
+            <div style={{ height: '22px' }}> {wrapper ? wrapper(v, row, callback) : v} </div>
+            <div style={{ borderTop: borderTop, height: '22px', borderRadius: '0px' }} title={'schema 中的值'}>
                 {wrapper ? wrapper(diffVal, row, callback) : diffVal}
             </div>
         </>;
@@ -134,10 +134,10 @@ const getDropItems = () => {
     return items;
 }
 
-const Remark: React.FC<{ value: string, onChange: (remark: string, status: string) => any }> = ({value, onChange}) => {
+const Remark: React.FC<{ value: string, onChange: (remark: string, status: string) => any }> = ({ value, onChange }) => {
     const [val, setVal] = useState<string>(value);
 
-    const onClick: MenuProps['onClick'] = ({key}) => {
+    const onClick: MenuProps['onClick'] = ({ key }) => {
         if (!quickInputMapper.hasOwnProperty(key)) {
             return
         }
@@ -150,10 +150,10 @@ const Remark: React.FC<{ value: string, onChange: (remark: string, status: strin
     };
 
     const items = getDropItems();
-    return <Dropdown menu={{items, onClick}}>
+    return <Dropdown menu={{ items, onClick }}>
         <Input value={val}
-               onChange={e => setVal(e.target.value)}
-               onBlur={e => onChange(e.target.value, '')}
+            onChange={e => setVal(e.target.value)}
+            onBlur={e => onChange(e.target.value, '')}
         />
     </Dropdown>
 }
@@ -174,14 +174,14 @@ const getCloudName = (url: string) => {
 async function getCheckIssuesList(url: string) {
     return request<Provider.ProviderSyncIssue[]>(`${PMS_PATH}/checker/issue/list`, {
         method: 'GET',
-        params: {url},
+        params: { url },
     });
 }
 
 const ProviderSyncIssueStaticDialog: React.FC<{
     content: any,
     url: string,
-}> = ({url, content}) => {
+}> = ({ url, content }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
     const [dataSource, setDataSource] = useState<Provider.ProviderSyncIssue[]>([]);
@@ -315,7 +315,7 @@ const ProviderSyncIssueStaticDialog: React.FC<{
             }
         },
         {
-            title: <>备注<EditOutlined style={{color: '#6d6d6d'}}/></>,
+            title: <>备注<EditOutlined style={{ color: '#6d6d6d' }} /></>,
             dataIndex: 'remark',
             width: 200,
             render: (v, row) => {
@@ -324,7 +324,7 @@ const ProviderSyncIssueStaticDialog: React.FC<{
                         return;
                     }
                     modifyStatusChange(row.id, status === '' ? row.status : status, remark)
-                }}/>
+                }} />
             },
         },
         {
@@ -346,27 +346,27 @@ const ProviderSyncIssueStaticDialog: React.FC<{
                     }
 
                     <MonitorDialog content={'监控'} option={'add'} cloudName={cloudName} field={row}
-                                   defaultValue={{
-                                       id: 0,
-                                       cloudName: cloudName,
-                                       providerType: row.providerType,
-                                       providerName: row.providerName,
-                                       type: 'API',
-                                       status: 'open',
+                        defaultValue={{
+                            id: 0,
+                            cloudName: cloudName,
+                            providerType: row.providerType,
+                            providerName: row.providerName,
+                            type: 'API',
+                            status: 'open',
 
-                                       productName: '',
-                                       method: '',
-                                       uriShort: '',
-                                       fieldIn: 'body',
-                                       fieldName: '',
+                            productName: '',
+                            method: '',
+                            uriShort: '',
+                            fieldIn: 'body',
+                            fieldName: '',
 
-                                       relationType: row.type,
-                                       relationId: row.id,
-                                       groupName: '',
-                                   }}
+                            relationType: row.type,
+                            relationId: row.id,
+                            groupName: '',
+                        }}
                     />
                     <a onClick={() => modifyStatusChange(row.id, 'manually-closed', row.remark)}
-                       style={{color: 'red'}}> 关闭 </a>
+                        style={{ color: 'red' }}> 关闭 </a>
                 </Space>
             },
         },
@@ -376,23 +376,23 @@ const ProviderSyncIssueStaticDialog: React.FC<{
     return (
         <>
             {contextHolder}
-            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                <div style={{width: '100%', maxWidth: '680px'}} onClick={showModal}>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <div style={{ width: '100%', maxWidth: '680px' }} onClick={showModal}>
                     {content}
                 </div>
             </div>
             <Modal title={`字段列表`}
-                   transitionName={''}
-                   destroyOnClose
-                   open={isModalOpen}
-                   onOk={closeModel}
-                   onCancel={closeModel}
-                   width={'95%'}
-                   footer={[]}>
-                <Space size={20} direction={'vertical'} style={{width: '100%'}}>
+                transitionName={''}
+                destroyOnClose
+                open={isModalOpen}
+                onOk={closeModel}
+                onCancel={closeModel}
+                width={'95%'}
+                footer={[]}>
+                <Space size={20} direction={'vertical'} style={{ width: '100%' }}>
                     <Table dataSource={dataSource} columns={columns} size={'small'}
-                           rowKey={(record) => record.id + ''}
-                           pagination={false}
+                        rowKey={(record) => record.id + ''}
+                        pagination={false}
                     />
                 </Space>
             </Modal>

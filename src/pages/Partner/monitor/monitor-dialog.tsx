@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from "react";
-import {Button, Form, Input, Select, Space, Radio, Modal} from 'antd';
-import {getProductList} from "@/services/product/api";
-import type {SelectProps} from "antd/es/select";
-import {getCloudName} from "@/global";
-import {addApiMonitor, updateApiMonitor} from "@/services/provider/api";
-import {undefined} from "@umijs/utils/compiled/zod";
+import React, { useEffect, useState } from "react";
+import { Button, Form, Input, Select, Space, Radio, Modal } from 'antd';
+import { getProductList } from "@/services/product/api";
+import type { SelectProps } from "antd/es/select";
+import { getCloudName } from "@/global";
+import { addApiMonitor, updateApiMonitor } from "@/services/provider/api";
+import { undefined } from "@umijs/utils/compiled/zod";
 
-const {Option} = Select;
+const { Option } = Select;
 
 type FormValue = {
     providerType: string;
@@ -25,7 +25,7 @@ const FormView: React.FC<{
     field: Provider.ProviderSyncIssue,
     defaultValue?: Provider.ApiMonitor,
     onFinish: (v: FormValue) => any,
-}> = ({option, field, defaultValue, onFinish}) => {
+}> = ({ option, field, defaultValue, onFinish }) => {
     const [productNameOpts, setProductNameOpts] = useState<SelectProps['options']>([]);
     const [monitorType, setMonitorType] = useState<string>('API');
 
@@ -35,7 +35,7 @@ const FormView: React.FC<{
                 .map((p) => p.productName)
                 .sort()
                 .map((n) => {
-                    return {value: n, label: n};
+                    return { value: n, label: n };
                 });
 
             setProductNameOpts(arr);
@@ -43,15 +43,15 @@ const FormView: React.FC<{
     }, []);
 
     const apiRule = (n: string) => {
-        return [{required: monitorType === 'API', message: n + '字段必填'}]
+        return [{ required: monitorType === 'API', message: n + '字段必填' }]
     }
 
     return <Form
         name="form"
         onFinish={onFinish}
-        labelCol={{span: 3}}
-        wrapperCol={{span: 16}}
-        style={{maxWidth: 600, marginTop: '20px'}}
+        labelCol={{ span: 3 }}
+        wrapperCol={{ span: 16 }}
+        style={{ maxWidth: 600, marginTop: '20px' }}
         initialValues={{
             providerType: field.providerType,
             providerName: field.providerName,
@@ -64,54 +64,54 @@ const FormView: React.FC<{
             groupName: defaultValue?.groupName,
         }}
     >
-        <Form.Item label="资源类型" style={{marginBottom: '15px'}} rules={[{required: true}]}>
+        <Form.Item label="资源类型" style={{ marginBottom: '15px' }} rules={[{ required: true }]}>
             <Space.Compact>
-                <Form.Item name='providerType' noStyle rules={[{required: true, message: '资源类型必填'}]}>
-                    <Select placeholder="请选择资源类型" style={{width: '120px'}}>
+                <Form.Item name='providerType' noStyle rules={[{ required: true, message: '资源类型必填' }]}>
+                    <Select placeholder="请选择资源类型" style={{ width: '120px' }}>
                         <Option value="Resource">Resource</Option>
                         <Option value="DataSource">DataSource</Option>
                     </Select>
                 </Form.Item>
-                <Form.Item name='providerName' noStyle rules={[{required: true, message: '资源名称必填'}]}>
-                    <Input style={{width: '300px'}} placeholder="请输入资源名称"/>
+                <Form.Item name='providerName' noStyle rules={[{ required: true, message: '资源名称必填' }]}>
+                    <Input style={{ width: '300px' }} placeholder="请输入资源名称" />
                 </Form.Item>
             </Space.Compact>
         </Form.Item>
-        <Form.Item label="监控类型" style={{marginBottom: '15px'}} name="type" rules={[{required: true}]}>
+        <Form.Item label="监控类型" style={{ marginBottom: '15px' }} name="type" rules={[{ required: true }]}>
             <Radio.Group onChange={(e) => setMonitorType(e.target.value)} buttonStyle="solid">
                 <Radio.Button value="Service">Service</Radio.Button>
                 <Radio.Button value="API">API</Radio.Button>
             </Radio.Group>
         </Form.Item>
-        <Form.Item label="服务名称" style={{marginBottom: '-5px'}}>
-            <Form.Item name="productName" rules={[{required: true}]}>
-                <Select style={{width: '200px'}} placeholder={'服务名称'} showSearch options={productNameOpts}/>
+        <Form.Item label="服务名称" style={{ marginBottom: '-5px' }}>
+            <Form.Item name="productName" rules={[{ required: true }]}>
+                <Select style={{ width: '200px' }} placeholder={'服务名称'} showSearch options={productNameOpts} />
             </Form.Item>
         </Form.Item>
-        <Form.Item label="API" style={{marginBottom: '15px'}} hidden={monitorType === 'Service'}>
+        <Form.Item label="API" style={{ marginBottom: '15px' }} hidden={monitorType === 'Service'}>
             <Space.Compact>
                 <Form.Item name='method' noStyle rules={apiRule('请求类型')}>
-                    <Select style={{width: '120px'}} placeholder={'请求类型'}
-                            options={[
-                                {value: 'POST', label: 'POST'},
-                                {value: 'GET', label: 'GET'},
-                                {value: 'PUT', label: 'PUT'},
-                                {value: 'PATCH', label: 'PATCH'},
-                                {value: 'DELETE', label: 'DELETE'},
-                                {value: 'HEAD', label: 'HEAD'},
-                                {value: 'OPTIONS', label: 'OPTIONS'},
-                            ]}
+                    <Select style={{ width: '120px' }} placeholder={'请求类型'}
+                        options={[
+                            { value: 'POST', label: 'POST' },
+                            { value: 'GET', label: 'GET' },
+                            { value: 'PUT', label: 'PUT' },
+                            { value: 'PATCH', label: 'PATCH' },
+                            { value: 'DELETE', label: 'DELETE' },
+                            { value: 'HEAD', label: 'HEAD' },
+                            { value: 'OPTIONS', label: 'OPTIONS' },
+                        ]}
                     />
                 </Form.Item>
                 <Form.Item name='uriShort' noStyle rules={apiRule('URI')}>
-                    <Input style={{width: '400px'}} placeholder={'URI'}/>
+                    <Input style={{ width: '400px' }} placeholder={'URI'} />
                 </Form.Item>
             </Space.Compact>
         </Form.Item>
-        <Form.Item label="字段" style={{marginBottom: '15px'}} hidden={monitorType === 'Service'}>
+        <Form.Item label="字段" style={{ marginBottom: '15px' }} hidden={monitorType === 'Service'}>
             <Space.Compact>
                 <Form.Item name='fieldIn' noStyle>
-                    <Select style={{width: '120px'}} placeholder={'字段位置'}>
+                    <Select style={{ width: '120px' }} placeholder={'字段位置'}>
                         <Option value="body">Body</Option>
                         <Option value="query">Query</Option>
                         <Option value="path">Path</Option>
@@ -119,13 +119,13 @@ const FormView: React.FC<{
                     </Select>
                 </Form.Item>
                 <Form.Item name='fieldName' noStyle>
-                    <Input style={{width: '400px'}} placeholder={'字段名称'}/>
+                    <Input style={{ width: '400px' }} placeholder={'字段名称'} />
                 </Form.Item>
             </Space.Compact>
         </Form.Item>
-        <Form.Item label="分组" style={{marginBottom: '-5px'}} hidden={monitorType === 'Service'}>
+        <Form.Item label="分组" style={{ marginBottom: '-5px' }} hidden={monitorType === 'Service'}>
             <Form.Item name="groupName">
-                <Input placeholder={'分组名称，可选'}/>
+                <Input placeholder={'分组名称，可选'} />
             </Form.Item>
         </Form.Item>
 
@@ -146,7 +146,7 @@ const MonitorDialog: React.FC<{
     field: Provider.ProviderSyncIssue,
     defaultValue?: Provider.ApiMonitor,
     onClose?: () => any,
-}> = ({content, cloudName, option, field, defaultValue, onClose}) => {
+}> = ({ content, cloudName, option, field, defaultValue, onClose }) => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     const showModal = () => {
@@ -188,16 +188,16 @@ const MonitorDialog: React.FC<{
 
     return (
         <>
-            <a onClick={showModal} style={{cursor: 'pointer'}}>{content}</a>
+            <a onClick={showModal} style={{ cursor: 'pointer' }}>{content}</a>
             <Modal title={title}
-                   destroyOnClose
-                   transitionName={''}
-                   open={isModalOpen}
-                   onOk={handleCancel}
-                   onCancel={handleCancel}
-                   width={800}
-                   footer={[]}>
-                <FormView option={option} field={field} defaultValue={defaultValue} onFinish={onFinish}/>
+                destroyOnClose
+                transitionName={''}
+                open={isModalOpen}
+                onOk={handleCancel}
+                onCancel={handleCancel}
+                width={800}
+                footer={[]}>
+                <FormView option={option} field={field} defaultValue={defaultValue} onFinish={onFinish} />
             </Modal>
         </>
     );
