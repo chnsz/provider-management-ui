@@ -1,15 +1,15 @@
-import React, {useEffect, useState} from "react";
-import type {ColumnsType} from "antd/es/table/interface";
-import {Button, Divider, Modal, Select, Space, Table, Tag} from "antd";
-import {getApiDetailList, getApiGroupList} from "@/services/api/api";
-import type {ProSchemaValueEnumObj} from "@ant-design/pro-utils/es/typing";
-import {getProductList} from "@/services/product/api";
-import {QueryFilter} from "@ant-design/pro-form";
-import {ProFormSelect, ProFormText} from "@ant-design/pro-components";
+import React, { useEffect, useState } from "react";
+import type { ColumnsType } from "antd/es/table/interface";
+import { Button, Divider, Modal, Select, Space, Table, Tag } from "antd";
+import { getApiDetailList, getApiGroupList } from "@/services/api/api";
+import type { ProSchemaValueEnumObj } from "@ant-design/pro-utils/es/typing";
+import { getProductList } from "@/services/product/api";
+import { QueryFilter } from "@ant-design/pro-form";
+import { ProFormSelect, ProFormText } from "@ant-design/pro-components";
 import ProviderBaseDialog from "@/pages/Provider/provider-base/provider-base-dialog";
-import type {SelectProps} from "rc-select/lib/Select";
-import {getProviderList} from "@/services/provider/api";
-import {CloudName} from "@/global";
+import type { SelectProps } from "rc-select/lib/Select";
+import { getProviderList } from "@/services/provider/api";
+import { CloudName } from "@/global";
 
 type FormProps = {
     productName: string;
@@ -47,7 +47,7 @@ const SearchForm: React.FC<{ productName: string, onSearch: (val: FormProps) => 
     return (
         <QueryFilter<FormProps>
             span={6}
-            style={{marginTop: '20px', marginBottom: '-27px'}}
+            style={{ marginTop: '20px', marginBottom: '-27px' }}
             onFinish={async (values) => {
                 props.onSearch(values);
             }}
@@ -63,9 +63,9 @@ const SearchForm: React.FC<{ productName: string, onSearch: (val: FormProps) => 
                 }}
                 valueEnum={productNameMap}
             />
-            <ProFormSelect name="apiGroup" label="分组名称" showSearch valueEnum={apiGroupMap}/>
-            <ProFormText name="apiName" label="API 名称"/>
-            <ProFormText name="uri" label="URI"/>
+            <ProFormSelect name="apiGroup" label="分组名称" showSearch valueEnum={apiGroupMap} />
+            <ProFormText name="apiName" label="API 名称" />
+            <ProFormText name="uri" label="URI" />
         </QueryFilter>
     );
 };
@@ -202,10 +202,10 @@ const AddProviderBaseDialog: React.FC<{
     }, [pageNum, pageSize, queryParams]);
 
     const loadProviderOption = () => {
-        getProviderList({cloudName: CloudName.HuaweiCloud, type: providerType}, 2000, 1)
+        getProviderList({ cloudName: CloudName.HuaweiCloud, type: providerType }, 2000, 1)
             .then(data => {
                 const option = data.items.map(t => {
-                    return {value: t.name, label: t.name};
+                    return { value: t.name, label: t.name };
                 });
                 setProviderNameOption(option)
             })
@@ -223,39 +223,39 @@ const AddProviderBaseDialog: React.FC<{
     return <>
         <Button type={'primary'} size={'small'} onClick={openDialog}>维护基线</Button>
         <Modal title="API 字段变更分析"
-               open={isModalOpen}
-               onOk={handle('ok')}
-               onCancel={handle('cancel')}
-               transitionName={''}
-               destroyOnClose
-               width={1500}
-               footer={[
-                   <Button key="save" type="primary" onClick={handle('ok')}>关闭</Button>
-               ]}>
+            open={isModalOpen}
+            onOk={handle('ok')}
+            onCancel={handle('cancel')}
+            transitionName={''}
+            destroyOnClose
+            width={1500}
+            footer={[
+                <Button key="save" type="primary" onClick={handle('ok')}>关闭</Button>
+            ]}>
             <div>
                 <Space direction={'horizontal'} size={20}>
                     <span>
                         Provider 类型:&nbsp;&nbsp;
-                        <Select style={{width: '200px'}}
-                                options={[
-                                    {value: 'DataSource', label: 'DataSource'},
-                                    {value: 'Resource', label: 'Resource'},
-                                ]}
-                                value={providerType}
-                                onChange={val => setProviderType(val)}/>
+                        <Select style={{ width: '200px' }}
+                            options={[
+                                { value: 'DataSource', label: 'DataSource' },
+                                { value: 'Resource', label: 'Resource' },
+                            ]}
+                            value={providerType}
+                            onChange={val => setProviderType(val)} />
                     </span>
                     <span>
-                    Provider 名称:&nbsp;&nbsp;
-                        <Select style={{width: '400px'}}
-                                options={providerNameOption}
-                                value={providerName}
-                                showSearch
-                                onChange={val => setProviderName(val)}/>
+                        Provider 名称:&nbsp;&nbsp;
+                        <Select style={{ width: '400px' }}
+                            options={providerNameOption}
+                            value={providerName}
+                            showSearch
+                            onChange={val => setProviderName(val)} />
                     </span>
                 </Space>
             </div>
-            <SearchForm onSearch={onSearch} productName={''}/>
-            <Divider/>
+            <SearchForm onSearch={onSearch} productName={''} />
+            <Divider />
             <Table
                 columns={columns}
                 dataSource={data}

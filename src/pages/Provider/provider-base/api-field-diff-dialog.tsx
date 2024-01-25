@@ -1,10 +1,10 @@
 import React from "react";
-import type {ColumnsType} from "antd/es/table/interface";
-import {Table} from "antd";
+import type { ColumnsType } from "antd/es/table/interface";
+import { Table } from "antd";
 import './api-field-diff-dialog.less'
 import TextArea from "antd/es/input/TextArea";
 
-const ApiFieldDiffDialog: React.FC<{ providerBase: Provider.ProviderBase }> = ({providerBase}) => {
+const ApiFieldDiffDialog: React.FC<{ providerBase: Provider.ProviderBase }> = ({ providerBase }) => {
     const data: Provider.ApiFieldChange[] = []
     if (!providerBase.changeEvent) {
         return <></>;
@@ -41,7 +41,7 @@ const ApiFieldDiffDialog: React.FC<{ providerBase: Provider.ProviderBase }> = ({
             title: <>字段描述</>,
             dataIndex: 'fieldDesc',
             render: (v: any) => {
-                return <TextArea defaultValue={v} autoSize bordered={false}/>
+                return <TextArea defaultValue={v} autoSize bordered={false} />
             },
         },
         {
@@ -69,7 +69,7 @@ const ApiFieldDiffDialog: React.FC<{ providerBase: Provider.ProviderBase }> = ({
                         text = '类型和描述变更'
                         break;
                 }
-                return <span style={{color: '#ff4d4f'}}>{text}</span>
+                return <span style={{ color: '#ff4d4f' }}>{text}</span>
             }
         },
         {
