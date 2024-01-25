@@ -1,5 +1,5 @@
-import {request} from 'umi';
-import {PMS_PATH} from "@/services/api";
+import { request } from 'umi';
+import { PMS_PATH } from "@/services/api";
 
 export async function getProductFeatureList(
     params: { productName?: string[]; owner?: string[]; status?: 'active' | 'ignore'; },
@@ -13,7 +13,7 @@ export async function getProductFeatureList(
         `${PMS_PATH}/product-feature/list/${limit}/${offset}`,
         {
             method: 'GET',
-            params: {...params},
+            params: { ...params },
         },
     );
 }

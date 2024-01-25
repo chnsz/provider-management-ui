@@ -1,23 +1,23 @@
 import EditableDes from '@/components/EditableDescription';
-import type {SearchFormProps} from '@/components/SearchForm';
+import type { SearchFormProps } from '@/components/SearchForm';
 import SearchForm from '@/components/SearchForm';
 import AddFeatureDialog from '@/pages/ProductFeature/components/add-feature-dialog';
-import {getCoverageStatus, getSourceStatus} from '@/pages/ProductFeature/components/sider-list';
+import { getCoverageStatus, getSourceStatus } from '@/pages/ProductFeature/components/sider-list';
 import {
     getProductFeatureList,
     removeProductFeature,
     updateProductFeature,
 } from '@/services/product-feature/api';
-import {toShortDate} from '@/utils/common';
-import {ExclamationCircleFilled} from '@ant-design/icons';
-import {Breadcrumb, Modal, Table} from 'antd';
-import type {ColumnsType} from 'antd/es/table/interface';
-import {get} from 'lodash';
-import React, {useEffect, useState} from 'react';
+import { toShortDate } from '@/utils/common';
+import { ExclamationCircleFilled } from '@ant-design/icons';
+import { Breadcrumb, Modal, Table } from 'antd';
+import type { ColumnsType } from 'antd/es/table/interface';
+import { get } from 'lodash';
+import React, { useEffect, useState } from 'react';
 import './product-feature.less';
 import CustomBreadcrumb from "@/components/Breadcrumb";
 
-const {confirm} = Modal;
+const { confirm } = Modal;
 
 const ProductFeature: React.FC<{ productName?: string; simple?: boolean }> = (props) => {
     const [data, setData] = useState<ProductFeature.ProductFeature[]>([]);
@@ -42,7 +42,7 @@ const ProductFeature: React.FC<{ productName?: string; simple?: boolean }> = (pr
     useEffect(loadData, [pageNum, pageSize, queryParams]);
 
     const onSearch = (formData: SearchFormProps) => {
-        setQueryParams({productName: formData.productName, owner: formData.owner});
+        setQueryParams({ productName: formData.productName, owner: formData.owner });
     };
 
     const onCoverageStatusChange = (
@@ -50,13 +50,13 @@ const ProductFeature: React.FC<{ productName?: string; simple?: boolean }> = (pr
         newVal: string,
         record: ProductFeature.ProductFeature,
     ) => {
-        updateProductFeature(record.id, {actualCoverage: newVal}).then(loadData);
+        updateProductFeature(record.id, { actualCoverage: newVal }).then(loadData);
     };
 
     const onDelete = (id: number) => {
         confirm({
             title: '删除服务特性',
-            icon: <ExclamationCircleFilled/>,
+            icon: <ExclamationCircleFilled />,
             maskTransitionName: '',
             width: 600,
             okText: '删除',
@@ -104,9 +104,9 @@ const ProductFeature: React.FC<{ productName?: string; simple?: boolean }> = (pr
                         <EditableDes
                             value={record.actualCoverage || record.coverageStatus}
                             options={[
-                                {label: '已覆盖', value: 'covered'},
-                                {label: '部分覆盖', value: 'partially_covered'},
-                                {label: '未覆盖', value: 'not_covered'},
+                                { label: '已覆盖', value: 'covered' },
+                                { label: '部分覆盖', value: 'partially_covered' },
+                                { label: '未覆盖', value: 'not_covered' },
                             ]}
                             onChange={(newVal) =>
                                 onCoverageStatusChange(v, newVal.toString(), record)
@@ -178,23 +178,23 @@ const ProductFeature: React.FC<{ productName?: string; simple?: boolean }> = (pr
                 ''
             ) : (
                 <>
-                    <CustomBreadcrumb items={[{title: '首页'}, {title: '特性分析'}]}/>
-                    <div style={{background: '#fff', padding: '20px'}}>
+                    <CustomBreadcrumb items={[{ title: '首页' }, { title: '特性分析' }]} />
+                    <div style={{ background: '#fff', padding: '20px' }}>
                         <SearchForm
                             onSearch={onSearch}
                             options={['owner', 'product']}
-                            defaultValue={{productName: getProductName()}}
+                            defaultValue={{ productName: getProductName() }}
                         />
                     </div>
                 </>
             )}
-            <div style={{background: '#fff', padding: '20px', marginTop: '15px'}}>
+            <div style={{ background: '#fff', padding: '20px', marginTop: '15px' }}>
                 {props.simple ? (
                     ''
                 ) : (
                     <>
-                        <div style={{fontSize: '16px', fontWeight: 'bold'}}>特性列表</div>
-                        <div style={{padding: '15px 0 10px 5px'}}>
+                        <div style={{ fontSize: '16px', fontWeight: 'bold' }}>特性列表</div>
+                        <div style={{ padding: '15px 0 10px 5px' }}>
                             <AddFeatureDialog
                                 onSuccess={loadData}
                                 productName={get(queryParams, 'productName[0]')}
