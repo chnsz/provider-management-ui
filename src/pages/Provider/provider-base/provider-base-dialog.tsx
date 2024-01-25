@@ -1,34 +1,34 @@
-import React, {useState} from "react";
-import {Button, Col, Divider, Input, message, Modal, notification, Row, Select, Space, Table, Tag} from "antd";
-import {getProviderBaseList, saveProviderBase} from "@/services/provider/api";
-import type {ColumnsType} from "antd/es/table/interface";
+import React, { useState } from "react";
+import { Button, Col, Divider, Input, message, Modal, notification, Row, Select, Space, Table, Tag } from "antd";
+import { getProviderBaseList, saveProviderBase } from "@/services/provider/api";
+import type { ColumnsType } from "antd/es/table/interface";
 // @ts-ignore
-import {Scrollbars} from 'react-custom-scrollbars';
-import {set} from 'lodash'
+import { Scrollbars } from 'react-custom-scrollbars';
+import { set } from 'lodash'
 import TextArea from "antd/es/input/TextArea";
-import {EditOutlined} from "@ant-design/icons";
+import { EditOutlined } from "@ant-design/icons";
 import ApiFieldDiffDialog from "@/pages/Provider/provider-base/api-field-diff-dialog";
 
 const FieldTypeOption = [
-    {value: 'string', label: 'string'},
-    {value: 'integer', label: 'integer'},
-    {value: 'float', label: 'float'},
-    {value: 'boolean', label: 'boolean'},
-    {value: 'number', label: 'number'},
-    {value: 'array', label: 'array'},
-    {value: 'object', label: 'object'},
-    {value: 'map[string]string', label: 'map[string]string'},
-    {value: 'map[string]boolean', label: 'map[string]boolean'},
-    {value: 'map[string]integer', label: 'map[string]integer'},
-    {value: 'map[string]array', label: 'map[string]array'},
-    {value: 'map[string]object', label: 'map[string]object'},
+    { value: 'string', label: 'string' },
+    { value: 'integer', label: 'integer' },
+    { value: 'float', label: 'float' },
+    { value: 'boolean', label: 'boolean' },
+    { value: 'number', label: 'number' },
+    { value: 'array', label: 'array' },
+    { value: 'object', label: 'object' },
+    { value: 'map[string]string', label: 'map[string]string' },
+    { value: 'map[string]boolean', label: 'map[string]boolean' },
+    { value: 'map[string]integer', label: 'map[string]integer' },
+    { value: 'map[string]array', label: 'map[string]array' },
+    { value: 'map[string]object', label: 'map[string]object' },
 ];
 
 const FieldInOption = [
-    {value: 'body', label: 'body'},
-    {value: 'path', label: 'path'},
-    {value: 'query', label: 'query'},
-    {value: 'header', label: 'header'},
+    { value: 'body', label: 'body' },
+    { value: 'path', label: 'path' },
+    { value: 'query', label: 'query' },
+    { value: 'header', label: 'header' },
 ]
 
 const ProviderBaseDialog: React.FC<{
@@ -57,6 +57,8 @@ const ProviderBaseDialog: React.FC<{
     const [expandKey2, setExpandKey2] = useState<string[]>([]);
     const [inputFilter, setInputFilter] = useState<string>('');
     const [outputFilter, setOutputFilter] = useState<string>('');
+    const [inputUseStatus, setInputUseStatus] = useState<string>();
+    const [outputUseStatus, setOutputUseStatus] = useState<string>();
 
     const showModal = () => {
         if (!props.apiId || !props.providerType || !props.providerName) {
@@ -268,14 +270,14 @@ const ProviderBaseDialog: React.FC<{
             render: (v, r, i) => i + 1,
         },
         {
-            title: <>字段位置<EditOutlined style={{color: '#6d6d6d'}}/></>,
+            title: <>字段位置<EditOutlined style={{ color: '#6d6d6d' }} /></>,
             dataIndex: 'fieldIn',
             width: 120,
             align: 'center',
             render: (v: any, row) => {
                 return <Select
                     defaultValue={v}
-                    style={{width: '100%'}}
+                    style={{ width: '100%' }}
                     bordered={false}
                     onChange={v => onEdit('fieldIn', v, row)}
                     options={FieldInOption}
@@ -283,33 +285,33 @@ const ProviderBaseDialog: React.FC<{
             }
         },
         {
-            title: <>字段名称<EditOutlined style={{color: '#6d6d6d'}}/></>,
+            title: <>字段名称<EditOutlined style={{ color: '#6d6d6d' }} /></>,
             dataIndex: 'fieldName',
             width: '15%',
             ellipsis: true,
             render: (v: any, row) => {
                 let required = <>&nbsp;</>;
                 if (row.fieldRequired === 'yes' && row.fieldIn !== 'body') {
-                    required = <span style={{color: '#ff4d4f', fontWeight: 'bold'}}>*</span>
+                    required = <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>*</span>
                 }
                 return <>
                     {required}
                     <Input defaultValue={v}
-                           bordered={false}
-                           style={{width: '95%', marginLeft: '0', paddingLeft: '4px'}}
-                           onBlur={(e) => onEdit('fieldName', e.target.value, row)}/>
+                        bordered={false}
+                        style={{ width: '95%', marginLeft: '0', paddingLeft: '4px' }}
+                        onBlur={(e) => onEdit('fieldName', e.target.value, row)} />
                 </>
             },
         },
         {
-            title: <>字段类型<EditOutlined style={{color: '#6d6d6d'}}/></>,
+            title: <>字段类型<EditOutlined style={{ color: '#6d6d6d' }} /></>,
             dataIndex: 'fieldType',
             width: 150,
             align: 'center',
             render: (v: any, row) => {
                 return <Select
                     defaultValue={v}
-                    style={{width: '100%'}}
+                    style={{ width: '100%' }}
                     bordered={false}
                     onChange={v => onEdit('fieldType', v, row)}
                     options={FieldTypeOption}
@@ -317,13 +319,13 @@ const ProviderBaseDialog: React.FC<{
             }
         },
         {
-            title: <>字段描述<EditOutlined style={{color: '#6d6d6d'}}/></>,
+            title: <>字段描述<EditOutlined style={{ color: '#6d6d6d' }} /></>,
             dataIndex: 'fieldDesc',
             render: (v: any, row) => {
                 return <TextArea defaultValue={v}
-                                 autoSize
-                                 bordered={false}
-                                 onBlur={(e) => onEdit('fieldDesc', e.target.value, row)}/>
+                    autoSize
+                    bordered={false}
+                    onBlur={(e) => onEdit('fieldDesc', e.target.value, row)} />
             }
         },
         {
@@ -345,23 +347,23 @@ const ProviderBaseDialog: React.FC<{
             }
         },
         {
-            title: <>Schema 名称<EditOutlined style={{color: '#6d6d6d'}}/></>,
+            title: <>Schema 名称<EditOutlined style={{ color: '#6d6d6d' }} /></>,
             width: 200,
             dataIndex: 'schemaName',
             render: (v: any, row) => {
                 return <Input defaultValue={v}
-                              bordered={false}
-                              onBlur={(e) => onEdit('schemaName', e.target.value, row)}/>
+                    bordered={false}
+                    onBlur={(e) => onEdit('schemaName', e.target.value, row)} />
             }
         },
         {
-            title: <>备注<EditOutlined style={{color: '#6d6d6d'}}/></>,
+            title: <>备注<EditOutlined style={{ color: '#6d6d6d' }} /></>,
             width: 200,
             dataIndex: 'remark',
             render: (v: any, row) => {
                 return <Input defaultValue={v}
-                              bordered={false}
-                              onBlur={(e) => onEdit('remark', e.target.value, row)}/>
+                    bordered={false}
+                    onBlur={(e) => onEdit('remark', e.target.value, row)} />
             }
         },
         {
@@ -382,27 +384,81 @@ const ProviderBaseDialog: React.FC<{
         },
     ];
 
-    const filterInput = (val: string) => {
-        setInputFilter(val);
-        if (val === '') {
+    const filterInput = (val: string, filterType: string) => {
+        if (filterType === 'fieldName') {
+            setInputFilter(val);
+        } else {
+            setInputUseStatus(val);
+        }
+
+        if ((filterType === 'fieldName' && val === '' && !inputUseStatus) || (val === undefined && !inputFilter)) {
             setData1(originData1);
             return;
         }
-        const arr = data1.filter(t => t.fieldName.toLowerCase().includes(val))
-        setData1(arr);
+
+        if (filterType === 'fieldName') {
+            let arr = originData1.filter(t => t.fieldName.toLowerCase().includes(val.toLocaleLowerCase()));
+            if (inputUseStatus) {
+                arr = arr.filter(t => t.useStatus === inputUseStatus);
+            }
+            setData1(arr);
+        } else if (filterType === 'useStatus') {
+            let arr = val === undefined ? originData1 : originData1.filter(t => t.useStatus === val);
+            if (inputFilter) {
+                arr = arr.filter(t => t.fieldName.toLowerCase().includes(inputFilter.toLocaleLowerCase()));
+            }
+            setData1(arr);
+        }
+
     }
 
-    const filterOutput = (val: string) => {
-        setOutputFilter(val);
-        if (val === '') {
+    const filterOutput = (val: string, filterType: string) => {
+        if (filterType === 'fieldName') {
+            setOutputFilter(val);
+        } else {
+            setOutputUseStatus(val);
+        }
+
+        if ((filterType === 'fieldName' && val === '' && !outputUseStatus) || (val === undefined && !outputFilter)) {
             setData2(originData2);
             return;
         }
-        const arr = data2.filter(t => t.fieldName.toLowerCase().includes(val))
-        setData2(arr);
+
+        if (filterType === 'fieldName') {
+            let arr = originData2.filter(t => t.fieldName.toLowerCase().includes(val.toLocaleLowerCase()))
+            if (outputUseStatus) {
+                arr = arr.filter(t => t.useStatus === outputUseStatus);
+            }
+            setData2(arr);
+        } else if (filterType === 'useStatus') {
+            let arr = val === undefined ? originData2 : originData2.filter(t => t.useStatus === val);
+            if (outputFilter) {
+                arr = arr.filter(t => t.fieldName.toLowerCase().includes(outputFilter.toLocaleLowerCase()));
+            }
+            setData2(arr);
+        }
     }
 
     const columns2: ColumnsType<Provider.ProviderBase> = columns1.filter(t => t.title !== '字段位置')
+
+    const statusOptions = [
+        {
+            label: '已使用',
+            value: 'used'
+        },
+        {
+            label: '未使用',
+            value: 'not-used'
+        },
+        {
+            label: '不关注',
+            value: 'ignore'
+        },
+        {
+            label: '未分析',
+            value: ''
+        }
+    ];
 
     return <>
         {
@@ -413,31 +469,46 @@ const ProviderBaseDialog: React.FC<{
         }
         {contextHolder}
         <Modal title={`维护基线【${props.providerType}: ${props.providerName}】【API: ${props.apiName || ''}】`}
-               open={isModalOpen}
-               onOk={handleOk}
-               onCancel={handleCancel}
-               transitionName={''}
-               destroyOnClose
-               mask={false}
-               maskClosable={false}
-               width={'95%'}
-               footer={[
-                   <Button key="save" onClick={handleCancel}>关闭</Button>,
-                   <Button key="close" type="primary" onClick={handleOk}>保存</Button>,
-               ]}>
-            <div style={{height: '75vh'}}>
+            open={isModalOpen}
+            onOk={handleOk}
+            onCancel={handleCancel}
+            transitionName={''}
+            destroyOnClose
+            mask={false}
+            maskClosable={false}
+            width={'95%'}
+            footer={[
+                <Button key="save" onClick={handleCancel}>关闭</Button>,
+                <Button key="close" type="primary" onClick={handleOk}>保存</Button>,
+            ]}>
+            <div style={{ height: '75vh' }}>
                 <Scrollbars>
-                    <div style={{display: 'flex', padding: '10px 0'}}>
-                        <div style={{flex: 5, fontWeight: 'bold', fontSize: '16px'}}>请求参数</div>
-                        <div style={{flex: 1}}>
-                            <div>
-                                <span>过滤：</span>
-                                <Input style={{width: '260px'}} value={inputFilter}
-                                       allowClear
-                                       onChange={(e) => filterInput(e.target.value)}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0' }}>
+                        <div style={{ fontWeight: 'bold', fontSize: '16px' }}>请求参数</div>
+                        <Space direction={'horizontal'} size={20}>
+                            <span>
+                                <span>标记状态：</span>
+                                <Select
+                                    allowClear
+                                    showSearch
+                                    placeholder="请选择"
+                                    style={{ width: '260px' }}
+                                    value={inputUseStatus}
+                                    onChange={v => {
+                                        filterInput(v, 'useStatus')
+                                    }}
+                                    options={statusOptions}
                                 />
-                            </div>
-                        </div>
+
+                            </span>
+                            <span >
+                                <span>过滤：</span>
+                                <Input style={{ width: '260px' }} value={inputFilter}
+                                    allowClear
+                                    onChange={(e) => filterInput(e.target.value, 'fieldName')}
+                                />
+                            </span>
+                        </Space>
                     </div>
                     <Table
                         columns={columns1}
@@ -445,7 +516,7 @@ const ProviderBaseDialog: React.FC<{
                         size={'small'}
                         pagination={false}
                         expandable={{
-                            expandedRowRender: (record) => <ApiFieldDiffDialog providerBase={record}/>,
+                            expandedRowRender: (record) => <ApiFieldDiffDialog providerBase={record} />,
                             rowExpandable: (record) => record.changeEvent !== null,
                             expandedRowKeys: expandKey1,
                         }}
@@ -454,41 +525,56 @@ const ProviderBaseDialog: React.FC<{
                     <div>
                         <h4>手动补录</h4>
                         <Space direction={'horizontal'}>
-                            名称:<Input style={{width: '200px'}}
-                                        value={fieldName}
-                                        onChange={(e) => setFieldName(e.target.value)}/>
-                            位置:<Select style={{width: '100px'}}
-                                         options={FieldInOption}
-                                         value={fieldIn}
-                                         onChange={val => setFieldIn(val)}/>
-                            类型:<Select style={{width: '100px'}}
-                                         options={FieldTypeOption}
-                                         value={fieldType}
-                                         onChange={val => setFieldType(val)}/>
-                            描述:<Input style={{width: '200px'}}
-                                        value={fieldDesc}
-                                        onChange={(e) => setFieldDesc(e.target.value)}/>
-                            Schema 名称:<Input style={{width: '100px'}}
-                                               value={schemaName}
-                                               onChange={(e) => setSchemaName(e.target.value)}/>
-                            备注:<Input style={{width: '200px'}}
-                                        value={remark}
-                                        onChange={(e) => setRemark(e.target.value)}/>
+                            名称:<Input style={{ width: '200px' }}
+                                value={fieldName}
+                                onChange={(e) => setFieldName(e.target.value)} />
+                            位置:<Select style={{ width: '100px' }}
+                                options={FieldInOption}
+                                value={fieldIn}
+                                onChange={val => setFieldIn(val)} />
+                            类型:<Select style={{ width: '100px' }}
+                                options={FieldTypeOption}
+                                value={fieldType}
+                                onChange={val => setFieldType(val)} />
+                            描述:<Input style={{ width: '200px' }}
+                                value={fieldDesc}
+                                onChange={(e) => setFieldDesc(e.target.value)} />
+                            Schema 名称:<Input style={{ width: '100px' }}
+                                value={schemaName}
+                                onChange={(e) => setSchemaName(e.target.value)} />
+                            备注:<Input style={{ width: '200px' }}
+                                value={remark}
+                                onChange={(e) => setRemark(e.target.value)} />
                             <Button type="primary" onClick={() => addNewField('input')}>新增</Button>
                         </Space>
                     </div>
-                    <Divider dashed/>
-                    <div style={{display: 'flex', padding: '10px 0'}}>
-                        <div style={{flex: 5, fontWeight: 'bold', fontSize: '16px'}}>响应参数</div>
-                        <div style={{flex: 1}}>
-                            <div>
-                                <span>过滤：</span>
-                                <Input style={{width: '260px'}} value={outputFilter}
-                                       allowClear
-                                       onChange={(e) => filterOutput(e.target.value)}
+                    <Divider dashed />
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0' }}>
+                        <div style={{ fontWeight: 'bold', fontSize: '16px' }}>响应参数</div>
+                        <Space direction={'horizontal'} size={20}>
+                            <span>
+                                <span>标记状态：</span>
+                                <Select
+                                    allowClear
+                                    showSearch
+                                    placeholder="请选择"
+                                    style={{ width: '260px' }}
+                                    value={outputUseStatus}
+                                    onChange={v => {
+                                        filterOutput(v, 'useStatus')
+                                    }}
+                                    options={statusOptions}
                                 />
-                            </div>
-                        </div>
+
+                            </span>
+                            <span>
+                                <span>过滤：</span>
+                                <Input style={{ width: '260px' }} value={outputFilter}
+                                    allowClear
+                                    onChange={(e) => filterOutput(e.target.value, 'fieldName')}
+                                />
+                            </span>
+                        </Space>
                     </div>
                     <Table
                         columns={columns2}
@@ -496,7 +582,7 @@ const ProviderBaseDialog: React.FC<{
                         size={'small'}
                         pagination={false}
                         expandable={{
-                            expandedRowRender: (record) => <ApiFieldDiffDialog providerBase={record}/>,
+                            expandedRowRender: (record) => <ApiFieldDiffDialog providerBase={record} />,
                             rowExpandable: (record) => record.changeEvent !== null,
                             expandedRowKeys: expandKey2,
                         }}
@@ -505,43 +591,43 @@ const ProviderBaseDialog: React.FC<{
                     <div>
                         <h4>手动补录</h4>
                         <Space direction={'horizontal'}>
-                            名称:<Input style={{width: '200px'}}
-                                        value={fieldName}
-                                        onChange={(e) => setFieldName(e.target.value)}/>
-                            类型:<Select style={{width: '100px'}}
-                                         options={FieldTypeOption}
-                                         value={fieldType}
-                                         onChange={val => setFieldType(val)}/>
-                            描述:<Input style={{width: '100px'}}
-                                        value={fieldDesc}
-                                        onChange={(e) => setFieldDesc(e.target.value)}/>
-                            Schema 名称:<Input style={{width: '100px'}}
-                                               value={schemaName}
-                                               onChange={(e) => setSchemaName(e.target.value)}/>
-                            备注:<Input style={{width: '200px'}}
-                                        value={remark}
-                                        onChange={(e) => setRemark(e.target.value)}/>
+                            名称:<Input style={{ width: '200px' }}
+                                value={fieldName}
+                                onChange={(e) => setFieldName(e.target.value)} />
+                            类型:<Select style={{ width: '100px' }}
+                                options={FieldTypeOption}
+                                value={fieldType}
+                                onChange={val => setFieldType(val)} />
+                            描述:<Input style={{ width: '100px' }}
+                                value={fieldDesc}
+                                onChange={(e) => setFieldDesc(e.target.value)} />
+                            Schema 名称:<Input style={{ width: '100px' }}
+                                value={schemaName}
+                                onChange={(e) => setSchemaName(e.target.value)} />
+                            备注:<Input style={{ width: '200px' }}
+                                value={remark}
+                                onChange={(e) => setRemark(e.target.value)} />
                             <Button type="primary" onClick={() => addNewField('output')}>新增</Button>
                         </Space>
                     </div>
                 </Scrollbars>
-                <Row style={{marginTop: '24px'}}>
-                    <Col span={8}/>
+                <Row style={{ marginTop: '24px' }}>
+                    <Col span={8} />
                     <Col span={4}>
                         <Space>
-                            <span>将剩余<span style={{color: '#fa541c'}}>入参</span>字段标记为：</span>
+                            <span>将剩余<span style={{ color: '#fa541c' }}>入参</span>字段标记为：</span>
                             <a onClick={markRestUnused('input', 'not-used')}>未使用</a>
                             <a onClick={markRestUnused('input', 'ignore')}>不关注</a>
                         </Space>
                     </Col>
                     <Col span={4}>
                         <Space>
-                            <span>将剩余<span style={{color: '#fa541c'}}>出参</span>字段标记为：</span>
+                            <span>将剩余<span style={{ color: '#fa541c' }}>出参</span>字段标记为：</span>
                             <a onClick={markRestUnused('output', 'not-used')}>未使用</a>
                             <a onClick={markRestUnused('output', 'ignore')}>不关注</a>
                         </Space>
                     </Col>
-                    <Col span={8}/>
+                    <Col span={8} />
                 </Row>
             </div>
         </Modal>
