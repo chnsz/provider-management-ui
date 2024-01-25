@@ -1,10 +1,10 @@
 import ApiDialogList from '@/pages/Portal/components/api-dialog-list';
-import {getApiPanelSum} from '@/services/portal/api';
-import {CheckCircleOutlined, CloseCircleOutlined} from '@ant-design/icons';
-import {Col, Modal, Row} from 'antd';
-import React, {useEffect, useState} from 'react';
+import { getApiPanelSum } from '@/services/portal/api';
+import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { Col, Modal, Row } from 'antd';
+import React, { useEffect, useState } from 'react';
 import '../portal.less';
-import {CloudName} from "@/global";
+import { CloudName } from "@/global";
 
 const defaultVal = {
     apiSum: {
@@ -18,7 +18,7 @@ const defaultVal = {
         used: 0,
         unpublished: 0,
     },
-    product: {owner: '', productIcon: '', productName: ''},
+    product: { owner: '', productIcon: '', productName: '' },
     provider: {
         dataSource: 0,
         datasource_deprecated: 0,
@@ -31,7 +31,7 @@ const defaultVal = {
     },
 };
 
-const ServiceStatisticsCard: React.FC<{ productName: string }> = ({productName}) => {
+const ServiceStatisticsCard: React.FC<{ productName: string }> = ({ productName }) => {
     const [item, setItem] = useState<Portal.ProductSumPanel>(defaultVal);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectProductName, setSelectProductName] = useState<string>('');
@@ -69,7 +69,7 @@ const ServiceStatisticsCard: React.FC<{ productName: string }> = ({productName})
                     <div className={'label'}>API总数</div>
                     <div
                         className={'value-field'}
-                        style={{cursor: 'pointer'}}
+                        style={{ cursor: 'pointer' }}
                         onClick={() => handleRowClick(item.product.productName)}
                     >
                         {item.apiSum.total}
@@ -79,7 +79,7 @@ const ServiceStatisticsCard: React.FC<{ productName: string }> = ({productName})
                     <div className={'label'}>已对接</div>
                     <div
                         className={'value-field green'}
-                        style={{cursor: 'pointer'}}
+                        style={{ cursor: 'pointer' }}
                         onClick={() => handleRowClick(item.product.productName, 'used')}
                     >
                         {item.apiSum.used}
@@ -89,7 +89,7 @@ const ServiceStatisticsCard: React.FC<{ productName: string }> = ({productName})
                     <div className={'label'}>规划中</div>
                     <div
                         className={'value-field plan-color'}
-                        style={{cursor: 'pointer'}}
+                        style={{ cursor: 'pointer' }}
                         onClick={() => handleRowClick(item.product.productName, 'planning')}
                     >
                         {item.apiSum.planning}
@@ -99,7 +99,7 @@ const ServiceStatisticsCard: React.FC<{ productName: string }> = ({productName})
                     <div className={'label'}>缺失</div>
                     <div
                         className={'value-field red'}
-                        style={{cursor: 'pointer'}}
+                        style={{ cursor: 'pointer' }}
                         onClick={() => handleRowClick(item.product.productName, 'missing_api')}
                     >
                         {item.apiSum.missing_api}
@@ -109,7 +109,7 @@ const ServiceStatisticsCard: React.FC<{ productName: string }> = ({productName})
                     <div className={'label'}>未分析</div>
                     <div
                         className={'value-field orange'}
-                        style={{cursor: 'pointer'}}
+                        style={{ cursor: 'pointer' }}
                         onClick={() => handleRowClick(item.product.productName, 'need_analysis')}
                     >
                         {item.apiSum.need_analysis}
@@ -119,7 +119,7 @@ const ServiceStatisticsCard: React.FC<{ productName: string }> = ({productName})
                     <div className={'label'}>不适合</div>
                     <div
                         className={'value-field not-suitable'}
-                        style={{cursor: 'pointer'}}
+                        style={{ cursor: 'pointer' }}
                         onClick={() => handleRowClick(item.product.productName, 'ignore')}
                     >
                         {item.apiSum.ignore}
@@ -129,7 +129,7 @@ const ServiceStatisticsCard: React.FC<{ productName: string }> = ({productName})
                     <div className={'label'}>已下线</div>
                     <div
                         className={'value-field'}
-                        style={{cursor: 'pointer'}}
+                        style={{ cursor: 'pointer' }}
                         onClick={() => handleRowClick(item.product.productName, '', 'offline')}
                     >
                         {item.apiSum.offline_in_use ? (
@@ -146,7 +146,7 @@ const ServiceStatisticsCard: React.FC<{ productName: string }> = ({productName})
                     <div className={'label'}>线下</div>
                     <div
                         className={'value-field'}
-                        style={{cursor: 'pointer'}}
+                        style={{ cursor: 'pointer' }}
                         onClick={() => handleRowClick(item.product.productName, '', 'unpublished')}
                     >
                         {item.apiSum.unpublished || '0'}
@@ -176,11 +176,11 @@ const ServiceStatisticsCard: React.FC<{ productName: string }> = ({productName})
                     <div className={'value-field green'}>
                         {item.provider.tag_support ? (
                             <span className={'green'}>
-                                <CheckCircleOutlined className={''}/>
+                                <CheckCircleOutlined className={''} />
                             </span>
                         ) : (
                             <span className={'red'}>
-                                <CloseCircleOutlined/>
+                                <CloseCircleOutlined />
                             </span>
                         )}
                     </div>
@@ -190,11 +190,11 @@ const ServiceStatisticsCard: React.FC<{ productName: string }> = ({productName})
                     <div className={'value-field'}>
                         {item.provider.pre_paid_support ? (
                             <span className={'green'}>
-                                <CheckCircleOutlined className={''}/>
+                                <CheckCircleOutlined className={''} />
                             </span>
                         ) : (
                             <span className={'red'}>
-                                <CloseCircleOutlined/>
+                                <CloseCircleOutlined />
                             </span>
                         )}
                     </div>
@@ -204,11 +204,11 @@ const ServiceStatisticsCard: React.FC<{ productName: string }> = ({productName})
                     <div className={'value-field red'}>
                         {item.provider.eps_support ? (
                             <span className={'green'}>
-                                <CheckCircleOutlined className={''}/>
+                                <CheckCircleOutlined className={''} />
                             </span>
                         ) : (
                             <span className={'red'}>
-                                <CloseCircleOutlined/>
+                                <CloseCircleOutlined />
                             </span>
                         )}
                     </div>
@@ -248,7 +248,7 @@ const ServiceStatisticsCard: React.FC<{ productName: string }> = ({productName})
             <div className={'service-statistics-card'}>
                 <div className={'service-info'}>
                     <div className={'service-name'}>
-                        <span className={'name'} style={{fontSize: fontSize + 'px'}}>
+                        <span className={'name'} style={{ fontSize: fontSize + 'px' }}>
                             {item.product.productName}
                         </span>
                     </div>
@@ -259,7 +259,7 @@ const ServiceStatisticsCard: React.FC<{ productName: string }> = ({productName})
                 </div>
                 <div className={'main-container'}>
                     <div className={'api-panel'}>{getApiPanel()}</div>
-                    <div className={'split-line'}/>
+                    <div className={'split-line'} />
                     <div className={'provider-panel'}>{getProviderPanel()}</div>
                 </div>
                 <div className={'health-sum'}>{getHealthSum()}</div>
