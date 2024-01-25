@@ -2,7 +2,7 @@ import ApiChangeList from '@/pages/api/components/api-change-list';
 import {openApiExplorer} from '@/pages/Portal';
 import {getApiDetailList, getApiGroupList, updatePublishStatus, updateUseStatus} from '@/services/api/api';
 import {DownOutlined, EditOutlined} from '@ant-design/icons';
-import {Button, Dropdown, Input, message, Modal, Radio, Select, Space, Table, Tag} from 'antd';
+import {Button, Dropdown, Input, message, Modal, Radio, Select, Space, Table, Tag, Tooltip} from 'antd';
 import type {ColumnsType} from 'antd/es/table';
 import React, {useEffect, useState} from 'react';
 import '../../api/api.less';
@@ -335,9 +335,10 @@ const ApiDialogList: React.FC<queryParams> = (queryParams) => {
             ellipsis: true,
             render: (v, row) => {
                 return (
-                    <>
-                        <Tag>{row.method}</Tag> {row.uri}
-                    </>
+                    <Tooltip placement="topLeft" title={row.uri}>
+                        <Tag>{row.method}</Tag>
+                        {row.uri}
+                    </Tooltip>
                 );
             },
         },
