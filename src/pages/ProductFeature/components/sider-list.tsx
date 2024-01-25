@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import React from 'react';
-import {Tag} from "antd";
+import { Tag } from "antd";
 
 type SideListProps = {
     data: ProductFeature.ProductFeature[];
