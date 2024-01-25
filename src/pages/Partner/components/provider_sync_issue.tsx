@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from "react";
-import {Table} from "antd";
-import type {ColumnsType} from "antd/es/table";
-import ProviderSyncIssueDialog, {getSyncTypeName} from "@/pages/Partner/components/provider_sync_issue_dialog";
-import {CloudName} from "@/global";
+import React, { useEffect, useState } from "react";
+import { Table } from "antd";
+import type { ColumnsType } from "antd/es/table";
+import ProviderSyncIssueDialog, { getSyncTypeName } from "@/pages/Partner/components/provider_sync_issue_dialog";
+import { CloudName } from "@/global";
 
 export const getProviderIssuesData = (
     data: Provider.ProviderSyncSum[],
@@ -66,7 +66,7 @@ export const columnRender = (cloudName: Global.CloudName, loadData?: () => any, 
                 break
         }
         return <ProviderSyncIssueDialog sumData={sumData} cloudName={cloudName} syncType={row.type}
-                                        onClosed={loadData} short={short}/>;
+            onClosed={loadData} short={short} />;
     }
 }
 
@@ -77,7 +77,7 @@ const preSyncData: Record<string, Provider.ProviderSyncSum> = {
     PartnerMissingResource: getDefaultSyncSum('PartnerMissingResource'),
 }
 
-const ProviderSyncIssue: React.FC<{ data: Provider.ProviderSyncSum[], loadData?: () => any }> = ({data, loadData}) => {
+const ProviderSyncIssue: React.FC<{ data: Provider.ProviderSyncSum[], loadData?: () => any }> = ({ data, loadData }) => {
     const [dataSource, setDataSource] = useState<Provider.ProviderSyncSum[]>([]);
 
     useEffect(() => {
@@ -109,10 +109,10 @@ const ProviderSyncIssue: React.FC<{ data: Provider.ProviderSyncSum[], loadData?:
     ];
 
     return <Table dataSource={dataSource}
-                  columns={columns}
-                  size={'middle'}
-                  pagination={false}
-                  rowKey={(record) => record.type}
+        columns={columns}
+        size={'middle'}
+        pagination={false}
+        rowKey={(record) => record.type}
     />
 }
 
