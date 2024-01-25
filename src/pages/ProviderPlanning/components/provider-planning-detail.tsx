@@ -202,7 +202,7 @@ const ProviderPlanningDetail: React.FC<PlanningDetailProps> = ({ providerPlannin
                 </Descriptions.Item>
                 <Descriptions.Item label="责任人" span={1}>
                     <EditableDes
-                        value={planning.assignee || ''}
+                        value={planning.assignee || planning.creator || ''}
                         options={ownerList}
                         onChange={onDetailChange('assignee')}
                     />

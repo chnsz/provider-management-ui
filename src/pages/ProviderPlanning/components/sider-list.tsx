@@ -47,7 +47,7 @@ const SideList: React.FC<SideListProps> = (props) => {
                         </div>
                         <div className={'item-col owner-col'}>
                             <div>责任人</div>
-                            <div className={'value'}>{p.assignee}</div>
+                            <div className={'value'}>{p.assignee || p.creator}</div>
                         </div>
                         <div className={'item-col date-col'}>
                             <div>创建日期&nbsp;&nbsp;</div>
