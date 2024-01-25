@@ -1,8 +1,8 @@
-import {bindProviderPlanningProvider, unbindProviderPlanningProvider,} from '@/services/provider-planning/api';
-import {DeleteOutlined} from '@ant-design/icons';
-import {Button, Input, message, notification, Select, Space, Table} from 'antd';
-import type {ColumnsType} from 'antd/es/table';
-import React, {useEffect, useState} from 'react';
+import { bindProviderPlanningProvider, unbindProviderPlanningProvider, } from '@/services/provider-planning/api';
+import { DeleteOutlined } from '@ant-design/icons';
+import { Button, Input, message, notification, Select, Space, Table } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
+import React, { useEffect, useState } from 'react';
 
 interface DataType {
     key: string;
@@ -28,10 +28,10 @@ type RelationProviderProps = {
 };
 
 const RelationProvider: React.FC<RelationProviderProps> = ({
-                                                               planningId,
-                                                               providerList,
-                                                               onChange,
-                                                           }) => {
+    planningId,
+    providerList,
+    onChange,
+}) => {
     const [messageApi, contextHolder] = message.useMessage();
 
     const [data, setData] = useState<DataType[]>([]);
@@ -41,10 +41,10 @@ const RelationProvider: React.FC<RelationProviderProps> = ({
     const onDelete = (row: DataType) => {
         return () => {
             unbindProviderPlanningProvider(planningId, row.providerType, row.providerName).then(() => {
-                    const arr = data.filter((t) => t.key !== row.key);
-                    setData(arr);
-                    onChange(arr);
-                },
+                const arr = data.filter((t) => t.key !== row.key);
+                setData(arr);
+                onChange(arr);
+            },
             );
         };
     };
@@ -93,7 +93,7 @@ const RelationProvider: React.FC<RelationProviderProps> = ({
                 return (
                     <Space size="middle">
                         <a onClick={onDelete(row)}>
-                            <DeleteOutlined/>
+                            <DeleteOutlined />
                         </a>
                     </Space>
                 );
@@ -115,9 +115,9 @@ const RelationProvider: React.FC<RelationProviderProps> = ({
     return (
         <>
             {contextHolder}
-            <Table columns={columns} dataSource={data} pagination={false} scroll={{y: 400}}/>
-            <div style={{padding: '15px'}}>
-                <Space.Compact style={{width: '100%'}}>
+            <Table columns={columns} dataSource={data} pagination={false} scroll={{ y: 400 }} />
+            <div style={{ padding: '15px' }}>
+                <Space.Compact style={{ width: '100%' }}>
                     <Select
                         defaultValue="DataSource"
                         options={options}
