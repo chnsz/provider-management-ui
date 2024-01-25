@@ -1,18 +1,18 @@
 import './provider.less'
-import React, {useEffect, useState} from "react";
-import {Space, Table,} from "antd";
-import type {ColumnsType} from "antd/es/table/interface";
-import {getOwnerSumList} from "@/services/portal/api";
+import React, { useEffect, useState } from "react";
+import { Space, Table, } from "antd";
+import type { ColumnsType } from "antd/es/table/interface";
+import { getOwnerSumList } from "@/services/portal/api";
 import IndicatorsIntroDialog from "@/pages/Provider/indicators-dialog";
 import OwnerProductDialog from "@/pages/Provider/components/owner-product-dialog";
-import OwnerProviderDialog, {getUTColor} from "@/pages/Provider/components/owner-provider-dialog";
+import OwnerProviderDialog, { getUTColor } from "@/pages/Provider/components/owner-provider-dialog";
 import OwnerApiDialog from "@/pages/Provider/components/owner-api-dialog";
 import PrListDialog from "@/pages/Provider/pr_list_dialog";
 import OwnerProviderPlanningDialog from "@/pages/Provider/components/owner-provider-planning-dialog";
 import OwnerBugListDialog from "@/pages/Provider/components/owner-bug-dialog";
 import OwnerUtListDialog from "@/pages/Provider/components/owner-ut-dialog";
 import OwnerApiFieldChangeDialog from "@/pages/Provider/components/owner-api-field-change-dialog";
-import {CloudName} from "@/global";
+import { CloudName } from "@/global";
 
 export const getColor = (val: number) => {
     let color = '';
@@ -53,21 +53,21 @@ const renderCol = (r: number, val1: number, val2: number, labels: string[] = ['�
 
 const renderService = (v: any, row: Portal.OwnerSum) => {
     const viewEle = renderCol(-1, row.productBasedCount, row.productCount);
-    return <OwnerProductDialog content={viewEle} owner={row.owner}/>;
+    return <OwnerProductDialog content={viewEle} owner={row.owner} />;
 }
 
 const renderProvider = (v: any, row: Portal.OwnerSum) => {
     const viewEle = renderCol(-1, row.providerBasedCount, row.providerCount);
-    return <OwnerProviderDialog content={viewEle} owner={row.owner}/>;
+    return <OwnerProviderDialog content={viewEle} owner={row.owner} />;
 }
 
 const renderApi = (v: any, row: Portal.OwnerSum, onClosed: () => any) => {
     const viewEle = renderCol((row.apiCount - row.apiNeedAnalysisCount) / row.apiCount * 100, row.apiNeedAnalysisCount, row.apiCount, ['分析率', '待分析', '总数']);
-    return <OwnerApiDialog content={viewEle} owner={row.owner} onClosed={onClosed} cloudName={CloudName.HuaweiCloud}/>;
+    return <OwnerApiDialog content={viewEle} owner={row.owner} onClosed={onClosed} cloudName={CloudName.HuaweiCloud} />;
 }
 
-const renderPlanning = (v: any, row: Portal.OwnerSum) => {
-    return <OwnerProviderPlanningDialog content={v} owner={row.owner}/>;
+const renderPlanning = (v: any, row: Portal.OwnerSum, onClosed: () => any) => {
+    return <OwnerProviderPlanningDialog content={v} owner={row.owner} onClosed={onClosed} />;
 }
 
 const renderUtCoverage = (v: any, row: Portal.OwnerSum) => {
@@ -85,7 +85,7 @@ const renderUtCoverage = (v: any, row: Portal.OwnerSum) => {
             <div className={'label'}>最低</div>
         </div>
     </div>
-    return <OwnerProviderDialog content={viewer} owner={row.owner}/>;
+    return <OwnerProviderDialog content={viewer} owner={row.owner} />;
 }
 
 const renderUt = (v: any, row: Portal.OwnerSum) => {
@@ -108,7 +108,7 @@ const renderUt = (v: any, row: Portal.OwnerSum) => {
             <div className={'label'}>总数</div>
         </div>
     </div>
-    return <OwnerUtListDialog content={viewer} owner={row.owner}/>;
+    return <OwnerUtListDialog content={viewer} owner={row.owner} />;
 }
 
 const renderApiChange = (v: any, row: Portal.OwnerSum, onClosed: () => any) => {
@@ -136,7 +136,7 @@ const renderApiChange = (v: any, row: Portal.OwnerSum, onClosed: () => any) => {
             <div className={'label'}>挂起</div>
         </div>
     </div>
-    return <OwnerApiFieldChangeDialog content={viewer} owner={row.owner} onClosed={onClosed}/>
+    return <OwnerApiFieldChangeDialog content={viewer} owner={row.owner} onClosed={onClosed} />
 }
 
 const QualitySum: React.FC = () => {
@@ -170,7 +170,7 @@ const QualitySum: React.FC = () => {
             dataIndex: 'score',
             align: 'center',
             width: 90,
-            render: v => <span style={{color: getColor(v)}}>{v}</span>
+            render: v => <span style={{ color: getColor(v) }}>{v}</span>
         },
         {
             title: '服务基线率',
@@ -198,7 +198,7 @@ const QualitySum: React.FC = () => {
             dataIndex: 'providerPlanningCount',
             align: 'center',
             width: 90,
-            render: renderPlanning,
+            render: (v, row) => renderPlanning(v, row, loadData),
         },
         {
             title: '持续优化 PR',
@@ -206,10 +206,10 @@ const QualitySum: React.FC = () => {
             align: 'center',
             width: 110,
             render: (v, row) => <PrListDialog val={v}
-                                              owner={row.owner}
-                                              prStatus={""}
-                                              providerType={""}
-                                              providerName={""}/>
+                owner={row.owner}
+                prStatus={""}
+                providerType={""}
+                providerName={""} />
         },
         {
             title: '单元测试质量',
@@ -238,16 +238,16 @@ const QualitySum: React.FC = () => {
             dataIndex: 'bugCount',
             align: 'center',
             width: 100,
-            render: (v, row) => <OwnerBugListDialog owner={row.owner} content={v}/>
+            render: (v, row) => <OwnerBugListDialog owner={row.owner} content={v} />
             // render: () => '',
         },
     ];
 
-    return <div className={'quality-sum'} style={{padding: '20px'}}>
-        <div style={{textAlign: 'right', margin: '-6px 0 12px 0'}}><IndicatorsIntroDialog/></div>
+    return <div className={'quality-sum'} style={{ padding: '20px' }}>
+        <div style={{ textAlign: 'right', margin: '-6px 0 12px 0' }}><IndicatorsIntroDialog /></div>
         <Table columns={columns} dataSource={data} size={'middle'} pagination={false} loading={loading}
-               rowKey={(record) => record.owner}/>
-        <div style={{marginTop: '20px'}}>
+            rowKey={(record) => record.owner} />
+        <div style={{ marginTop: '20px' }}>
             <Space size={20}>
                 <span className={'green'}>绿色：90% ~ 100%</span>
                 <span className={'blue'}>蓝色：70% ~ 90%</span>
