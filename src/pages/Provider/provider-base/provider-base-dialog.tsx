@@ -105,8 +105,8 @@ const ProviderBaseDialog: React.FC<{
         saveProviderBase(props.apiId || 0,
             props.providerType || '',
             props.providerName || '',
-            data1.filter(t => t.useStatus !== ''),
-            data2.filter(t => t.useStatus !== '')
+            originData1.filter(t => t.useStatus !== ''),
+            originData2.filter(t => t.useStatus !== '')
         ).then((d: any) => {
             if (d === 'success') {
                 setIsModalOpen(false);
