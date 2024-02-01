@@ -1,37 +1,130 @@
-import React, {useEffect, useState} from 'react';
-import {InfoCircleOutlined, SafetyCertificateOutlined} from "@ant-design/icons";
-import {Button, Divider, Modal, Select, Table, Tag} from "antd";
-import {getProductList} from "@/services/product/api";
-import {ProSchemaValueEnumObj} from "@ant-design/pro-utils/es/typing";
-import type {ColumnsType} from "antd/es/table/interface";
-import ApiDialogList from "@/pages/Portal/components/api-dialog-list";
-import {getProviderByOwner} from "@/services/provider/api";
-import {getProviderPlanningListByOwner} from "@/services/provider-planning/api";
-import {toShortDate} from "@/utils/common";
-import {getTaskStatus} from "@/pages/Task/components/task-detail";
+import React, { useEffect, useState } from 'react';
+import { Button, Modal, Table } from "antd";
+import { getProductList } from "@/services/product/api";
+import { ProSchemaValueEnumObj } from "@ant-design/pro-utils/es/typing";
+import type { ColumnsType } from "antd/es/table/interface";
+import { changeProviderPlanningStatus, deleteProviderPlanning, getProviderPlanningListByOwner } from "@/services/provider-planning/api";
+import { toShortDate } from "@/utils/common";
+import { getTaskStatus } from "@/pages/Task/components/task-detail";
+import { ProFormSelect, ProFormText, QueryFilter } from '@ant-design/pro-components';
+import DeleteBtn from '@/components/delete';
 
-const OwnerProviderPlanningDialog: React.FC<{ content: any, owner: string }> = ({content, owner}) => {
+type FormProps = {
+    productName: string;
+    title: string;
+    status: string;
+};
+
+const SearchForm: React.FC<{ owner?: string, onSearch: (val: FormProps) => any }> = (props) => {
+    const [productNameMap, setProductNameMap] = useState<ProSchemaValueEnumObj>({});
+
+    useEffect(() => {
+        getProductList(props.owner).then((d: Global.List<Product.Product[]>) => {
+            const map: ProSchemaValueEnumObj = {};
+            d.items.map((p) => p.productName)
+                .sort()
+                .forEach(n => map[n] = n);
+            setProductNameMap(map);
+        });
+    }, []);
+
+    const onProductNameChange = (v: string) => {
+
+    };
+
+    return (
+        <QueryFilter<FormProps>
+            span={6}
+            labelWidth={80}
+            searchGutter={8}
+            style={{ marginTop: '20px', marginBottom: '-27px' }}
+            onFinish={async (values) => props.onSearch(values)}
+        >
+            <ProFormSelect
+                name="productName"
+                label="产品服务"
+                showSearch
+                fieldProps={{
+                    onChange: onProductNameChange,
+                }}
+                valueEnum={productNameMap}
+            />
+            <ProFormText name="title" label="标题" placeholder={'支持模糊搜索'} />
+            <ProFormSelect
+                name="status"
+                label="状态"
+                showSearch
+                valueEnum={{
+                    new: '未启动',
+                    freeze: '冻结',
+                    processing: '处理中',
+                    merging: '待合并',
+                    merged: '已合并',
+                    closed: '关闭',
+                }}
+            />
+        </QueryFilter>
+    )
+}
+
+const OwnerProviderPlanningDialog: React.FC<{
+    content: any,
+    owner: string,
+    onClosed?: () => any,
+}> = ({ content, owner, onClosed }) => {
     const [data, setData] = useState<ProviderPlanning.ProviderPlanning[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [queryParams, setQueryParams] = useState<ProviderPlanning.QueryParams>({});
 
     const showModal = () => {
-        getProviderPlanningListByOwner(owner).then((d) => {
-            setData(d.items);
-        });
+        getProviderPlanningList();
         setIsModalOpen(true);
     };
 
-    const handleOk = () => {
-        setIsModalOpen(false);
-    };
+    const getProviderPlanningList = () => {
+        getProviderPlanningListByOwner(owner, queryParams).then((d) => {
+            setData(d.items);
+        });
+    }
 
-    const handleCancel = () => {
+    const closeModel = () => {
+        if (onClosed) {
+            onClosed()
+        }
         setIsModalOpen(false);
     };
 
     useEffect(() => {
+        getProviderPlanningList();
+    }, [queryParams]);
 
-    }, []);
+    const onSearch = (formVal: FormProps) => {
+        setQueryParams({
+            productName: formVal.productName,
+            title: formVal.title,
+            status: formVal.status,
+        });
+    }
+
+    const onDeleteData = (record: ProviderPlanning.ProviderPlanning) => {
+        if (!record.id) {
+            return;
+        }
+
+        deleteProviderPlanning(record.id).then(() => {
+            getProviderPlanningList();
+        });
+    }
+
+    const closePlanning = (record: ProviderPlanning.ProviderPlanning) => {
+        if (!record.id) {
+            return;
+        }
+
+        changeProviderPlanningStatus(record.id, 'closed').then(() => {
+            getProviderPlanningList();
+        })
+    }
 
     const columns: ColumnsType<ProviderPlanning.ProviderPlanning> = [
         {
@@ -40,6 +133,12 @@ const OwnerProviderPlanningDialog: React.FC<{ content: any, owner: string }> = (
             align: 'center',
             width: 80,
             render: (v, r, i) => i + 1,
+        },
+        {
+            title: '服务',
+            dataIndex: 'productName',
+            width: 95,
+            ellipsis: true,
         },
         {
             title: '标题',
@@ -61,24 +160,61 @@ const OwnerProviderPlanningDialog: React.FC<{ content: any, owner: string }> = (
             width: 150,
             align: 'center',
             render: toShortDate
-        }
+        },
+        {
+            title: '操作',
+            dataIndex: 'operate',
+            width: 100,
+            align: 'center',
+            render: (v, record) => {
+                return (
+                    <>
+                        <a type="button"
+                            onClick={() => closePlanning(record)}>
+                            关闭&ensp;&ensp;
+                        </a>
+                        <DeleteBtn text={'删除'}
+                            title={'删除确认'}
+                            link
+                            content={<div>确定要删除吗？删除后不可恢复</div>}
+                            onOk={() => onDeleteData(record)}
+                        />
+                    </>
+                );
+            },
+        },
     ];
 
     return (
         <>
-            <div style={{cursor: 'pointer'}} onClick={showModal}>
-                <Button type={'link'}>{content}</Button>
+            <div style={{ cursor: 'pointer' }}
+                onClick={showModal}>
+                <Button type={'link'}>
+                    {content}
+                </Button>
             </div>
             <Modal title={'资源规划列表【' + owner + '】'}
-                   transitionName={''}
-                   open={isModalOpen}
-                   onOk={handleOk}
-                   onCancel={handleCancel}
-                   width={1000}
-                   footer={[
-                       <Button key="close" type="primary" onClick={handleOk}>关闭</Button>
-                   ]}>
-                <Table columns={columns} dataSource={data} size={'middle'} pagination={false}/>
+                transitionName={''}
+                open={isModalOpen}
+                onOk={closeModel}
+                onCancel={closeModel}
+                width={'75%'}
+                footer={[
+                    <Button key="close"
+                        type="primary"
+                        onClick={closeModel}>
+                        关闭
+                    </Button>
+                ]}>
+                <SearchForm owner={owner}
+                    onSearch={onSearch} />
+                <div style={{ paddingTop: "15px" }}>
+                    <Table columns={columns}
+                        rowKey={(record) => record.id}
+                        dataSource={data}
+                        size={'middle'}
+                        pagination={false} />
+                </div>
             </Modal>
         </>
     );
