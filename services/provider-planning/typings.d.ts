@@ -112,8 +112,8 @@ declare namespace ProviderPlanning {
     };
 
     type QueryParams = {
-        productName?: string[];
-        owner?: string[];
+        productName?: string;
+        owner?: string;
         title?: string;
         status?: string;
         assignee?: string;
