@@ -127,7 +127,7 @@ const ProviderBaseSumDialog: React.FC<{
 
     return <>
         <a onClick={showModal} title={props.text}>{props.text}</a>
-        <Modal title="维护资源基线"
+        <Modal title="API 字段变更分析"
             open={isModalOpen}
             onOk={handleOk}
             onCancel={handleCancel}

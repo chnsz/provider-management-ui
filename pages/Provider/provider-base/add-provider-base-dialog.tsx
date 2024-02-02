@@ -222,7 +222,7 @@ const AddProviderBaseDialog: React.FC<{
 
     return <>
         <Button type={'primary'} size={'small'} onClick={openDialog}>维护基线</Button>
-        <Modal title="维护资源基线"
+        <Modal title="API 字段变更分析"
             open={isModalOpen}
             onOk={handle('ok')}
             onCancel={handle('cancel')}
