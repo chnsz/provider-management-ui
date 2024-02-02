@@ -104,12 +104,24 @@ export async function createPlanningKbTask(id: number) {
     return request<ProviderPlanning.ProviderPlanning>(`${PMS_PATH}/provider-planning/kanboard-task/${id}`, { method: 'PUT' });
 }
 
-export async function getProviderPlanningListByOwner(owner: string) {
+export async function getProviderPlanningListByOwner(owner: string, params: any) {
     return request<Global.List<ProviderPlanning.ProviderPlanning[]>>(
         `${PMS_PATH}/provider-planning/owner/list`,
         {
             method: 'GET',
-            params: { owner: owner },
+            params: {
+                owner: owner,
+                productName: params.productName,
+                title: params.title,
+                status: params.status
+            },
         },
     );
+}
+
+/** 更改资源规划状态  */
+export async function changeProviderPlanningStatus(id: string | number, status: string) {
+    return request<Global.AffectResponse>(`${PMS_PATH}/provider-planning/status/${id}/${status}`, {
+        method: 'PATCH',
+    });
 }
