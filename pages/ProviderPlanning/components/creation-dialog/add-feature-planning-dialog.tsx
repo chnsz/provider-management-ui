@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { Button, Modal } from "antd";
+import React, {useState} from "react";
+import {Button, Modal} from "antd";
 import type {
     CreateOptions
 } from "@/pages/ProviderPlanning/components/creation-dialog/provider-planning-editor";
 import ProviderPlanningEditor from "@/pages/ProviderPlanning/components/creation-dialog/provider-planning-editor";
-import { createProviderPlanning } from "@/services/provider-planning/api";
-import { get } from "lodash";
+import {createProviderPlanning} from "@/services/provider-planning/api";
+import {get} from "lodash";
 
 
 const AddFeaturePlanningDialog: React.FC<{ productName: string, onClosed: () => any }> = (props) => {
@@ -79,14 +79,14 @@ const AddFeaturePlanningDialog: React.FC<{ productName: string, onClosed: () => 
         <>
             <Button onClick={showModal} size={'small'} type={'primary'}>新建规划</Button>
             <Modal title="新建规划"
-                transitionName={''}
-                destroyOnClose
-                open={isModalOpen}
-                onCancel={closeModel}
-                width={1600}
-                footer={[
-                    <Button key="close" type="primary" onClick={handleOk}>保存</Button>
-                ]}
+                   transitionName={''}
+                   destroyOnClose
+                   open={isModalOpen}
+                   onCancel={closeModel}
+                   width={1600}
+                   footer={[
+                       <Button key="close" type="primary" onClick={handleOk}>保存</Button>
+                   ]}
             >
                 <ProviderPlanningEditor
                     providerPlanning={planning}

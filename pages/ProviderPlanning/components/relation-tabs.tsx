@@ -1,8 +1,8 @@
 import RelationApi from '@/pages/ProviderPlanning/components/relation-api';
 import RelationProvider from '@/pages/ProviderPlanning/components/relation-provider';
-import type { TabsProps } from 'antd';
-import { Tabs } from 'antd';
-import React, { useRef } from 'react';
+import type {TabsProps} from 'antd';
+import {Tabs} from 'antd';
+import React, {useRef} from 'react';
 
 type RelationTabsProps = {
     planning: ProviderPlanning.ProviderPlanning;

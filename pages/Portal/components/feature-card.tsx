@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { Space, Tag } from "antd";
+import React, {useEffect, useState} from "react";
+import {Space, Tag} from "antd";
 import '../portal.less'
-import { getProductFeatureList } from "@/services/product-feature/api";
+import {getProductFeatureList} from "@/services/product-feature/api";
 // @ts-ignore
-import { Scrollbars } from 'react-custom-scrollbars';
+import {Scrollbars} from 'react-custom-scrollbars';
 import AddFeatureDialog from "@/pages/ProductFeature/components/add-feature-dialog";
 import ManageFeatureDialog from "@/pages/ProductFeature/components/manage-featrue-dialog";
 
-const FeatureCard: React.FC<{ productName: string }> = ({ productName }) => {
+const FeatureCard: React.FC<{ productName: string }> = ({productName}) => {
     const [data, setData] = useState<ProductFeature.ProductFeature[]>([]);
 
     const loadData = () => {
-        getProductFeatureList({ productName: [productName] }, 100, 1).then((d) => {
+        getProductFeatureList({productName: [productName]}, 100, 1).then((d) => {
             setData(d.items.sort((a, b) => {
                 return a.name.localeCompare(b.name, 'zh-Hans-CN');
             }));
@@ -25,11 +25,11 @@ const FeatureCard: React.FC<{ productName: string }> = ({ productName }) => {
             <div className={'title'}>服务特性</div>
             <div className={'toolbar'}>
                 <Space size={15}>
-                    <AddFeatureDialog onSuccess={loadData} productName={productName} />
-                    <ManageFeatureDialog productName={productName} onClosed={loadData} />
+                    <AddFeatureDialog onSuccess={loadData} productName={productName}/>
+                    <ManageFeatureDialog productName={productName} onClosed={loadData}/>
                     <span className={'more'} onClick={() => window.open(`/product-feature#/${productName}`, '_blank')}>
-                        更多&gt;
-                    </span>
+                    更多&gt;
+                </span>
                 </Space>
             </div>
         </div>
@@ -57,9 +57,9 @@ const FeatureCard: React.FC<{ productName: string }> = ({ productName }) => {
                                     break;
                             }
                             return <Tag key={f.id}
-                                color={color}
-                                style={{ fontSize: '14px', padding: '4px 15px' }}
-                                title={text}
+                                        color={color}
+                                        style={{fontSize: '14px', padding: '4px 15px'}}
+                                        title={text}
                             >
                                 {f.name} ({f.apiUsed}/{f.apiCount})
                             </Tag>

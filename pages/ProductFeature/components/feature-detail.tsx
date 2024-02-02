@@ -1,20 +1,20 @@
 import React from "react";
-import { Descriptions } from "antd";
+import {Descriptions} from "antd";
 import EditableDes from "@/components/EditableDescription";
-import { getCoverageStatus, getSourceStatus } from "@/pages/ProductFeature/components/sider-list";
+import {getCoverageStatus, getSourceStatus} from "@/pages/ProductFeature/components/sider-list";
 
 type FeatureDetailProps = {
     productFeature: ProductFeature.ProductFeature;
     onChange?: (p: ProductFeature.ProductFeature) => any;
 };
 
-const FeatureDetail: React.FC<FeatureDetailProps> = ({ productFeature }) => {
+const FeatureDetail: React.FC<FeatureDetailProps> = ({productFeature}) => {
 
     return (
         <div className={'provider-planning'}>
             <Descriptions column={6}>
                 <Descriptions.Item label="特性名称" span={2}>
-                    <EditableDes value={productFeature.productName} />
+                    <EditableDes value={productFeature.productName}/>
                 </Descriptions.Item>
                 <Descriptions.Item label="所属服务" span={1}>
                     {productFeature.productName}

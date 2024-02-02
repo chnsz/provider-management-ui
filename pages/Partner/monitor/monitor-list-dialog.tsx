@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { getCloudName } from "@/global";
-import { Modal, Space, Table, Tooltip, Tag } from "antd";
-import type { ColumnsType } from "antd/es/table";
-import { closeApiMonitor, deleteApiMonitor, getApiMonitorList, openApiMonitor } from "@/services/provider/api";
-import { toShortDate } from "@/utils/common";
+import React, {useEffect, useState} from "react";
+import {getCloudName} from "@/global";
+import {Modal, Space, Table, Tooltip, Tag} from "antd";
+import type {ColumnsType} from "antd/es/table";
+import {closeApiMonitor, deleteApiMonitor, getApiMonitorList, openApiMonitor} from "@/services/provider/api";
+import {toShortDate} from "@/utils/common";
 import DeleteBtn from "@/components/delete";
 
 const MonitorListDialog: React.FC<{
@@ -13,7 +13,7 @@ const MonitorListDialog: React.FC<{
     providerType: string,
     providerName: string,
     onClose: () => any,
-}> = ({ content, cloudName, providerType, providerName, relationType, onClose }) => {
+}> = ({content, cloudName, providerType, providerName, relationType, onClose}) => {
     const [dataSource, setDataSource] = useState<Provider.ApiMonitor[]>([]);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -22,7 +22,7 @@ const MonitorListDialog: React.FC<{
     const [pageNum, setPageNum] = useState<number>(1);
 
     const loadData = (pageSize: number, pageNum: number) => {
-        getApiMonitorList({ cloudName, providerType, providerName, relationType }, pageSize, pageNum).then(t => {
+        getApiMonitorList({cloudName, providerType, providerName, relationType}, pageSize, pageNum).then(t => {
             setDataSource(t.items);
             setTotal(t.total);
         });
@@ -173,10 +173,10 @@ const MonitorListDialog: React.FC<{
                 return <Space size={15}>
                     {btn1}
                     <DeleteBtn text={'删除'}
-                        title={'删除确认'}
-                        link
-                        content={<div>确定要删除吗？删除后不可恢复</div>}
-                        onOk={() => onDeleteMonitor(row)}
+                               title={'删除确认'}
+                               link
+                               content={<div>确定要删除吗？删除后不可恢复</div>}
+                               onOk={() => onDeleteMonitor(row)}
                     />
                 </Space>;
             },
@@ -186,34 +186,34 @@ const MonitorListDialog: React.FC<{
     return (
         <>
             <Tooltip title={content}>
-                <a onClick={showModal} style={{ cursor: 'pointer' }}>{content}</a>
+                <a onClick={showModal} style={{cursor: 'pointer'}}>{content}</a>
             </Tooltip>
             <Modal title={`查看监听列表【${getCloudName(cloudName)}】`}
-                destroyOnClose
-                transitionName={''}
-                open={isModalOpen}
-                onOk={handleCancel}
-                onCancel={handleCancel}
-                width={'85%'}
-                footer={[]}>
-                <Space size={20} direction={'vertical'} style={{ width: '100%' }}>
+                   destroyOnClose
+                   transitionName={''}
+                   open={isModalOpen}
+                   onOk={handleCancel}
+                   onCancel={handleCancel}
+                   width={'85%'}
+                   footer={[]}>
+                <Space size={20} direction={'vertical'} style={{width: '100%'}}>
                     <Table dataSource={dataSource} columns={columns} size={'middle'}
-                        rowKey={(record) => record.id + ''}
-                        pagination={{
-                            defaultCurrent: 1,
-                            total: total,
-                            size: 'default',
-                            pageSize: pageSize,
-                            current: pageNum,
-                            showTotal: (total) => `总条数: ${total}`,
-                            onShowSizeChange: (current, size) => {
-                                setPageSize(size);
-                            },
-                            onChange: (page, size) => {
-                                setPageSize(size);
-                                setPageNum(page);
-                            },
-                        }}
+                           rowKey={(record) => record.id + ''}
+                           pagination={{
+                               defaultCurrent: 1,
+                               total: total,
+                               size: 'default',
+                               pageSize: pageSize,
+                               current: pageNum,
+                               showTotal: (total) => `总条数: ${total}`,
+                               onShowSizeChange: (current, size) => {
+                                   setPageSize(size);
+                               },
+                               onChange: (page, size) => {
+                                   setPageSize(size);
+                                   setPageNum(page);
+                               },
+                           }}
                     />
                 </Space>
             </Modal>

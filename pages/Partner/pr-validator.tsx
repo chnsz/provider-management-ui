@@ -1,27 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import './partner.less'
 import CustomBreadcrumb from "@/components/Breadcrumb";
-import { Input, message, Space, Table, Tag } from "antd";
-import { request } from "umi";
-import { PMS_PATH } from "@/services/api";
+import {Input, message, Space, Table, Tag} from "antd";
+import {request} from "umi";
+import {PMS_PATH} from "@/services/api";
 import ProviderDocsIssue from "@/pages/Partner/components/provider_docs_issue";
-import { getProviderSyncSum } from "@/services/provider/api";
-import type { ColumnsType } from "antd/es/table";
+import {getProviderSyncSum} from "@/services/provider/api";
+import type {ColumnsType} from "antd/es/table";
 import ProviderSyncIssueStaticDialog from "@/pages/Partner/components/provider_sync_issue_dialog_static";
 
-const { Search } = Input;
+const {Search} = Input;
 
 async function validPr(url: string) {
     return request<string>(`${PMS_PATH}/checker/docs`, {
         method: 'POST',
-        params: { url },
+        params: {url},
     });
 }
 
 async function getCheckStatus(data: string[]) {
     return request<Record<string, string[]>>(`${PMS_PATH}/checker/status`, {
         method: 'POST',
-        data: { data },
+        data: {data},
     });
 }
 
@@ -51,7 +51,7 @@ const PrValidator: React.FC = () => {
             const ds = [];
             for (const key in r) {
                 const statusArr = r[key];
-                ds.push({ url: key, title: statusArr[1], status: statusArr.filter((v, n) => n != 1) });
+                ds.push({url: key, title: statusArr[1], status: statusArr.filter((v, n) => n != 1)});
             }
             setDataSource(ds);
         });
@@ -125,9 +125,9 @@ const PrValidator: React.FC = () => {
     ];
 
     return <div>
-        <CustomBreadcrumb items={[{ title: '首页' }, { title: '常用工具' }, { title: '检查PR文档' }]} />
-        <div style={{ padding: '20px', background: '#fff' }}>
-            <Space direction={'vertical'} style={{ width: '100%' }} size={20}>
+        <CustomBreadcrumb items={[{title: '首页'}, {title: '常用工具'}, {title: '检查PR文档'}]}/>
+        <div style={{padding: '20px', background: '#fff'}}>
+            <Space direction={'vertical'} style={{width: '100%'}} size={20}>
                 <Search
                     placeholder="请输入PR地址，如：https://github.com/huaweicloud/terraform-provider-huaweicloud/pull/3428"
                     allowClear
@@ -135,13 +135,13 @@ const PrValidator: React.FC = () => {
                     onPressEnter={onSearch}
                     onSearch={onSearch}
                 />
-                <Table dataSource={dataSource} columns={columns} pagination={false} size={'middle'} />
+                <Table dataSource={dataSource} columns={columns} pagination={false} size={'middle'}/>
             </Space>
         </div>
-        <div className={'partner'} style={{ background: '#fff', marginTop: '20px' }}>
+        <div className={'partner'} style={{background: '#fff', marginTop: '20px'}}>
             <div className={'custom-title'}>资源文档问题</div>
-            <div style={{ padding: '20px' }}>
-                <ProviderDocsIssue data={providerSyncSum} loadData={loadData} />
+            <div style={{padding: '20px'}}>
+                <ProviderDocsIssue data={providerSyncSum} loadData={loadData}/>
             </div>
         </div>
     </div>

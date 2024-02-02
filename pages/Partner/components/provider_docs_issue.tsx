@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { Table } from "antd";
-import type { ColumnsType } from "antd/es/table";
-import { getSyncTypeName } from "@/pages/Partner/components/provider_sync_issue_dialog";
-import { columnRender, getDefaultSyncSum, getProviderIssuesData } from "@/pages/Partner/components/provider_sync_issue";
-import { CloudName } from "@/global";
+import React, {useEffect, useState} from "react";
+import {Table} from "antd";
+import type {ColumnsType} from "antd/es/table";
+import {getSyncTypeName} from "@/pages/Partner/components/provider_sync_issue_dialog";
+import {columnRender, getDefaultSyncSum, getProviderIssuesData} from "@/pages/Partner/components/provider_sync_issue";
+import {CloudName} from "@/global";
 
 const preDocsData: Record<string, Provider.ProviderSyncSum> = {
     DocsMissingField: getDefaultSyncSum('DocsMissingField'),
@@ -15,7 +15,7 @@ const ProviderDocsIssue: React.FC<{
     data: Provider.ProviderSyncSum[],
     loadData?: () => any,
     short?: boolean,
-}> = ({ data, loadData, short }) => {
+}> = ({data, loadData, short}) => {
     const [dataSource, setDataSource] = useState<Provider.ProviderSyncSum[]>([]);
 
     useEffect(() => {
@@ -49,7 +49,7 @@ const ProviderDocsIssue: React.FC<{
     }];
 
     return <Table dataSource={dataSource} columns={columns} size={'middle'} pagination={false}
-        rowKey={(record) => record.type}
+                  rowKey={(record) => record.type}
     />
 }
 

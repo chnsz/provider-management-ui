@@ -1,11 +1,11 @@
-import { getApiDetailList, getApiGroupList } from '@/services/api/api';
-import { getProductList } from '@/services/product/api';
-import { ProFormSelect, ProFormText } from '@ant-design/pro-components';
-import { QueryFilter } from '@ant-design/pro-form';
-import type { ProSchemaValueEnumObj } from '@ant-design/pro-utils/es/typing';
-import { Button, Divider, Modal, Table, Tag } from 'antd';
-import type { ColumnsType } from 'antd/es/table/interface';
-import React, { useEffect, useState } from 'react';
+import {getApiDetailList, getApiGroupList} from '@/services/api/api';
+import {getProductList} from '@/services/product/api';
+import {ProFormSelect, ProFormText} from '@ant-design/pro-components';
+import {QueryFilter} from '@ant-design/pro-form';
+import type {ProSchemaValueEnumObj} from '@ant-design/pro-utils/es/typing';
+import {Button, Divider, Modal, Table, Tag} from 'antd';
+import type {ColumnsType} from 'antd/es/table/interface';
+import React, {useEffect, useState} from 'react';
 
 type ApiListDialogProp = {
     handle?: (option: 'ok' | 'cancel', rows: Api.Detail[], idArr: number[]) => any;
@@ -117,7 +117,7 @@ const SearchForm: React.FC<{ productName: string, onSearch: (val: FormProps) => 
     return (
         <QueryFilter<FormProps>
             span={6}
-            style={{ marginTop: '20px', marginBottom: '-27px' }}
+            style={{marginTop: '20px', marginBottom: '-27px'}}
             onFinish={async (values) => {
                 props.onSearch(values);
             }}
@@ -127,16 +127,16 @@ const SearchForm: React.FC<{ productName: string, onSearch: (val: FormProps) => 
                 label="产品服务"
                 showSearch
                 initialValue={props.productName}
-                rules={[{ required: true }]}
+                rules={[{required: true}]}
                 fieldProps={{
                     allowClear: false,
                     onChange: onProductNameChange,
                 }}
                 valueEnum={productNameMap}
             />
-            <ProFormSelect name="apiGroup" label="分组名称" showSearch valueEnum={apiGroupMap} />
-            <ProFormText name="apiName" label="API 名称" />
-            <ProFormText name="uri" label="URI" />
+            <ProFormSelect name="apiGroup" label="分组名称" showSearch valueEnum={apiGroupMap}/>
+            <ProFormText name="apiName" label="API 名称"/>
+            <ProFormText name="uri" label="URI"/>
             <ProFormSelect
                 name="publishStatus"
                 label="发布状态"
@@ -228,8 +228,8 @@ const ApiListDialog: React.FC<ApiListDialogProp> = (props) => {
                 onOk={handle('ok')}
                 onCancel={handle('cancel')}
             >
-                <SearchForm onSearch={onSearch} productName={props.providerName || ''} />
-                <Divider />
+                <SearchForm onSearch={onSearch} productName={props.providerName || ''}/>
+                <Divider/>
                 <Table
                     rowSelection={rowSelection}
                     columns={columns}

@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import DiffEditor from "@/components/DiffEditor";
-import { Button, Drawer, Input, Select, Spin } from "antd";
-import { convertProviderName } from "@/services/provider/api";
+import {Button, Drawer, Input, Select, Spin} from "antd";
+import {convertProviderName} from "@/services/provider/api";
 import CustomBreadcrumb from "@/components/Breadcrumb";
 
-const { Option } = Select;
-const { TextArea } = Input;
+const {Option} = Select;
+const {TextArea} = Input;
 
 const ConvertProviderName: React.FC = () => {
     const [modified, setModified] = useState<string>('');
@@ -32,10 +32,10 @@ const ConvertProviderName: React.FC = () => {
     }
 
     return <>
-        <CustomBreadcrumb items={[{ title: '首页' }, { title: '常用工具' }, { title: '转换UT代码' }]} />
-        <div style={{ marginBottom: '10px' }}>
+        <CustomBreadcrumb items={[{title: '首页'}, {title: '常用工具'}, {title: '转换UT代码'}]}/>
+        <div style={{marginBottom: '10px'}}>
             目标：
-            <Select size={'small'} value={cloudName} style={{ width: '100px' }} onChange={v => setCloudName(v)}>
+            <Select size={'small'} value={cloudName} style={{width: '100px'}} onChange={v => setCloudName(v)}>
                 <Option value="FlexibleEngineCloud">法电</Option>
                 <Option value="G42Cloud">G42</Option>
                 <Option value="other">天翼云</Option>
@@ -53,15 +53,15 @@ const ConvertProviderName: React.FC = () => {
             />
         </Spin>
         <Drawer title="无法转换的资源"
-            size={'large'}
-            placement="left"
-            destroyOnClose
-            mask={false}
-            open={showMsg}
-            closeIcon={false}
-            extra={<Button type={"primary"} onClick={() => setShowMsg(false)}>关闭</Button>}
+                size={'large'}
+                placement="left"
+                destroyOnClose
+                mask={false}
+                open={showMsg}
+                closeIcon={false}
+                extra={<Button type={"primary"} onClick={() => setShowMsg(false)}>关闭</Button>}
         >
-            <TextArea rows={30} value={message} />
+            <TextArea rows={30} value={message}/>
         </Drawer>
     </>
 }

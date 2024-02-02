@@ -1,17 +1,17 @@
 import ApiChangeList from '@/pages/api/components/api-change-list';
-import { openApiExplorer } from '@/pages/Portal';
-import { getApiDetailList, getApiGroupList, updatePublishStatus, updateUseStatus } from '@/services/api/api';
-import { DownOutlined, EditOutlined } from '@ant-design/icons';
-import { Button, Dropdown, Input, message, Modal, Radio, Select, Space, Table, Tag, Tooltip } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
-import React, { useEffect, useState } from 'react';
+import {openApiExplorer} from '@/pages/Portal';
+import {getApiDetailList, getApiGroupList, updatePublishStatus, updateUseStatus} from '@/services/api/api';
+import {DownOutlined, EditOutlined} from '@ant-design/icons';
+import {Button, Dropdown, Input, message, Modal, Radio, Select, Space, Table, Tag, Tooltip} from 'antd';
+import type {ColumnsType} from 'antd/es/table';
+import React, {useEffect, useState} from 'react';
 import '../../api/api.less';
-import { createProviderPlanning } from "@/services/provider-planning/api";
-import type { ProSchemaValueEnumObj } from "@ant-design/pro-utils/es/typing";
-import { getProductList } from "@/services/product/api";
-import { QueryFilter } from "@ant-design/pro-form";
-import { ProFormSelect, ProFormText } from "@ant-design/pro-components";
-import { CloudName } from "@/global";
+import {createProviderPlanning} from "@/services/provider-planning/api";
+import type {ProSchemaValueEnumObj} from "@ant-design/pro-utils/es/typing";
+import {getProductList} from "@/services/product/api";
+import {QueryFilter} from "@ant-design/pro-form";
+import {ProFormSelect, ProFormText} from "@ant-design/pro-components";
+import {CloudName} from "@/global";
 
 type queryParams = {
     productName?: string;
@@ -77,7 +77,7 @@ const SearchForm: React.FC<{ owner?: string, onSearch: (val: FormProps) => any }
             span={4}
             labelWidth={80}
             searchGutter={8}
-            style={{ marginTop: '20px', marginBottom: '-27px' }}
+            style={{marginTop: '20px', marginBottom: '-27px'}}
             onFinish={async (values) => props.onSearch(values)}
         >
             <ProFormSelect
@@ -89,9 +89,9 @@ const SearchForm: React.FC<{ owner?: string, onSearch: (val: FormProps) => any }
                 }}
                 valueEnum={productNameMap}
             />
-            <ProFormSelect name="apiGroup" label="分组名称" showSearch valueEnum={apiGroupMap} />
-            <ProFormText name="apiName" label="API名称" placeholder={'支持模糊搜索'} />
-            <ProFormText name="uri" label="URI" placeholder={'支持模糊搜索'} />
+            <ProFormSelect name="apiGroup" label="分组名称" showSearch valueEnum={apiGroupMap}/>
+            <ProFormText name="apiName" label="API名称" placeholder={'支持模糊搜索'}/>
+            <ProFormText name="uri" label="URI" placeholder={'支持模糊搜索'}/>
             <ProFormSelect
                 name="useRemark"
                 label="覆盖状态"
@@ -144,7 +144,7 @@ const ApiDialogList: React.FC<queryParams> = (queryParams) => {
         });
     };
     useEffect(() => {
-        const params: Api.queryListParams = { ...formData };
+        const params: Api.queryListParams = {...formData};
         if (!params.productName) {
             params.productName = queryParams.productName;
         }
@@ -155,7 +155,7 @@ const ApiDialogList: React.FC<queryParams> = (queryParams) => {
     }, [queryParams, formData, pageSize, pageNum]);
 
     const onSearch = (formVal: FormProps) => {
-        const params: Api.queryListParams = { ...formVal };
+        const params: Api.queryListParams = {...formVal};
         if (!params.productName) {
             params.productName = queryParams.productName;
         }
@@ -173,17 +173,17 @@ const ApiDialogList: React.FC<queryParams> = (queryParams) => {
     };
 
     const useStatusItems = [
-        { label: '已使用', key: 'used' },
-        { label: '待分析', key: 'need_analysis' },
-        { label: '不适合', key: 'ignore' },
-        { label: '缺少API', key: 'missing_api' },
-        { label: '未分析', key: 'planning' },
+        {label: '已使用', key: 'used'},
+        {label: '待分析', key: 'need_analysis'},
+        {label: '不适合', key: 'ignore'},
+        {label: '缺少API', key: 'missing_api'},
+        {label: '未分析', key: 'planning'},
     ];
 
     const publishStatusItems = [
-        { label: '开放中', key: 'online' },
-        { label: '已下线', key: 'offline' },
-        { label: '线下API', key: 'unpublished' },
+        {label: '开放中', key: 'online'},
+        {label: '已下线', key: 'offline'},
+        {label: '线下API', key: 'unpublished'},
     ];
 
     const handleUseStatusChange = (status: string) => {
@@ -275,7 +275,7 @@ const ApiDialogList: React.FC<queryParams> = (queryParams) => {
                     <Dropdown.Button
                         size={'small'}
                         type={'primary'}
-                        icon={<DownOutlined />}
+                        icon={<DownOutlined/>}
                         menu={{
                             items: useStatusItems.map((item) => ({
                                 ...item,
@@ -288,7 +288,7 @@ const ApiDialogList: React.FC<queryParams> = (queryParams) => {
                     <Dropdown.Button
                         size={'small'}
                         type={'primary'}
-                        icon={<DownOutlined />}
+                        icon={<DownOutlined/>}
                         menu={{
                             items: publishStatusItems.map((item) => ({
                                 ...item,
@@ -335,12 +335,10 @@ const ApiDialogList: React.FC<queryParams> = (queryParams) => {
             ellipsis: true,
             render: (v, row) => {
                 return (
-                    <>
+                    <Tooltip placement="topLeft" title={row.uri}>
                         <Tag>{row.method}</Tag>
-                        <Tooltip placement="topLeft" title={row.uri}>
-                            {row.uri}
-                        </Tooltip>
-                    </>
+                        {row.uri}
+                    </Tooltip>
                 );
             },
         },
@@ -373,14 +371,14 @@ const ApiDialogList: React.FC<queryParams> = (queryParams) => {
 
     const columns3: ColumnsType<Api.Detail> = [
         {
-            title: <>备注<EditOutlined style={{ color: '#6d6d6d' }} /></>,
+            title: <>备注<EditOutlined style={{color: '#6d6d6d'}}/></>,
             dataIndex: 'remark',
             width: '15%',
             ellipsis: true,
             render: (v: any, row) => {
                 return <Input defaultValue={v}
-                    bordered={false}
-                    onBlur={(e) => onRemarkChange(e.target.value, row)} />
+                              bordered={false}
+                              onBlur={(e) => onRemarkChange(e.target.value, row)}/>
             }
         },
         {
@@ -422,7 +420,7 @@ const ApiDialogList: React.FC<queryParams> = (queryParams) => {
     return (
         <>
             {contextHolder}
-            <SearchForm owner={queryParams.owner} onSearch={onSearch} />
+            <SearchForm owner={queryParams.owner} onSearch={onSearch}/>
             <div className={'search-plan'}>{getToolbar()}</div>
             <div>
                 <Table
@@ -457,7 +455,7 @@ const ApiDialogList: React.FC<queryParams> = (queryParams) => {
                 onCancel={handleCancel}
                 width={1750}
             >
-                <ApiChangeList id={id} />
+                <ApiChangeList id={id}/>
             </Modal>
             <Modal
                 title="新建资源规划"
@@ -469,7 +467,7 @@ const ApiDialogList: React.FC<queryParams> = (queryParams) => {
                     <Button type={'primary'} key="save" onClick={savePlanning}>保存</Button>
                 ]}>
 
-                <div style={{ height: '20px' }} />
+                <div style={{height: '20px'}}/>
                 <Space direction={'vertical'} size={20}>
                     <div>
                         <div>规划类型：</div>
@@ -479,18 +477,18 @@ const ApiDialogList: React.FC<queryParams> = (queryParams) => {
                         </Radio.Group>
                     </div>
                     <div>
-                        <Space.Compact style={{ width: '100%' }}>
+                        <Space.Compact style={{width: '100%'}}>
                             <Select
                                 defaultValue="DataSource"
                                 options={options}
-                                style={{ width: '120px' }}
+                                style={{width: '120px'}}
                                 value={providerType}
                                 onChange={(v) => setProviderType(v)}
                             />
                             <Input
                                 placeholder={'请输入 Resource 或 DataSource 名称'}
                                 value={providerName}
-                                style={{ width: '320px' }}
+                                style={{width: '320px'}}
                                 onChange={(e) => {
                                     setProviderName(e.currentTarget.value);
                                 }}
@@ -499,27 +497,27 @@ const ApiDialogList: React.FC<queryParams> = (queryParams) => {
                         <div>关联已有资源，或计划创建新资源</div>
                     </div>
                 </Space>
-                <div style={{ height: '20px' }} />
+                <div style={{height: '20px'}}/>
             </Modal>
             <Modal title={'请填写不适合的原因'}
-                transitionName={''}
-                open={isRemarkDialogOpen}
-                onCancel={() => setRemarkDialogOpen(false)}
-                width={600}
-                footer={[
-                    <Button key={'close'} onClick={updateUseStatusToIgnore}>不填原因</Button>,
-                    <Button key="save" type="primary" onClick={updateUseStatusToIgnore}>提交</Button>
-                ]}>
-                <div style={{ height: '10px' }} />
+                   transitionName={''}
+                   open={isRemarkDialogOpen}
+                   onCancel={() => setRemarkDialogOpen(false)}
+                   width={600}
+                   footer={[
+                       <Button key={'close'} onClick={updateUseStatusToIgnore}>不填原因</Button>,
+                       <Button key="save" type="primary" onClick={updateUseStatusToIgnore}>提交</Button>
+                   ]}>
+                <div style={{height: '10px'}}/>
                 <Input
                     placeholder={'请填写不适合的原因'}
                     value={remark}
-                    style={{ width: '320px' }}
+                    style={{width: '320px'}}
                     onChange={(e) => {
                         setRemark(e.currentTarget.value);
                     }}
                 />
-                <div style={{ marginTop: '10px' }}>
+                <div style={{marginTop: '10px'}}>
                     <span>常用：</span>
                     <Space size={10}>
                         <a onClick={() => setRemark('即将废弃')}>即将废弃</a>

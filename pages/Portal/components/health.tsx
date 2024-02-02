@@ -1,8 +1,8 @@
-import { getProviderHealthCheckSum } from '@/services/portal/api';
+import {getProviderHealthCheckSum} from '@/services/portal/api';
 import ReactEcharts from 'echarts-for-react';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import '../portal.less';
-import { Result } from "antd";
+import {Result} from "antd";
 
 const Health: React.FC = () => {
     const [items, setItems] = useState<Portal.ProviderHealthCheckSum>({
@@ -44,9 +44,9 @@ const Health: React.FC = () => {
                     show: false,
                 },
                 data: [
-                    { value: items.resource.success, name: '成功' },
-                    { value: items.resource.other, name: '其他原因' },
-                    { value: items.resource.apiFailed, name: 'API' },
+                    {value: items.resource.success, name: '成功'},
+                    {value: items.resource.other, name: '其他原因'},
+                    {value: items.resource.apiFailed, name: 'API'},
                 ],
             },
             {
@@ -60,9 +60,9 @@ const Health: React.FC = () => {
                     show: false,
                 },
                 data: [
-                    { value: items.dataSource.success, name: '成功' },
-                    { value: items.dataSource.apiFailed, name: 'API' },
-                    { value: items.dataSource.other, name: '其他原因' },
+                    {value: items.dataSource.success, name: '成功'},
+                    {value: items.dataSource.apiFailed, name: 'API'},
+                    {value: items.dataSource.other, name: '其他原因'},
                 ],
             },
         ],
@@ -73,8 +73,8 @@ const Health: React.FC = () => {
         <div className={'portal-card'}>
             <div className={'header'}>健康度</div>
             <div className={'container'}>
-                <ReactEcharts option={option} />
-                <Result title="建设中..." />
+                <ReactEcharts option={option}/>
+                <Result title="建设中..."/>
             </div>
         </div>
     );

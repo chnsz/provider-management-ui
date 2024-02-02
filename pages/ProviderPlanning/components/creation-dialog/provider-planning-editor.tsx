@@ -1,15 +1,15 @@
 import Editor from '@/components/editor';
-import { priorityOptions, statusOptions } from '@/pages/Task/components/task-detail';
-import { getProductFeatureList } from '@/services/product-feature/api';
-import { getProductList, getUserList } from '@/services/product/api';
-import { InfoCircleOutlined } from '@ant-design/icons';
-import { Descriptions, Input, Select, Tooltip } from 'antd';
-import type { DefaultOptionType, SelectProps } from 'antd/es/select';
-import React, { useEffect, useState } from 'react';
+import {priorityOptions, statusOptions} from '@/pages/Task/components/task-detail';
+import {getProductFeatureList} from '@/services/product-feature/api';
+import {getProductList, getUserList} from '@/services/product/api';
+import {InfoCircleOutlined} from '@ant-design/icons';
+import {Descriptions, Input, Select, Tooltip} from 'antd';
+import type {DefaultOptionType, SelectProps} from 'antd/es/select';
+import React, {useEffect, useState} from 'react';
 import '../../provider-planning.less';
-import { get } from "lodash";
+import {get} from "lodash";
 import RelationTabs from "@/pages/ProviderPlanning/components/creation-dialog/relation-tabs";
-import { getCurrentUser } from "@/services/api";
+import {getCurrentUser} from "@/services/api";
 
 export type CreateOptions = {
     // 归属服务
@@ -41,16 +41,16 @@ type PlanningDetailProps = {
     onChange: (opts: CreateOptions) => any;
 };
 
-const ProviderPlanningEditor: React.FC<PlanningDetailProps> = ({ providerPlanning, onChange }) => {
+const ProviderPlanningEditor: React.FC<PlanningDetailProps> = ({providerPlanning, onChange}) => {
     const [assignee, setAssignee] = useState<string>('')
     const [featureList, setFeatureList] = useState<SelectProps['options']>([]);
     const [productList, setProductList] = useState<SelectProps['options']>([]);
     const [ownerList, setOwnerList] = useState<SelectProps['options']>([]);
 
     const loadFeature = (productName: string) => {
-        getProductFeatureList({ productName: [productName] }, 1000, 1).then((d) => {
+        getProductFeatureList({productName: [productName]}, 1000, 1).then((d) => {
             const arr = d.items.map((t: ProductFeature.ProductFeature) => {
-                return { label: t.name, value: t.id };
+                return {label: t.name, value: t.id};
             });
             setFeatureList(arr);
         });
@@ -208,60 +208,60 @@ const ProviderPlanningEditor: React.FC<PlanningDetailProps> = ({ providerPlannin
     return (
         <div className={'provider-planning'}>
             <div>
-                <div />
+                <div/>
             </div>
             <Descriptions column={4}>
                 <Descriptions.Item label="所属服务" span={1}>
-                    <Select size={'small'} style={{ width: '200px' }}
-                        showSearch
-                        defaultValue={providerPlanning.productName}
-                        onChange={onDetailChange('productName')}
-                        options={productList}
+                    <Select size={'small'} style={{width: '200px'}}
+                            showSearch
+                            defaultValue={providerPlanning.productName}
+                            onChange={onDetailChange('productName')}
+                            options={productList}
                     />
                 </Descriptions.Item>
                 <Descriptions.Item label="所属特性" span={1}>
-                    <Select size={'small'} style={{ width: '200px' }}
-                        showSearch
-                        defaultValue={providerPlanning.featureId}
-                        onChange={onDetailChange('featureId')}
-                        options={featureList}
+                    <Select size={'small'} style={{width: '200px'}}
+                            showSearch
+                            defaultValue={providerPlanning.featureId}
+                            onChange={onDetailChange('featureId')}
+                            options={featureList}
                     />
                 </Descriptions.Item>
                 <Descriptions.Item label={<>&nbsp;&nbsp;&nbsp;&nbsp;优先级</>} span={1}>
-                    <Select size={'small'} style={{ width: '200px' }}
-                        defaultValue={providerPlanning.priority}
-                        onChange={onDetailChange('priority')}
-                        options={priorityOptions}
+                    <Select size={'small'} style={{width: '200px'}}
+                            defaultValue={providerPlanning.priority}
+                            onChange={onDetailChange('priority')}
+                            options={priorityOptions}
                     />
                 </Descriptions.Item>
                 <Descriptions.Item label="责任人" span={1}>
-                    <Select size={'small'} style={{ width: '200px' }}
-                        value={assignee}
-                        onChange={onDetailChange('assignee')}
-                        options={ownerList}
+                    <Select size={'small'} style={{width: '200px'}}
+                            value={assignee}
+                            onChange={onDetailChange('assignee')}
+                            options={ownerList}
                     />
                 </Descriptions.Item>
                 <Descriptions.Item label="标题" span={2}>
                     <Input value={providerPlanning.title} onChange={(e) => onDetailChange('title')(e.target.value)}
-                        size={'small'}
-                        style={{ width: '615px' }}
+                           size={'small'}
+                           style={{width: '615px'}}
                     />
                 </Descriptions.Item>
                 <Descriptions.Item label="同步到看板" span={1}>
-                    <Select size={'small'} style={{ width: '185px' }}
-                        defaultValue={'yes'}
-                        onChange={onDetailChange('syncToKanboard')}
-                        options={[
-                            { label: '同步创建', value: 'yes' },
-                            { label: '不同步', value: 'no' },
-                        ]}
+                    <Select size={'small'} style={{width: '185px'}}
+                            defaultValue={'yes'}
+                            onChange={onDetailChange('syncToKanboard')}
+                            options={[
+                                {label: '同步创建', value: 'yes'},
+                                {label: '不同步', value: 'no'},
+                            ]}
                     />
                 </Descriptions.Item>
                 <Descriptions.Item label="待办状态" span={1}>
-                    <Select size={'small'} style={{ width: '200px' }}
-                        defaultValue={providerPlanning.status}
-                        onChange={onDetailChange('status')}
-                        options={statusOptions}
+                    <Select size={'small'} style={{width: '200px'}}
+                            defaultValue={providerPlanning.status}
+                            onChange={onDetailChange('status')}
+                            options={statusOptions}
                     />
                 </Descriptions.Item>
             </Descriptions>
@@ -269,10 +269,10 @@ const ProviderPlanningEditor: React.FC<PlanningDetailProps> = ({ providerPlannin
             <div className={'detail-info'}>
                 <div className={'primary-info'}>
                     <div className={'label-name custom-label'}>
-                        <div style={{ flex: '1' }}>详细内容</div>
+                        <div style={{flex: '1'}}>详细内容</div>
                     </div>
-                    <div style={{ height: 'calc(100% - 45px)' }}>
-                        <Editor defaultValue={providerPlanning.content} onChange={onDetailChange('content')} />
+                    <div style={{height: 'calc(100% - 45px)'}}>
+                        <Editor defaultValue={providerPlanning.content} onChange={onDetailChange('content')}/>
                     </div>
                 </div>
                 <div className={'secondary-info'}>
@@ -286,12 +286,12 @@ const ProviderPlanningEditor: React.FC<PlanningDetailProps> = ({ providerPlannin
                             }
                             arrow={true}
                         >
-                            <InfoCircleOutlined />
+                            <InfoCircleOutlined/>
                         </Tooltip>
                     </div>
                     <RelationTabs createOptions={providerPlanning}
-                        onApiRelationChange={onApiRelationChange}
-                        onProviderRelationChange={onProviderRelationChange} />
+                                  onApiRelationChange={onApiRelationChange}
+                                  onProviderRelationChange={onProviderRelationChange}/>
                 </div>
             </div>
         </div>

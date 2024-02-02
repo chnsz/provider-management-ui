@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { Button, Space, Table } from "antd";
-import type { ColumnsType } from "antd/es/table";
-import { createTaskKbTask, deleteTask, getTaskList } from "@/services/task/api";
-import { getTaskStatus } from "@/pages/Task/components/task-detail";
-import { toShortDate } from "@/utils/common";
+import React, {useEffect, useState} from "react";
+import {Button, Space, Table} from "antd";
+import type {ColumnsType} from "antd/es/table";
+import {createTaskKbTask, deleteTask, getTaskList} from "@/services/task/api";
+import {getTaskStatus} from "@/pages/Task/components/task-detail";
+import {toShortDate} from "@/utils/common";
 import DeleteBtn from "@/components/delete";
 import CreateTaskDialog from "@/pages/Task/components/creation-dialog/create-task-dialog";
 
-const TaskCard: React.FC<{ productName: string }> = ({ productName }) => {
+const TaskCard: React.FC<{ productName: string }> = ({productName}) => {
     const [total, setTotal] = useState<number>(0);
     const [pageSize, setPageSize] = useState<number>(6);
     const [pageNum, setPageNum] = useState<number>(1);
     const [data, setData] = useState<Task.Task[]>([]);
 
     const loadData = () => {
-        getTaskList({ productName: [productName] }, pageSize, pageNum).then((d) => {
+        getTaskList({productName: [productName]}, pageSize, pageNum).then((d) => {
             setData(d.items);
             setTotal(d.total);
         });
@@ -88,28 +88,28 @@ const TaskCard: React.FC<{ productName: string }> = ({ productName }) => {
                         推送
                     </Button>
                     <DeleteBtn size={'small'}
-                        type={'link'}
-                        text={'删除'}
-                        title={'删除任务'}
-                        content={
-                            <>
-                                <div>确定要删除该待办任务吗？关联的卡片会被同步删除。</div>
-                                <div>删除后可联系管理员恢复，请谨慎操作。</div>
-                                <p>
-                                    <a>
-                                        #{task.id} {task.title}
-                                    </a>
-                                </p>
-                            </>
-                        }
-                        onOk={() => {
-                            deleteTask(task.id).then((rsp) => {
-                                if (rsp.affectedRow === 0) {
-                                    return;
-                                }
-                                loadData()
-                            });
-                        }}
+                               type={'link'}
+                               text={'删除'}
+                               title={'删除任务'}
+                               content={
+                                   <>
+                                       <div>确定要删除该待办任务吗？关联的卡片会被同步删除。</div>
+                                       <div>删除后可联系管理员恢复，请谨慎操作。</div>
+                                       <p>
+                                           <a>
+                                               #{task.id} {task.title}
+                                           </a>
+                                       </p>
+                                   </>
+                               }
+                               onOk={() => {
+                                   deleteTask(task.id).then((rsp) => {
+                                       if (rsp.affectedRow === 0) {
+                                           return;
+                                       }
+                                       loadData()
+                                   });
+                               }}
                     />
                 </>
             }
@@ -121,10 +121,10 @@ const TaskCard: React.FC<{ productName: string }> = ({ productName }) => {
             <div className={'title'}>待办任务</div>
             <div className={'toolbar'}>
                 <Space size={15}>
-                    <CreateTaskDialog productName={productName} onClosed={console.log} />
+                    <CreateTaskDialog productName={productName} onClosed={console.log}/>
                     <span className={'more'} onClick={() => window.open(`/task#/${productName}`, '_blank')}>
-                        更多&gt;
-                    </span>
+                    更多&gt;
+                </span>
                 </Space>
             </div>
             {/*<span className={'more'} onClick={() => window.open(`/task#/${productName || ''}`, '_blank')}>*/}

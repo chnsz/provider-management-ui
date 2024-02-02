@@ -39,14 +39,14 @@ const ProviderHealth: React.FC = () => {
                     color: 'inherit',
                     fontSize: 12,
                 },
-                data: [{ value: 70 }],
+                data: [{value: 70}],
             },
         ],
     };
 
     return (
-        <div style={{ height: '100%', width: '100%' }}>
-            <ReactEcharts option={option} style={{ height: '100%' }} />
+        <div style={{height: '100%', width: '100%'}}>
+            <ReactEcharts option={option} style={{height: '100%'}}/>
         </div>
     );
 };

@@ -1,9 +1,9 @@
-import React, { useRef } from "react";
-import type { TabsProps } from "antd";
-import { Tabs } from "antd";
+import React, {useRef} from "react";
+import type {TabsProps} from "antd";
+import {Tabs} from "antd";
 import RelationApi from "@/pages/ProviderPlanning/components/creation-dialog/relation-api";
 import RelationProvider from "@/pages/ProviderPlanning/components/creation-dialog/relation-provider";
-import type { CreateOptions } from "@/pages/ProviderPlanning/components/creation-dialog/provider-planning-editor";
+import type {CreateOptions} from "@/pages/ProviderPlanning/components/creation-dialog/provider-planning-editor";
 
 const RelationTabs: React.FC<{
     createOptions: CreateOptions,

@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import './partner.less'
 import './../Portal/portal.less';
-import { Space } from "antd";
+import {Space} from "antd";
 import ProviderDocsIssue from "@/pages/Partner/components/provider_docs_issue";
 import ProviderSyncIssue from "@/pages/Partner/components/provider_sync_issue";
 import SummaryCard from "@/pages/Partner/components/sum-card";
-import { getProviderSyncSum } from "@/services/provider/api";
+import {getProviderSyncSum} from "@/services/provider/api";
 import ServiceSumList from "@/pages/Portal/components/service-sum-list";
 import CustomBreadcrumb from "@/components/Breadcrumb";
 
@@ -22,19 +22,19 @@ const PartnerAnalysis: React.FC = () => {
     }, []);
 
     return <>
-        <CustomBreadcrumb items={[{ title: '首页' }, { title: '伙伴云分析' }]} />
-        <Space size={20} direction={'vertical'} style={{ width: '100%' }}>
-            <SummaryCard />
-            <div className={'partner'} style={{ background: '#fff' }}>
+        <CustomBreadcrumb items={[{title: '首页'}, {title: '伙伴云分析'}]}/>
+        <Space size={20} direction={'vertical'} style={{width: '100%'}}>
+            <SummaryCard/>
+            <div className={'partner'} style={{background: '#fff'}}>
                 <div className={'custom-title'}>资源文档问题</div>
-                <div style={{ padding: '20px' }}>
-                    <ProviderDocsIssue data={providerSyncSum} loadData={loadData} />
+                <div style={{padding: '20px'}}>
+                    <ProviderDocsIssue data={providerSyncSum} loadData={loadData}/>
                 </div>
             </div>
-            <div className={'partner'} style={{ background: '#fff' }}>
+            <div className={'partner'} style={{background: '#fff'}}>
                 <div className={'custom-title'}>伙伴云同步信息</div>
-                <div style={{ padding: '20px' }}>
-                    <ProviderSyncIssue data={providerSyncSum} loadData={loadData} />
+                <div style={{padding: '20px'}}>
+                    <ProviderSyncIssue data={providerSyncSum} loadData={loadData}/>
                 </div>
             </div>
         </Space>
@@ -58,7 +58,7 @@ const PartnerAnalysis: React.FC = () => {
             </Col>
         </Row>*/}
         <div className={'partner portal'} style={{}}>
-            <ServiceSumList partner onload={() => null} />
+            <ServiceSumList partner onload={() => null}/>
         </div>
     </>
 }

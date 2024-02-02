@@ -5,7 +5,7 @@ import { toShortDate } from '@/utils/common';
 import { ProFormSelect, ProFormText } from '@ant-design/pro-components';
 import { QueryFilter } from '@ant-design/pro-form';
 import type { ProSchemaValueEnumObj } from '@ant-design/pro-utils/es/typing';
-import { Breadcrumb, Button, message, Modal, notification, Space, Table, Tag, Spin, Tooltip } from 'antd';
+import { Breadcrumb, Button, message, Modal, notification, Space, Table, Tag, Spin } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { TableRowSelection } from 'antd/es/table/interface';
 import React, { useEffect, useState } from 'react';
@@ -260,10 +260,7 @@ const ApiChangeList: React.FC<{
             render: (v, row) => {
                 return (
                     <>
-                        <Tooltip placement="topLeft" title={row.uri}>
-                            <Tag>{row.method}</Tag>
-                            {row.uri}
-                        </Tooltip>
+                        <Tag>{row.method}</Tag> {row.uri}
                     </>
                 );
             },
