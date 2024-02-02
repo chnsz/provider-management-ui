@@ -54,12 +54,13 @@ const SearchForm: React.FC<{ owner?: string, onSearch: (val: FormProps) => any }
                 name="status"
                 label="状态"
                 showSearch
+                initialValue={'new'}
                 valueEnum={{
                     new: '未启动',
-                    freeze: '冻结',
+                    // freeze: '冻结',
                     processing: '处理中',
-                    merging: '待合并',
-                    merged: '已合并',
+                    // merging: '待合并',
+                    // merged: '已合并',
                     closed: '关闭',
                 }}
             />
@@ -74,7 +75,7 @@ const OwnerProviderPlanningDialog: React.FC<{
 }> = ({ content, owner, onClosed }) => {
     const [data, setData] = useState<ProviderPlanning.ProviderPlanning[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [queryParams, setQueryParams] = useState<ProviderPlanning.QueryParams>({});
+    const [queryParams, setQueryParams] = useState<ProviderPlanning.QueryParams>({status: 'new'});
 
     const showModal = () => {
         getProviderPlanningList();
