@@ -1,5 +1,5 @@
-import { request } from 'umi';
-import { PMS_PATH } from "@/services/api";
+import {request} from 'umi';
+import {PMS_PATH} from "@/services/api";
 
 export async function createProviderPlanning(createOpts: ProviderPlanning.CreateOption) {
     return request<ProviderPlanning.ProviderPlanning>(`${PMS_PATH}/provider-planning`, {
@@ -40,7 +40,7 @@ export async function getProviderPlanningList(
         `${PMS_PATH}/provider-planning/list/${limit}/${offset}`,
         {
             method: 'GET',
-            params: { ...queryParams },
+            params: {...queryParams},
         },
     );
 }
@@ -61,7 +61,7 @@ export async function bindProviderPlanningProvider(
     return request<Global.AffectResponse>(`${PMS_PATH}/provider-planning/provider/${id}`, {
         method: 'PUT',
         data: {
-            providerList: [{ type: providerType, name: providerName }],
+            providerList: [{type: providerType, name: providerName}],
         },
     });
 }
@@ -75,7 +75,7 @@ export async function unbindProviderPlanningProvider(
     return request<Global.AffectResponse>(`${PMS_PATH}/provider-planning/provider/${id}`, {
         method: 'PATCH',
         data: {
-            providerList: [{ type: providerType, name: providerName }],
+            providerList: [{type: providerType, name: providerName}],
         },
     });
 }
@@ -101,7 +101,7 @@ export async function unbindProviderPlanningApi(id: number, apiIdList: number[])
 }
 
 export async function createPlanningKbTask(id: number) {
-    return request<ProviderPlanning.ProviderPlanning>(`${PMS_PATH}/provider-planning/kanboard-task/${id}`, { method: 'PUT' });
+    return request<ProviderPlanning.ProviderPlanning>(`${PMS_PATH}/provider-planning/kanboard-task/${id}`, {method: 'PUT'});
 }
 
 export async function getProviderPlanningListByOwner(owner: string, params: any) {
@@ -111,9 +111,9 @@ export async function getProviderPlanningListByOwner(owner: string, params: any)
             method: 'GET',
             params: {
                 owner: owner,
-                productName: params.productName,
-                title: params.title,
-                status: params.status
+                productName: params?.productName,
+                title: params?.title,
+                status: params?.status
             },
         },
     );

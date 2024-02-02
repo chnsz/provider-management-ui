@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { Button, Modal, Space, Table, Tag } from "antd";
-import type { ColumnsType } from "antd/es/table/interface";
-import { getServiceSumList } from "@/services/portal/api";
-import { getUserList } from "@/services/product/api";
+import React, {useEffect, useState} from "react";
+import {Button, Modal, Space, Table, Tag, Tooltip} from "antd";
+import type {ColumnsType} from "antd/es/table/interface";
+import {getServiceSumList} from "@/services/portal/api";
+import {getUserList} from "@/services/product/api";
 import ProviderListDialog from "@/pages/Portal/components/provider-list-dialog";
 import ApiDialogList from "@/pages/Portal/components/api-dialog-list";
-import { useModel } from 'umi';
-import type { ButtonType } from "antd/lib/button";
+import {useModel} from 'umi';
+import type {ButtonType} from "antd/lib/button";
+import {InfoCircleOutlined} from "@ant-design/icons";
 
 interface ServiceSumProps {
     productGroup: string;
@@ -14,7 +15,24 @@ interface ServiceSumProps {
     partner?: boolean;
 }
 
-const ServiceSum: React.FC<ServiceSumProps> = ({ productGroup, data, partner }) => {
+const apiCoverageTooltip = (
+    <span style={{color: 'rgba(0, 0, 0, 0.45)'}}>
+        <Tooltip
+            title={
+                <div>
+                    对接率：
+                    <br/>
+                    已对接 / （总数 - 不适合），规划中、未分析状态的都按照未对接统计。
+                </div>
+            }
+        >
+            <InfoCircleOutlined/>
+        </Tooltip>
+    </span>
+);
+
+
+const ServiceSum: React.FC<ServiceSumProps> = ({productGroup, data, partner}) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectProductName, setSelectProductName] = useState<string>('');
 
@@ -38,7 +56,7 @@ const ServiceSum: React.FC<ServiceSumProps> = ({ productGroup, data, partner }) 
             width: '280px',
             render: (val, record) => {
                 if (record.huaweiCloudProviderCount === 0 && record.huaweiCloudDataSourceCount === 0) {
-                    return <Tag style={{ fontSize: '14px' }}>{val} / {record.productNameZh}</Tag>
+                    return <Tag style={{fontSize: '14px'}}>{val} / {record.productNameZh}</Tag>
                 }
 
                 return <a href={`/service#/productName/${val}`} target={'_blank'} rel="noreferrer">
@@ -64,11 +82,11 @@ const ServiceSum: React.FC<ServiceSumProps> = ({ productGroup, data, partner }) 
                 const text = <a>
                     {row.huaweiCloudProviderCount + row.huaweiCloudDataSourceCount}
                 </a>
-                return <ProviderListDialog productName={row.productName} text={text} selectedKey={"1"} />
+                return <ProviderListDialog productName={row.productName} text={text} selectedKey={"1"}/>
             }
         },
         {
-            title: 'API 对接率',
+            title: <>API 对接率 {apiCoverageTooltip}</>,
             dataIndex: 'apiCoverage',
             align: 'center',
             render: (v, row) => {
@@ -172,7 +190,8 @@ const ServiceSum: React.FC<ServiceSumProps> = ({ productGroup, data, partner }) 
         {
             title: '田主',
             dataIndex: 'owner',
-            width: '5%',
+            align: 'center',
+            width: 140,
         },
     ];
 
@@ -196,7 +215,7 @@ const ServiceSum: React.FC<ServiceSumProps> = ({ productGroup, data, partner }) 
             width: '280px',
             render: (val, record) => {
                 if (record.huaweiCloudProviderCount === 0 && record.huaweiCloudDataSourceCount === 0) {
-                    return <Tag style={{ fontSize: '14px' }}>{val} / {record.productNameZh}</Tag>
+                    return <Tag style={{fontSize: '14px'}}>{val} / {record.productNameZh}</Tag>
                 }
 
                 return <a href={`/service#/productName/${val}`} target={'_blank'} rel="noreferrer">
@@ -212,7 +231,7 @@ const ServiceSum: React.FC<ServiceSumProps> = ({ productGroup, data, partner }) 
                 const text = <a>
                     {row.huaweiCloudProviderCount + row.huaweiCloudDataSourceCount}
                 </a>
-                return <ProviderListDialog productName={row.productName} text={text} selectedKey={"1"} />
+                return <ProviderListDialog productName={row.productName} text={text} selectedKey={"1"}/>
             }
         },
         {
@@ -235,10 +254,10 @@ const ServiceSum: React.FC<ServiceSumProps> = ({ productGroup, data, partner }) 
                     color = '#40a9ff';
                 }
 
-                const text = <div style={{ color: color, textAlign: 'center' }}>
-                    {row.g42ProviderCount + row.g42DataSourceCount}&nbsp; <br /> {rate}%
+                const text = <div style={{color: color, textAlign: 'center'}}>
+                    {row.g42ProviderCount + row.g42DataSourceCount}&nbsp; <br/> {rate}%
                 </div>
-                return <ProviderListDialog productName={row.productName} text={text} selectedKey={"3"} />
+                return <ProviderListDialog productName={row.productName} text={text} selectedKey={"3"}/>
             }
         },
         {
@@ -261,10 +280,10 @@ const ServiceSum: React.FC<ServiceSumProps> = ({ productGroup, data, partner }) 
                     color = '#40a9ff';
                 }
 
-                const text = <div style={{ color: color, textAlign: 'center' }}>
-                    {row.feProviderCount + row.feDataSourceCount}&nbsp; <br /> {rate}%
+                const text = <div style={{color: color, textAlign: 'center'}}>
+                    {row.feProviderCount + row.feDataSourceCount}&nbsp; <br/> {rate}%
                 </div>
-                return <ProviderListDialog productName={row.productName} text={text} selectedKey={"2"} />
+                return <ProviderListDialog productName={row.productName} text={text} selectedKey={"2"}/>
             },
         },
         {
@@ -292,13 +311,13 @@ const ServiceSum: React.FC<ServiceSumProps> = ({ productGroup, data, partner }) 
             onCancel={() => setIsModalOpen(false)}
             width={'85%'}
         >
-            <ApiDialogList productName={selectProductName} />
+            <ApiDialogList productName={selectProductName}/>
         </Modal>
     </>
 }
 
-const SearchForm: React.FC<{ onSearch: (owner: string[], level: string[]) => any }> = ({ onSearch }) => {
-    const { initialState } = useModel('@@initialState');
+const SearchForm: React.FC<{ onSearch: (owner: string[], level: string[]) => any }> = ({onSearch}) => {
+    const {initialState} = useModel('@@initialState');
     let owner: string[] = [];
     if (!['Developer', '程相栋', '牛振国', '解义超', '王泽鹏'].includes(initialState?.currentUser?.realName || '')) {
         owner = [initialState?.currentUser?.realName || '']
@@ -307,9 +326,9 @@ const SearchForm: React.FC<{ onSearch: (owner: string[], level: string[]) => any
     const [ownerList, setOwnerList] = useState<string[]>([]);
     const [selectedOwner, setSelectedOwner] = useState<string[]>(owner);
     const [selectedLevel, setSelectedLevel] = useState<string[]>([]);
-    const levelList: { value: string, label: string }[] = [{ value: '主力服务', label: '主力服务' },
-    { value: '核心服务', label: '核心服务' },
-    { value: 'other', label: '其他服务' }];
+    const levelList: { value: string, label: string }[] = [{value: '主力服务', label: '主力服务'},
+        {value: '核心服务', label: '核心服务'},
+        {value: 'other', label: '其他服务'}];
 
     useEffect(() => {
         getUserList().then((rsp: Global.List<Product.User[]>) => {
@@ -349,7 +368,7 @@ const SearchForm: React.FC<{ onSearch: (owner: string[], level: string[]) => any
         };
     };
 
-    return <div style={{ background: '#fff', padding: '15px', margin: '10px 0' }}>
+    return <div style={{background: '#fff', padding: '15px', margin: '10px 0'}}>
         <div>
             <span className={'filter-label'}>按田主过滤：</span>
             <Space>
@@ -367,7 +386,7 @@ const SearchForm: React.FC<{ onSearch: (owner: string[], level: string[]) => any
                 </Button>
             </Space>
         </div>
-        <div style={{ marginTop: '10px' }}>
+        <div style={{marginTop: '10px'}}>
             <span className={'filter-label'}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;按级别：</span>
             <Space>
                 {levelList.map((t) => {
@@ -387,11 +406,10 @@ const SearchForm: React.FC<{ onSearch: (owner: string[], level: string[]) => any
 const ServiceSumList: React.FC<{
     onload: (data: Portal.PortalSum) => any,
     partner?: boolean,
-}> = ({ onload, partner }) => {
+}> = ({onload, partner}) => {
     const [productList, setProductList] = useState<ServiceSumProps[]>([]);
 
     const onSearch = (ownerArr: string[], levelArr: string[]) => {
-        console.log("xxx")
         getServiceSumList(ownerArr, levelArr).then(rsp => {
             setProductList([]);
             onload(rsp);
@@ -425,7 +443,7 @@ const ServiceSumList: React.FC<{
                     }
                     return s1.localeCompare(s2);
                 });
-                arr.push({ productGroup: key, data: data });
+                arr.push({productGroup: key, data: data});
             }
 
             for (let i = 0; i < arr.length; i++) {
@@ -438,11 +456,11 @@ const ServiceSumList: React.FC<{
 
     return <div className={'service-list'}>
         <div className={'title'}>服务列表</div>
-        <SearchForm onSearch={onSearch} />
-        <Space direction={'vertical'} style={{ width: '100%' }} size={20}>
+        <SearchForm onSearch={onSearch}/>
+        <Space direction={'vertical'} style={{width: '100%'}} size={20}>
             {
                 productList.map(p =>
-                    <ServiceSum partner={partner} productGroup={p.productGroup} data={p.data} key={p.productGroup} />
+                    <ServiceSum partner={partner} productGroup={p.productGroup} data={p.data} key={p.productGroup}/>
                 )
             }
         </Space>
