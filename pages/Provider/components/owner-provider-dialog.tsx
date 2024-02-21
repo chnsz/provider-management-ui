@@ -17,13 +17,18 @@ export const getUTColor = (val: number) => {
     return color;
 }
 
-const OwnerProviderDialog: React.FC<{ content: any, owner: string }> = ({content, owner}) => {
+const OwnerProviderDialog: React.FC<{ content: any, owner: string, productName?: string }> = ({content, owner, productName}) => {
     const [data, setData] = useState<Provider.Provider[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const showModal = () => {
         getProviderByOwner(owner).then((d) => {
-            setData(d.items);
+            if (productName) {
+                const personalData = d.items.filter((item: any) => item.productName === productName);
+                setData(personalData);
+            } else {
+                setData(d.items);
+            }
         });
         setIsModalOpen(true);
     };
@@ -91,10 +96,15 @@ const OwnerProviderDialog: React.FC<{ content: any, owner: string }> = ({content
         },
     ];
 
+    let title = '资源列表';
+    if (owner && !productName) {
+        title = '资源列表【' + owner + '】';
+    }
+
     return (
         <>
             <div style={{cursor: 'pointer'}} onClick={showModal}>{content}</div>
-            <Modal title={'资源列表【' + owner + '】'}
+            <Modal title={title}
                    transitionName={''}
                    open={isModalOpen}
                    onOk={handleOk}
