@@ -158,7 +158,7 @@ const todoTooltips = (
     </span>
 );
 
-const QualitySum: React.FC = () => {
+const QualitySum: React.FC<{ setQualityData: (data: Portal.OwnerSum[]) => any, reloadFlag: any }> = ({ setQualityData, reloadFlag }) => {
     const [data, setData] = useState<Portal.OwnerSum[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
 
@@ -166,9 +166,21 @@ const QualitySum: React.FC = () => {
         getOwnerSumList().then(rsp => {
             setLoading(false);
             setData(rsp.items);
+            setQualityData(rsp.items);
         })
     }
+
+    const onLoadData = () => {
+        loadData();
+    }
+    
     useEffect(loadData, []);
+
+    useEffect(() => {
+        if (reloadFlag) {
+            onLoadData();
+        }
+    }, [reloadFlag]);
 
     const teamMapper = {
         '张继舒': '一组: 鲲鹏',

@@ -1,14 +1,16 @@
-import React, {useState} from 'react';
-import {Button, Modal} from "antd";
+import React, { useState } from 'react';
+import { Button, Modal } from "antd";
 import ApiDialogList from "@/pages/Portal/components/api-dialog-list";
-import {getCloudName} from "@/global";
+import { getCloudName } from "@/global";
 
 const OwnerApiDialog: React.FC<{
     content: any,
     cloudName: string,
+    productName?: string,
+    dashBoardType?: string,
     owner?: string,
     onClosed?: () => any,
-}> = ({content, owner, cloudName, onClosed}) => {
+}> = ({ content, owner, cloudName, productName, dashBoardType, onClosed }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const showModal = () => {
@@ -23,7 +25,7 @@ const OwnerApiDialog: React.FC<{
     };
 
     let title = 'API 列表';
-    if (owner) {
+    if (owner && !productName) {
         title = 'API 列表【' + owner + '】';
     }
     if (cloudName) {
@@ -32,18 +34,18 @@ const OwnerApiDialog: React.FC<{
 
     return (
         <>
-            <div style={{cursor: 'pointer'}} onClick={showModal}>{content}</div>
+            <div style={{ cursor: 'pointer' }} onClick={showModal}>{content}</div>
             <Modal title={title}
-                   transitionName={''}
-                   destroyOnClose
-                   open={isModalOpen}
-                   onOk={closeModel}
-                   onCancel={closeModel}
-                   width={'85%'}
-                   footer={[
-                       <Button key="close" type="primary" onClick={closeModel}>关闭</Button>
-                   ]}>
-                <ApiDialogList owner={owner} cloudName={cloudName}/>
+                transitionName={''}
+                destroyOnClose
+                open={isModalOpen}
+                onOk={closeModel}
+                onCancel={closeModel}
+                width={'85%'}
+                footer={[
+                    <Button key="close" type="primary" onClick={closeModel}>关闭</Button>
+                ]}>
+                <ApiDialogList owner={owner} cloudName={cloudName} productName={productName} dashBoardType={dashBoardType}/>
             </Modal>
         </>
     );
