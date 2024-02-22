@@ -1,10 +1,10 @@
-import {Space, Table, Tag} from 'antd';
-import type {ColumnsType} from 'antd/es/table';
+import { Space, Table, Tag } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
 import React from 'react';
 // @ts-ignore
-import {Scrollbars} from 'react-custom-scrollbars';
+import { Scrollbars } from 'react-custom-scrollbars';
 
-const ProviderApiList: React.FC<{ data: Api.Detail[] }> = ({data}) => {
+const ProviderApiList: React.FC<{ data: Api.Detail[] }> = ({ data }) => {
     const columns: ColumnsType<Api.Detail> = [
         {
             title: '序号',
@@ -65,18 +65,18 @@ const ProviderApiList: React.FC<{ data: Api.Detail[] }> = ({data}) => {
 
     return (
         <>
-            <div className={'summary-container'} style={{padding: '6px 0'}}>
-                <div style={{height: '45vh'}}>
+            <div className={'summary-container'} style={{ padding: '6px 0' }}>
+                <div style={{ height: '45vh' }}>
                     <Scrollbars>
                         <Table columns={columns}
-                               dataSource={data}
-                               pagination={false}
-                               size={'small'}
-                               rowKey={(record) => record.id}
+                            dataSource={data}
+                            pagination={false}
+                            size={'small'}
+                            rowKey={(record) => record.id}
                         />
                     </Scrollbars>
                 </div>
-                <div style={{marginTop: '15px'}}>
+                <div style={{ marginTop: '15px' }}>
                     <Space size={30}>
                         <span><Tag color='blue'>开放中</Tag>已经发布的 API</span>
                         <span><Tag color='orange'>已下线</Tag>API 已下线</span>

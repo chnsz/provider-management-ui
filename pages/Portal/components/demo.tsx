@@ -24,7 +24,7 @@ const Chart: React.FC = () => {
     return (
         <ReactEcharts
             option={option}
-            style={{height: '400px', width: '100%'}}
+            style={{ height: '400px', width: '100%' }}
             className={'react_for_echarts'}
         />
     )
