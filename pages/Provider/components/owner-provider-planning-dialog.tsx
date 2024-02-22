@@ -15,9 +15,8 @@ type FormProps = {
     status: string;
 };
 
-const SearchForm: React.FC<{ owner?: string, productName?: string, onSearch: (val: FormProps) => any }> = (props) => {
+const SearchForm: React.FC<{ owner?: string, onSearch: (val: FormProps) => any }> = (props) => {
     const [productNameMap, setProductNameMap] = useState<ProSchemaValueEnumObj>({});
-    const [productDisable, setProductDisable] = useState(false);
 
     useEffect(() => {
         getProductList(props.owner).then((d: Global.List<Product.Product[]>) => {
@@ -26,9 +25,6 @@ const SearchForm: React.FC<{ owner?: string, productName?: string, onSearch: (va
                 .sort()
                 .forEach(n => map[n] = n);
             setProductNameMap(map);
-            if (props.productName && map[props.productName]) {
-                setProductDisable(true);
-            }
         });
     }, []);
 
@@ -47,8 +43,6 @@ const SearchForm: React.FC<{ owner?: string, productName?: string, onSearch: (va
             <ProFormSelect
                 name="productName"
                 label="产品服务"
-                initialValue={props.productName}
-                disabled={productDisable}
                 showSearch
                 fieldProps={{
                     onChange: onProductNameChange,
@@ -77,13 +71,11 @@ const SearchForm: React.FC<{ owner?: string, productName?: string, onSearch: (va
 const OwnerProviderPlanningDialog: React.FC<{
     content: any,
     owner: string,
-    dashBoardType?: string,
-    productName?: string,
     onClosed?: () => any,
-}> = ({ content, owner, dashBoardType, productName, onClosed }) => {
+}> = ({ content, owner, onClosed }) => {
     const [data, setData] = useState<ProviderPlanning.ProviderPlanning[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [queryParams, setQueryParams] = useState<ProviderPlanning.QueryParams>({ status: 'new', productName: productName });
+    const [queryParams, setQueryParams] = useState<ProviderPlanning.QueryParams>({status: 'new'});
 
     const showModal = () => {
         getProviderPlanningList();
@@ -194,22 +186,15 @@ const OwnerProviderPlanningDialog: React.FC<{
         },
     ];
 
-    let title = '资源规划列表';
-    if (owner && !productName) {
-        title = '资源规划列表【' + owner + '】';
-    }
-
     return (
         <>
             <div style={{ cursor: 'pointer' }}
                 onClick={showModal}>
-                {dashBoardType === 'personal' ?
-                    <div>{content}</div> :
-                    <Button type={'link'}>
-                        {content}
-                    </Button>}
+                <Button type={'link'}>
+                    {content}
+                </Button>
             </div>
-            <Modal title={title}
+            <Modal title={'资源规划列表【' + owner + '】'}
                 transitionName={''}
                 open={isModalOpen}
                 onOk={closeModel}
@@ -223,8 +208,7 @@ const OwnerProviderPlanningDialog: React.FC<{
                     </Button>
                 ]}>
                 <SearchForm owner={owner}
-                    onSearch={onSearch}
-                    productName={productName} />
+                    onSearch={onSearch} />
                 <div style={{ paddingTop: "15px" }}>
                     <Table columns={columns}
                         rowKey={(record) => record.id}
