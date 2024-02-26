@@ -7,8 +7,6 @@ import ProviderBase from "@/pages/Provider/provider-base";
 import ProviderDocsIssue from "@/pages/Partner/components/provider_docs_issue";
 import {getProviderSyncSum} from "@/services/provider/api";
 import CustomBreadcrumb from "@/components/Breadcrumb";
-import QualityPersonal from './quality-personal';
-import { useModel } from 'umi';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const IconFont = createFromIconfontCN({
@@ -30,7 +28,6 @@ const ProviderDocsIssueView = () => {
     useEffect(() => {
         loadData()
     }, []);
-    
 
     return <div className={'partner'} style={{background: '#fff'}}>
         <div className={'custom-title'}>资源文档问题</div>
@@ -41,33 +38,11 @@ const ProviderDocsIssueView = () => {
 }
 
 const Provider: React.FC = () => {
-    const [qualityPersonData, setQualityPersonData] = useState<Portal.OwnerSum[]>([]);
-    const { initialState } = useModel('@@initialState');
-    const personName = initialState?.currentUser?.realName || '';
-    const [reloadFlag, setReloadFlag] = useState(false);
-    const onDataChange = (data: Portal.OwnerSum[]) => {
-        let productList: any = [];
-        data.forEach((item) => {
-            item.productSumList.forEach((i) => {
-                i['parOwner'] = item.owner;
-            })
-            productList = productList.concat(item.productSumList);
-        })
-        const personData = productList.filter((pro: any) => pro.owner === personName);
-        setQualityPersonData([...personData]);
-        setReloadFlag(false);
-    };
-
-    const onLoadData = () => {
-        setReloadFlag(true);
-    }
-
     return (
         <div className={'provider'}>
             <CustomBreadcrumb items={[{title: '首页'}, {title: '工作看板'}]}/>
-            <QualityPersonal qualityData={qualityPersonData} setReloadFlag ={onLoadData}/>
             <div style={{background: '#fff', margin: '15px 0'}}>
-                <QualitySum reloadFlag={reloadFlag} setQualityData={onDataChange}/>
+                <QualitySum/>
             </div>
             <ProviderDocsIssueView/>
             <div style={{background: '#fff', marginTop: '15px'}}>

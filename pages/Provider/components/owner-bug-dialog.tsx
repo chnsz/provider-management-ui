@@ -4,18 +4,13 @@ import type {ColumnsType} from "antd/es/table/interface";
 import {getProviderBugs} from "@/services/provider/api";
 import {toShortDate} from "@/utils/common";
 
-const OwnerBugListDialog: React.FC<{ content: any, owner: string, productName?: string }> = ({content, owner, productName}) => {
+const OwnerBugListDialog: React.FC<{ content: any, owner: string }> = ({content, owner}) => {
     const [data, setData] = useState<Provider.Bug[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const showModal = () => {
         getProviderBugs(owner).then((d) => {
-            if (productName) {
-                const personalData = d.items?.filter((item: any) => item.productName === productName);
-                setData(personalData);
-            } else {
-                setData(d.items);
-            }
+            setData(d.items);
         });
         setIsModalOpen(true);
     };
@@ -71,15 +66,10 @@ const OwnerBugListDialog: React.FC<{ content: any, owner: string, productName?: 
         }
     ];
 
-    let title = '资源问题列表';
-    if (owner && !productName) {
-        title = '资源问题列表【' + owner + '】';
-    }
-
     return (
         <>
             <Button type={'link'} onClick={showModal} danger={content > 0}>{content}</Button>
-            <Modal title={title}
+            <Modal title={'资源问题列表【' + owner + '】'}
                    transitionName={''}
                    open={isModalOpen}
                    onOk={handleOk}
