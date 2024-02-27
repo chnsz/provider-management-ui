@@ -1,13 +1,13 @@
-import { Button, Checkbox, Col, Collapse, Input, Row, Select, Space, Table } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
-import React, { useState } from 'react';
-import { EditOutlined } from "@ant-design/icons";
+import {Button, Checkbox, Col, Collapse, Input, Row, Select, Space, Table} from 'antd';
+import type {ColumnsType} from 'antd/es/table';
+import React, {useState} from 'react';
+import {EditOutlined} from "@ant-design/icons";
 import '../api-config.less';
 import ChooseApiDialog from '../components/choose-api-dialog';
-import { getApiFieldList } from '@/services/auto-generate/api';
+import {getApiFieldList} from '@/services/auto-generate/api';
 
-const { Panel } = Collapse;
-const { TextArea } = Input;
+const {Panel} = Collapse;
+const {TextArea} = Input;
 
 export type ApiDetail = {
     id: number;
@@ -67,14 +67,14 @@ export type Field = {
 }
 
 export const FieldTypeOption = [
-    { value: 'string', label: 'schema.TypeString' },
-    { value: 'integer', label: 'schema.TypeInt' },
-    { value: 'float', label: 'schema.TypeFloat' },
-    { value: 'boolean', label: 'schema.TypeBool' },
-    { value: 'number', label: 'schema.TypeFloat' },
-    { value: 'array', label: 'schema.TypeList' },
-    { value: 'object', label: 'schema.TypeList' },
-    { value: 'map[string]string', label: 'schema.TypeMap' },
+    {value: 'string', label: 'schema.TypeString'},
+    {value: 'integer', label: 'schema.TypeInt'},
+    {value: 'float', label: 'schema.TypeFloat'},
+    {value: 'boolean', label: 'schema.TypeBool'},
+    {value: 'number', label: 'schema.TypeFloat'},
+    {value: 'array', label: 'schema.TypeList'},
+    {value: 'object', label: 'schema.TypeList'},
+    {value: 'map[string]string', label: 'schema.TypeMap'},
 ];
 
 const ApiFieldView: React.FC<{
@@ -86,7 +86,16 @@ const ApiFieldView: React.FC<{
     onResourceIdChange: (value: string) => any;
     onChooseIgnore: (paramsType: 'input' | 'output') => any;
     onCancelIgnore: (paramsType: 'input' | 'output') => any;
-}> = ({ apiData, baseInfo, apiAllData, onFieldChange, onStatusCodeChange, onResourceIdChange, onChooseIgnore, onCancelIgnore }) => {
+}> = ({
+          apiData,
+          baseInfo,
+          apiAllData,
+          onFieldChange,
+          onStatusCodeChange,
+          onResourceIdChange,
+          onChooseIgnore,
+          onCancelIgnore
+      }) => {
     const columns: ColumnsType<Field> = [{
         title: '序号',
         dataIndex: 'serialNo',
@@ -125,7 +134,7 @@ const ApiFieldView: React.FC<{
     }, {
         title: 'Schema 字段',
         children: [{
-            title: <>是否忽略<EditOutlined style={{ color: '#6d6d6d' }} /></>,
+            title: <>是否忽略<EditOutlined style={{color: '#6d6d6d'}}/></>,
             dataIndex: 'ignore',
             align: 'center',
             width: 90,
@@ -133,10 +142,10 @@ const ApiFieldView: React.FC<{
                 return <Checkbox defaultChecked={v} checked={row.ignore} onChange={e => {
                     row.ignore = e.target.checked;
                     onFieldChange(row.paramType, row)
-                }} />
+                }}/>
             }
         }, {
-            title: <>名称<EditOutlined style={{ color: '#6d6d6d' }} /></>,
+            title: <>名称<EditOutlined style={{color: '#6d6d6d'}}/></>,
             dataIndex: 'schemaName',
             ellipsis: true,
             width: 175,
@@ -169,7 +178,7 @@ const ApiFieldView: React.FC<{
                         showSearch
                         defaultValue={row.selectSchemaName}
                         placeholder="请选择"
-                        style={{ width: '100%' }}
+                        style={{width: '100%'}}
                         bordered={false}
                         onChange={v => {
                             row.schemaName = v;
@@ -180,20 +189,20 @@ const ApiFieldView: React.FC<{
                     />
                 } else {
                     return <Input defaultValue={v}
-                        onChange={e => {
-                            row.schemaName = e.target.value;
-                            const oldValue = v;
-                            const newValue = e.target.value;
-                            const schemaValue = {
-                                oldValue,
-                                newValue
-                            };
-                            onFieldChange(row.paramType, row, 'schemaName', schemaValue)
-                        }} />
+                                  onChange={e => {
+                                      row.schemaName = e.target.value;
+                                      const oldValue = v;
+                                      const newValue = e.target.value;
+                                      const schemaValue = {
+                                          oldValue,
+                                          newValue
+                                      };
+                                      onFieldChange(row.paramType, row, 'schemaName', schemaValue)
+                                  }}/>
                 }
             },
         }, {
-            title: <>类型<EditOutlined style={{ color: '#6d6d6d' }} /></>,
+            title: <>类型<EditOutlined style={{color: '#6d6d6d'}}/></>,
             dataIndex: 'schemaType',
             align: 'center',
             ellipsis: true,
@@ -201,7 +210,7 @@ const ApiFieldView: React.FC<{
             render: (v: any, row) => {
                 return <Select
                     defaultValue={v}
-                    style={{ width: '100%' }}
+                    style={{width: '100%'}}
                     bordered={false}
                     onChange={v => {
                         row.schemaType = v;
@@ -211,7 +220,7 @@ const ApiFieldView: React.FC<{
                 />
             }
         }, {
-            title: <>必填<EditOutlined style={{ color: '#6d6d6d' }} /></>,
+            title: <>必填<EditOutlined style={{color: '#6d6d6d'}}/></>,
             dataIndex: 'schemaRequired',
             align: 'center',
             width: 80,
@@ -219,56 +228,56 @@ const ApiFieldView: React.FC<{
                 return <Checkbox defaultChecked={v} onChange={e => {
                     row.schemaRequired = e.target.checked;
                     onFieldChange(row.paramType, row)
-                }} />
+                }}/>
             }
         },
-        {
-            title: <>Computed<EditOutlined style={{ color: '#6d6d6d' }} /></>,
-            dataIndex: 'computed',
-            align: 'center',
-            width: 100,
-            render: (v, row) => {
-                return <Checkbox defaultChecked={v} onChange={e => {
-                    row.computed = e.target.checked;
-                    onFieldChange(row.paramType, row)
-                }} />
-            }
-        },
-        {
-            title: <>Sensitive<EditOutlined style={{ color: '#6d6d6d' }} /></>,
-            dataIndex: 'sensitive',
-            align: 'center',
-            width: 100,
-            render: (v, row) => {
-                return <Checkbox defaultChecked={v} onChange={e => {
-                    row.sensitive = e.target.checked;
-                    onFieldChange(row.paramType, row)
-                }} />
-            }
-        },
-        {
-            title: <>默认值<EditOutlined style={{ color: '#6d6d6d' }} /></>,
-            dataIndex: 'default',
-            align: 'center',
-            width: 100,
-            render: (v, row) => {
-                return <Input defaultChecked={v} onChange={e => {
-                    row.default = e.target.value;
-                    onFieldChange(row.paramType, row)
-                }} />
-            }
-        },
-        {
-            title: <>描述<EditOutlined style={{ color: '#6d6d6d' }} /></>,
-            dataIndex: 'schemaDesc',
-            ellipsis: true,
-            render: (v, row) => {
-                return <TextArea rows={1} defaultValue={v} onChange={e => {
-                    row.schemaDesc = e.target.value;
-                    onFieldChange(row.paramType, row)
-                }} />
+            {
+                title: <>Computed<EditOutlined style={{color: '#6d6d6d'}}/></>,
+                dataIndex: 'computed',
+                align: 'center',
+                width: 100,
+                render: (v, row) => {
+                    return <Checkbox defaultChecked={v} onChange={e => {
+                        row.computed = e.target.checked;
+                        onFieldChange(row.paramType, row)
+                    }}/>
+                }
             },
-        }]
+            {
+                title: <>Sensitive<EditOutlined style={{color: '#6d6d6d'}}/></>,
+                dataIndex: 'sensitive',
+                align: 'center',
+                width: 100,
+                render: (v, row) => {
+                    return <Checkbox defaultChecked={v} onChange={e => {
+                        row.sensitive = e.target.checked;
+                        onFieldChange(row.paramType, row)
+                    }}/>
+                }
+            },
+            {
+                title: <>默认值<EditOutlined style={{color: '#6d6d6d'}}/></>,
+                dataIndex: 'default',
+                align: 'center',
+                width: 100,
+                render: (v, row) => {
+                    return <Input defaultChecked={v} onChange={e => {
+                        row.default = e.target.value;
+                        onFieldChange(row.paramType, row)
+                    }}/>
+                }
+            },
+            {
+                title: <>描述<EditOutlined style={{color: '#6d6d6d'}}/></>,
+                dataIndex: 'schemaDesc',
+                ellipsis: true,
+                render: (v, row) => {
+                    return <TextArea rows={1} defaultValue={v} onChange={e => {
+                        row.schemaDesc = e.target.value;
+                        onFieldChange(row.paramType, row)
+                    }}/>
+                },
+            }]
     }];
 
     const outputColumns: ColumnsType<Field> = columns.slice().map((column: any) => {
@@ -281,23 +290,24 @@ const ApiFieldView: React.FC<{
         return column;
     });
 
-    return <div style={{ margin: '0 6px' }}>
+    return <div style={{margin: '0 6px'}}>
         <Space className='api-config' direction={'vertical'}>
-            <div style={{ fontWeight: 'bold', fontSize: '16px', marginBottom: '10px' }}>请求参数</div>
-            <div style={{ display: 'flex' }}>
+            <div style={{fontWeight: 'bold', fontSize: '16px', marginBottom: '10px'}}>请求参数</div>
+            <div style={{display: 'flex'}}>
                 {
-                    apiData.schemaType === 'argument' ?
-                        <span style={{ marginRight: '20px' }}>
+                    (apiData.schemaType === 'argument' || baseInfo.providerType === 'DataSource') ?
+                        <span style={{marginRight: '20px'}}>
                             资源ID &nbsp;&nbsp;&nbsp;
                             <Select placeholder="请选择资源ID"
-                                showSearch
-                                style={{ width: '180px' }}
-                                value={apiData.resourceId}
-                                options={apiData.rosourceOption}
-                                onChange={(e) => {
-                                    apiData.resourceId = e;
-                                    onResourceIdChange(e)
-                                }} />
+                                    showSearch
+                                    allowClear
+                                    style={{width: '180px'}}
+                                    value={apiData.resourceId}
+                                    options={apiData.rosourceOption}
+                                    onChange={(e) => {
+                                        apiData.resourceId = e;
+                                        onResourceIdChange(e)
+                                    }}/>
                         </span> :
                         <span></span>
                 }
@@ -305,16 +315,17 @@ const ApiFieldView: React.FC<{
                 <span>
                     成功状态码 &nbsp;&nbsp;&nbsp;
                     <Input defaultValue={apiData.statusCode}
-                        onChange={(e) => {
-                            apiData.statusCode = e.target.value;
-                            onStatusCodeChange(e.target.value)
-                        }}
-                        placeholder="请输入成功状态码" style={{ width: '145px' }} />
+                           onChange={(e) => {
+                               apiData.statusCode = e.target.value;
+                               onStatusCodeChange(e.target.value)
+                           }}
+                           placeholder="请输入成功状态码" style={{width: '145px'}}/>
                 </span>
             </div>
-            <div style={{ marginTop: '10px' }}>
+            <div style={{marginTop: '10px'}}>
                 <Button type="primary" size='small' onClick={() => onChooseIgnore('input')}>全部忽略</Button>
-                <Button type="primary" size='small' onClick={() => onCancelIgnore('input')} style={{ marginLeft: '20px' }}>取消全部忽略</Button>
+                <Button type="primary" size='small' onClick={() => onCancelIgnore('input')}
+                        style={{marginLeft: '20px'}}>取消全部忽略</Button>
             </div>
 
             <Table
@@ -324,14 +335,15 @@ const ApiFieldView: React.FC<{
                 pagination={false}
                 rowKey={r => r.id}
             />
-            <div style={{ height: '15px' }}></div>
+            <div style={{height: '15px'}}></div>
             {
                 ['argument', 'attribute'].includes(apiData.schemaType) &&
                 <div>
-                    <div style={{ fontWeight: 'bold', fontSize: '16px', marginBottom: '10px' }}>响应参数</div>
-                    <div style={{ marginTop: '10px' }}>
+                    <div style={{fontWeight: 'bold', fontSize: '16px', marginBottom: '10px'}}>响应参数</div>
+                    <div style={{marginTop: '10px'}}>
                         <Button type="primary" size='small' onClick={() => onChooseIgnore('output')}>全部忽略</Button>
-                        <Button type="primary" size='small' onClick={() => onCancelIgnore('output')} style={{ marginLeft: '20px' }}>取消全部忽略</Button>
+                        <Button type="primary" size='small' onClick={() => onCancelIgnore('output')}
+                                style={{marginLeft: '20px'}}>取消全部忽略</Button>
                     </div>
                     <Table
                         columns={outputColumns}
@@ -347,13 +359,17 @@ const ApiFieldView: React.FC<{
     </div>;
 }
 
-const ApiInfo: React.FC<{ api: ApiDetail, onSchemaTypeChange: (v: string) => any, deleteApiData: () => any }> = ({ api, onSchemaTypeChange, deleteApiData }) => {
+const ApiInfo: React.FC<{ api: ApiDetail, onSchemaTypeChange: (v: string) => any, deleteApiData: () => any }> = ({
+                                                                                                                     api,
+                                                                                                                     onSchemaTypeChange,
+                                                                                                                     deleteApiData
+                                                                                                                 }) => {
     return <Row>
         <Col span={12}>
             <Select
                 onClick={(e) => e.stopPropagation()}
                 showArrow
-                style={{ width: '140px', marginRight: '10px' }}
+                style={{width: '140px', marginRight: '10px'}}
                 placeholder={'请选择操作'}
                 value={api.schemaType}
                 onChange={onSchemaTypeChange}
@@ -365,14 +381,19 @@ const ApiInfo: React.FC<{ api: ApiDetail, onSchemaTypeChange: (v: string) => any
             </Select>
             #{api.id} 【{api.productName}】&nbsp;&nbsp;{api.apiName} / {api.apiNameEn}
         </Col>
-        <Col span={12} style={{ textAlign: 'right', marginTop: '4px' }}>
+        <Col span={12} style={{textAlign: 'right', marginTop: '4px'}}>
             [{api.method}]&nbsp;&nbsp;{api.uri}
-            <Button size='small' onClick={deleteApiData} style={{ marginLeft: '8px' }}>移除</Button>
+            <Button size='small' onClick={deleteApiData} style={{marginLeft: '8px'}}>移除</Button>
         </Col>
     </Row>;
 }
 
-const ApiConfig: React.FC<{ setData: (data: ApiDetail[]) => any, baseInfo: any, dataId: number | null, apiDataPar: ApiDetail[] }> = ({ setData, baseInfo, dataId, apiDataPar }) => {
+const ApiConfig: React.FC<{
+    setData: (data: ApiDetail[]) => any,
+    baseInfo: any,
+    dataId: number | null,
+    apiDataPar: ApiDetail[]
+}> = ({setData, baseInfo, dataId, apiDataPar}) => {
     let [apiData, setApiData] = useState<ApiDetail[]>([]);
     const [activeKey, setActiveKey] = useState<string[]>([]);
     apiData = apiDataPar;
@@ -380,7 +401,7 @@ const ApiConfig: React.FC<{ setData: (data: ApiDetail[]) => any, baseInfo: any, 
     const onAdd = (apiId: number[], rows: Api.Detail[]) => {
         getApiFieldList(apiId).then(rst => {
             const tmp = rst.map(t => {
-                let api: ApiDetail = { ...t };
+                let api: ApiDetail = {...t};
                 const findApiData = apiData.find(item => item.id === api.id);
                 if (findApiData) {
                     api.schemaType = findApiData.schemaType;
