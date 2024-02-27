@@ -582,6 +582,12 @@ const ApiConfig: React.FC<{
                                     if (v !== 'argument') {
                                         api.resourceId = '';
                                     }
+
+                                    if (v === 'attribute') {
+                                        api.outputFieldList.forEach((item) => {
+                                            item.ignore = false;
+                                        })
+                                    }
                                     setData(apiData)
                                 }}
                                 deleteApiData={(e) => deleteApiData(api.id, e)}
