@@ -295,7 +295,7 @@ const ApiFieldView: React.FC<{
             <div style={{fontWeight: 'bold', fontSize: '16px', marginBottom: '10px'}}>请求参数</div>
             <div style={{display: 'flex'}}>
                 {
-                    (apiData.schemaType === 'argument' || baseInfo.providerType === 'DataSource') ?
+                    (apiData.schemaType === 'argument' || baseInfo?.providerType === 'DataSource') ?
                         <span style={{marginRight: '20px'}}>
                             资源ID &nbsp;&nbsp;&nbsp;
                             <Select placeholder="请选择资源ID"
