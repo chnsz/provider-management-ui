@@ -241,7 +241,8 @@ const AutoGenerate: React.FC = () => {
                 uri: api.uri,
                 method: api.method,
                 serviceName: api.productName,
-                ignores: api.inputFieldList.filter(field => field.ignore).map(field => field.fieldName),
+                requestIgnore: api.inputFieldList.filter(field => field.ignore).map(field => field.fieldName),
+                responseIgnore: [] as string[],
                 schemas: {},
             };
 
@@ -264,10 +265,12 @@ const AutoGenerate: React.FC = () => {
                 obj.schemas['id'] = {
                     relation: api.resourceId
                 };
+
+                obj['pluginId'] = api.resourceId;
             }
 
             if (api.schemaType === 'attribute') {
-                obj.ignores = [...obj.ignores, ...api.outputFieldList.filter(field => field.ignore).map(field => field.fieldName)];
+                obj.responseIgnore = api.outputFieldList.filter(field => field.ignore).map(field => field.fieldName);
                 const inputObj = api.inputFieldList.filter(field => !field.ignore).reduce((result, item) => {
                     result[item.fieldName] = {
                         relation: item.schemaName
