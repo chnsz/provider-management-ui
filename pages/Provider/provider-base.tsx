@@ -1,17 +1,18 @@
 import AddProviderBaseDialog from '@/pages/Provider/provider-base/add-provider-base-dialog';
 import ProviderBaseSumDialog from '@/pages/Provider/provider-base/provider-base-sum-dialog';
-import {getProviderBaseAllSum} from '@/services/provider/api';
-import {Space, Table} from 'antd';
-import type {ColumnsType} from 'antd/es/table/interface';
-import React, {useEffect, useState} from 'react';
+import { getProviderBaseAllSum } from '@/services/provider/api';
+import { Space, Table, Tabs, TabsProps } from 'antd';
+import type { ColumnsType } from 'antd/es/table/interface';
+import React, { useEffect, useState } from 'react';
 import SearchForm from "@/components/SearchForm";
-import {useModel} from 'umi';
+import { useModel } from 'umi';
 
 const ProviderBase: React.FC = () => {
-    const [data, setData] = useState<Provider.ProviderBaseSum[]>([]);
+    const [resourceData, setResourceData] = useState<Provider.ProviderBaseSum[]>([]);
+    const [dataSourceData, setDataSourceData] = useState<Provider.ProviderBaseSum[]>([]);
     const [owners, setOwners] = useState<string[]>([]);
 
-    const {initialState} = useModel('@@initialState');
+    const { initialState } = useModel('@@initialState');
     let owner: string[] = [];
     if (!['Developer', '程相栋', '牛振国', '解义超', '王泽鹏'].includes(initialState?.currentUser?.realName || '')) {
         owner = [initialState?.currentUser?.realName || '']
@@ -20,25 +21,38 @@ const ProviderBase: React.FC = () => {
     const loadData = () => {
         getProviderBaseAllSum().then((data) => {
             if (owners.length === 0) {
-                setData(data.items);
+                handleData(data.items);
                 return;
             }
             const arr = data.items.filter(t => {
                 for (let i = 0; i < owners.length; i++) {
-                    if(t.owner.includes(owners[i])){
+                    if (t.owner.includes(owners[i])) {
                         return true;
                     }
                 }
                 return false;
-                // owners.includes(t.owner)
             })
-            setData(arr.length === 0 ? data.items : arr);
+            if (arr.length === 0) {
+                handleData(data.items);
+            } else {
+                handleData(arr);
+            }
         });
     };
 
-    // useEffect(() => {
-    //     loadData();
-    // }, []);
+    const handleData = (data: any) => {
+        const resourceArr: Provider.ProviderBaseSum[] = [];
+        const dataSourceArr: Provider.ProviderBaseSum[] = [];
+        data.forEach((d) => {
+            if (d.providerType === 'Resource') {
+                resourceArr.push(d);
+            } else if (d.providerType === 'DataSource') {
+                dataSourceArr.push(d);
+            }
+        })
+        setResourceData(resourceArr);
+        setDataSourceData(dataSourceArr)
+    }
 
     useEffect(() => {
         loadData();
@@ -134,23 +148,36 @@ const ProviderBase: React.FC = () => {
         },
     ];
 
+    const items: TabsProps['items'] = [{
+        key: '1',
+        label: `Resource (${resourceData.length})`,
+        children: <Table dataSource={resourceData}
+            columns={columns} size={'small'}
+            rowKey={(record) => record.providerType + '_' + record.providerName}
+            pagination={false}
+        />,
+    }, {
+        key: '2',
+        label: `DataSource (${dataSourceData.length})`,
+        children: <Table dataSource={dataSourceData}
+            columns={columns} size={'small'}
+            rowKey={(record) => record.providerType + '_' + record.providerName}
+            pagination={false}
+        />,
+    }];
+
 
     return (
         <div>
-            <Space direction={'vertical'} style={{width: '100%'}}>
-                <AddProviderBaseDialog onClosed={loadData}/>
-                <div style={{padding: '5px 0 10px 5px'}}>
-                    <SearchForm options={['owner']} defaultValue={{owner: owner}}
-                                onSearch={(formData) => setOwners(formData.owner)}
+            <Space direction={'vertical'} style={{ width: '100%' }}>
+                <AddProviderBaseDialog onClosed={loadData} />
+                <div style={{ padding: '5px 0 10px 5px' }}>
+                    <SearchForm options={['owner']} defaultValue={{ owner: owner }}
+                        onSearch={(formData) => setOwners(formData.owner)}
                     />
                 </div>
-                <Table
-                    columns={columns}
-                    dataSource={data}
-                    size={'middle'}
-                    pagination={false}
-                    rowKey={(r) => r.providerType + '_' + r.providerName}
-                />
+
+                <Tabs defaultActiveKey="1" items={items} />
             </Space>
         </div>
     );

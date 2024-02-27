@@ -1,6 +1,6 @@
-import {getApiPanelSum} from '@/services/portal/api';
+import { getApiPanelSum } from '@/services/portal/api';
 import ReactEcharts from 'echarts-for-react';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import '../portal.less';
 
 const defaultVal = {
@@ -15,7 +15,7 @@ const defaultVal = {
         used: 0,
         unpublished: 0,
     },
-    product: {owner: '', productIcon: '', productName: ''},
+    product: { owner: '', productIcon: '', productName: '' },
     provider: {
         dataSource: 0,
         datasource_deprecated: 0,
@@ -28,7 +28,7 @@ const defaultVal = {
     },
 };
 
-const ApiCoverage: React.FC<{ productName: string }> = ({productName}) => {
+const ApiCoverage: React.FC<{ productName: string }> = ({ productName }) => {
     const [data, setData] = useState<Portal.ProductSumPanel>(defaultVal);
 
     useEffect(() => {
@@ -108,23 +108,23 @@ const ApiCoverage: React.FC<{ productName: string }> = ({productName}) => {
                     show: false,
                 },
                 data: [
-                    {name: '已对接', value: data.apiSum.used, itemStyle: {color: '#5470c6'}},
+                    { name: '已对接', value: data.apiSum.used, itemStyle: { color: '#5470c6' } },
                     {
                         name: '规划中',
                         value: data.apiSum.planning,
-                        itemStyle: {color: '#36cbcb'},
+                        itemStyle: { color: '#36cbcb' },
                     },
                     {
                         name: '待分析',
                         value: data.apiSum.need_analysis,
-                        itemStyle: {color: '#fac858'},
+                        itemStyle: { color: '#fac858' },
                     },
                     {
                         name: '缺   失',
                         value: data.apiSum.missing_api,
-                        itemStyle: {color: '#ee6666'},
+                        itemStyle: { color: '#ee6666' },
                     },
-                    {name: '不适合', value: data.apiSum.ignore, itemStyle: {color: '#975fe4'}},
+                    { name: '不适合', value: data.apiSum.ignore, itemStyle: { color: '#975fe4' } },
                 ],
             },
         ],
@@ -162,7 +162,7 @@ const ApiCoverage: React.FC<{ productName: string }> = ({productName}) => {
         <div className={'portal-card'}>
             <div className={'header'}>API 对接</div>
             <div className={'container'}>
-                <ReactEcharts option={option}/>
+                <ReactEcharts option={option} />
                 {/*<div className={'coverage-card-percent'}>对接率： {toPercent(data.apiSum.used / data.apiSum.total)}</div>*/}
             </div>
         </div>
