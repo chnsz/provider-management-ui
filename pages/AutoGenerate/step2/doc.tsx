@@ -184,7 +184,6 @@ const Doc: React.FC<{ setData: (data: any) => any, docDataPar: any }> = ({ setDa
                                         }}/>
                                     </div>
                                 </Form.Item>
-
                             </Form>
                         </div>
                     </div>

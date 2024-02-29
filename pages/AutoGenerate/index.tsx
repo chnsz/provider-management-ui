@@ -79,8 +79,6 @@ const AutoGenerate: React.FC = () => {
             } else {
                 window.open(`/auto-generate-provider-list`, '_self')
             }
-
-
         }
 
     }

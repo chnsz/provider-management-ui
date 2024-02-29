@@ -144,7 +144,7 @@ const AddFunDialog: React.FC<AddFunDialogProp> = (props) => {
                                 label="名称"
                                 name="funName"
                                 initialValue={funName}
-                                rules={[{ required: true, message: '请选择函数类型' }]}
+                                rules={[{ required: true, message: '请输入名称' }]}
                             >
                                 <Input value={funName} maxLength={128} onChange={e => setFunName(e.target.value)} />
                             </Form.Item>
