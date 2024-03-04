@@ -116,13 +116,56 @@ const AutoGenerate: React.FC = () => {
         }
 
         const createApi = apiData.find(item => item.schemaType === 'argument');
-        if (createApi && !createApi.resourceId) {
+        if (createApi && !createApi.isJmespath && !createApi.resourceId) {
             message.error(`请选择${createApi.apiNameEn} API中的资源ID！`);
+            return false;
+        }
+
+        if (createApi && createApi.isJmespath && !createApi.jmespath) {
+            message.error(`请输入${createApi.apiNameEn} API中的资源ID！`);
             return false;
         }
 
         if (apiData.some(item => !item.statusCode)) {
             message.error('请完善API配置信息的成功状态码！');
+            return false;
+        }
+
+        // read中勾选支持分页必填参数校验
+        let pageFlag = true;
+        const readApiDatas = apiData.filter(item => item.schemaType === 'attribute' && item.isPage);
+        for (let i=0; i<readApiDatas.length && pageFlag; i++) {
+            if (!readApiDatas[i].dataPath) {  
+                message.error('请完善ReadContext API中的分页信息必填项！');
+                pageFlag = false;
+                break;
+            }
+            if (readApiDatas[i].pageMethod === 'marker' && (!readApiDatas[i].markerKey || !readApiDatas[i].nextExp)) {
+                message.error('请完善ReadContext API中的分页信息必填项！');
+                pageFlag = false;
+                break;
+            }
+
+            if (readApiDatas[i].pageMethod === 'link' && !readApiDatas[i].linkExp) {
+                message.error('请完善ReadContext API中的分页信息必填项！');
+                pageFlag = false;
+                break;
+            }
+
+            if (readApiDatas[i].pageMethod === 'offset' && (!readApiDatas[i].offsetKey || !readApiDatas[i].limitKey)) {
+                message.error('请完善ReadContext API中的分页信息必填项！');
+                pageFlag = false;
+                break;
+            }
+
+            if (readApiDatas[i].pageMethod === 'pageSize' && (!readApiDatas[i].pageNumKey || !readApiDatas[i].pageSizeKey)) {
+                message.error('请完善ReadContext API中的分页信息必填项！');
+                pageFlag = false;
+                break;
+            }
+        }
+
+        if (!pageFlag) {
             return false;
         }
 
@@ -264,7 +307,8 @@ const AutoGenerate: React.FC = () => {
                     relation: api.resourceId
                 };
 
-                obj['pluginId'] = api.resourceId;
+                obj['pluginId'] = !api.isJmespath ? api.resourceId : '';
+                obj['jmespath'] = api.isJmespath ? api.jmespath : '';
             }
 
             if (api.schemaType === 'attribute') {
@@ -305,6 +349,23 @@ const AutoGenerate: React.FC = () => {
                 }
 
                 obj.schemas = mergedObj;
+
+                // read中涉及分页
+                if (api.isPage) {
+                    obj['pager'] = {
+                        method: api.pageMethod,
+                        dataPath: api.dataPath,
+                        markerKey: api.markerKey,
+                        nextExp: api.nextExp,
+                        linkExp: api.linkExp,
+                        offsetKey: api.offsetKey,
+                        limitKey: api.limitKey,
+                        defaultLimit: api.defaultLimit,
+                        pageNumKey: api.pageNumKey,
+                        pageSizeKey: api.pageSizeKey,
+                        defaultSize: api.defaultSize
+                    }
+                }
             }
 
             if (['update', 'delete'].includes(api.schemaType)) {
