@@ -46,41 +46,41 @@ export type ApiDetail = {
         value: string,
     }[];
     isPage?: boolean;
-    dataPath?: string;
-    pageMethod?: string;
+    dataPath?: string | null;
+    pageMethod?: string | null;
     pageOption?: {
         label: string,
         value: string
     }[];
-    markerKey?: string;
+    markerKey?: string | null;
     markerOption?: {
         label: string,
         value: string
     }[];
-    nextExp?: string;
-    linkExp?: string;
-    offsetKey?: string;
+    nextExp?: string | null;
+    linkExp?: string | null;
+    offsetKey?: string | null;
     offsetOption?: {
         label: string,
         value: string
     }[];
-    limitKey?: string;
+    limitKey?: string | null;
     limitOption?: {
         label: string,
         value: string
     }[];
-    defaultLimit?: string;
-    pageNumKey?: string;
+    defaultLimit?: string | null;
+    pageNumKey?: string | null;
     pageNumOption?: {
         label: string,
         value: string
     }[];
-    pageSizeKey?: string;
+    pageSizeKey?: string | null;
     pageSizeOption?: {
         label: string,
         value: string
     }[];
-    defaultSize?: string;
+    defaultSize?: string | null;
 };
 
 export type Field = {
@@ -690,19 +690,19 @@ const ApiConfig: React.FC<{
                 api.isJmespath = false;
                 api.resourceId = '';
                 api.rosourceOption = [];
-                api.dataPath = '';
-                api.nextExp = '';
-                api.linkExp = '';
-                api.defaultLimit = '';
-                api.defaultSize = '';
-                api.pageMethod = undefined;
+                api.dataPath = null;
+                api.nextExp = null;
+                api.linkExp = null;
+                api.defaultLimit = null;
+                api.defaultSize = null;
+                api.pageMethod = null;
                 api.isPage = false;
                 api.pageOption = [];
-                api.markerKey = undefined;
-                api.offsetKey = undefined;
-                api.limitKey = undefined;
-                api.pageNumKey = undefined;
-                api.pageSizeKey = undefined;
+                api.markerKey = null;
+                api.offsetKey = null;
+                api.limitKey = null;
+                api.pageNumKey = null;
+                api.pageSizeKey = null;
                 api.markerOption = [];
                 api.offsetOption = [];
                 api.pageNumOption = [];
@@ -895,24 +895,24 @@ const ApiConfig: React.FC<{
     }
 
     const setMarkerEmpty = (api: any) => {
-        api.markerKey = undefined;
-        api.nextExp = '';
+        api.markerKey = null;
+        api.nextExp = null;
     }
 
     const setLinkEmpty = (api: any) => {
-        api.linkExp = '';
+        api.linkExp = null;
     }
 
     const setOffsetEmpty = (api: any) => {
-        api.offsetKey = undefined;
-        api.limitKey = undefined;
-        api.defaultLimit = '';
+        api.offsetKey = null;
+        api.limitKey = null;
+        api.defaultLimit = null;
     }
 
     const setPageSizeEmpty = (api: any) => {
-        api.pageNumKey = undefined;
-        api.pageSizeKey = undefined;
-        api.defaultSize = '';
+        api.pageNumKey = null;
+        api.pageSizeKey = null;
+        api.defaultSize = null;
     }
 
     const onMarkerKeyChange = (apiId: number, value: string) => {
@@ -1095,17 +1095,17 @@ const ApiConfig: React.FC<{
                                             });
                                         })
                                     } else {
-                                        api.nextExp = '';
-                                        api.linkExp = '';
-                                        api.defaultLimit = '';
-                                        api.defaultSize = '';
+                                        api.nextExp = null;
+                                        api.linkExp = null;
+                                        api.defaultLimit = null;
+                                        api.defaultSize = null;
                                         api.isPage = false;
-                                        api.pageMethod = undefined;
-                                        api.markerKey = undefined;
-                                        api.offsetKey = undefined;
-                                        api.limitKey = undefined;
-                                        api.pageNumKey = undefined;
-                                        api.pageSizeKey = undefined;
+                                        api.pageMethod = null;
+                                        api.markerKey = null;
+                                        api.offsetKey = null;
+                                        api.limitKey = null;
+                                        api.pageNumKey = null;
+                                        api.pageSizeKey = null;
                                     }
 
                                     setData(apiData)
