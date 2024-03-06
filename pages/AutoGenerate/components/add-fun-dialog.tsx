@@ -17,7 +17,7 @@ type AddFunDialogProp = {
 const AddFunDialog: React.FC<AddFunDialogProp> = (props) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     let [funName, setFunName] = useState<string>();
-    let [funType, setFunType] = useState<string>();
+    let [funType, setFunType] = useState<string>('code');
     let [funCode, setFunCode] = useState<string>();
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [selectedRows, setSelectedRows] = useState<funData[]>([]);
@@ -135,7 +135,7 @@ const AddFunDialog: React.FC<AddFunDialogProp> = (props) => {
                                 rules={[{ required: true, message: '请选择函数类型' }]}>
 
                                 <Radio.Group onChange={(e) => setFunType(e.target.value)} value={funType}>
-                                    <Radio value={'fun'}>函数</Radio>
+                                    <Radio value={'fun'} disabled>函数</Radio>
                                     <Radio value={'code'}>代码块</Radio>
                                 </Radio.Group>
                             </Form.Item>

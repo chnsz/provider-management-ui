@@ -1,14 +1,14 @@
-import { Button, Checkbox, Col, Collapse, Input, Row, Select, Space, Table } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
-import React, { useState } from 'react';
-import { EditOutlined } from "@ant-design/icons";
+import {Button, Checkbox, Col, Collapse, Input, Row, Select, Space, Table} from 'antd';
+import type {ColumnsType} from 'antd/es/table';
+import React, {useState} from 'react';
+import {EditOutlined} from "@ant-design/icons";
 import '../api-config.less';
 import ChooseApiDialog from '../components/choose-api-dialog';
-import { getApiFieldList } from '@/services/auto-generate/api';
-import { valueType } from 'antd/lib/statistic/utils';
+import {getApiFieldList} from '@/services/auto-generate/api';
+import {valueType} from 'antd/lib/statistic/utils';
 
-const { Panel } = Collapse;
-const { TextArea } = Input;
+const {Panel} = Collapse;
+const {TextArea} = Input;
 
 export type ApiDetail = {
     id: number;
@@ -69,7 +69,7 @@ export type ApiDetail = {
         label: string,
         value: string
     }[];
-    defaultLimit?: string | null;
+    defaultLimit?: number | null;
     pageNumKey?: string | null;
     pageNumOption?: {
         label: string,
@@ -80,7 +80,7 @@ export type ApiDetail = {
         label: string,
         value: string
     }[];
-    defaultSize?: string | null;
+    defaultSize?: number | null;
 };
 
 export type Field = {
@@ -106,14 +106,14 @@ export type Field = {
 }
 
 export const FieldTypeOption = [
-    { value: 'string', label: 'schema.TypeString' },
-    { value: 'integer', label: 'schema.TypeInt' },
-    { value: 'float', label: 'schema.TypeFloat' },
-    { value: 'boolean', label: 'schema.TypeBool' },
-    { value: 'number', label: 'schema.TypeFloat' },
-    { value: 'array', label: 'schema.TypeList' },
-    { value: 'object', label: 'schema.TypeList' },
-    { value: 'map[string]string', label: 'schema.TypeMap' },
+    {value: 'string', label: 'schema.TypeString'},
+    {value: 'integer', label: 'schema.TypeInt'},
+    {value: 'float', label: 'schema.TypeFloat'},
+    {value: 'boolean', label: 'schema.TypeBool'},
+    {value: 'number', label: 'schema.TypeFloat'},
+    {value: 'array', label: 'schema.TypeList'},
+    {value: 'object', label: 'schema.TypeList'},
+    {value: 'map[string]string', label: 'schema.TypeMap'},
 ];
 
 const ApiFieldView: React.FC<{
@@ -218,7 +218,7 @@ const ApiFieldView: React.FC<{
             title: <>名称<EditOutlined style={{color: '#6d6d6d'}}/></>,
             dataIndex: 'schemaName',
             ellipsis: true,
-            width: 175,
+            width: 300,
             render: (v, row) => {
                 let schemaTypeOption: Array<any> = [{
                     label: 'id',
@@ -300,54 +300,50 @@ const ApiFieldView: React.FC<{
                     onFieldChange(row.paramType, row)
                 }}/>
             }
-        },
-            {
-                title: <>Computed<EditOutlined style={{color: '#6d6d6d'}}/></>,
-                dataIndex: 'computed',
-                align: 'center',
-                width: 100,
-                render: (v, row) => {
-                    return <Checkbox defaultChecked={v} onChange={e => {
-                        row.computed = e.target.checked;
-                        onFieldChange(row.paramType, row)
-                    }}/>
-                }
+        }, {
+            title: <>Computed<EditOutlined style={{color: '#6d6d6d'}}/></>,
+            dataIndex: 'computed',
+            align: 'center',
+            width: 100,
+            render: (v, row) => {
+                return <Checkbox defaultChecked={v} onChange={e => {
+                    row.computed = e.target.checked;
+                    onFieldChange(row.paramType, row)
+                }}/>
+            }
+        }, {
+            title: <>Sensitive<EditOutlined style={{color: '#6d6d6d'}}/></>,
+            dataIndex: 'sensitive',
+            align: 'center',
+            width: 100,
+            render: (v, row) => {
+                return <Checkbox defaultChecked={v} onChange={e => {
+                    row.sensitive = e.target.checked;
+                    onFieldChange(row.paramType, row)
+                }}/>
+            }
+        }, {
+            title: <>默认值<EditOutlined style={{color: '#6d6d6d'}}/></>,
+            dataIndex: 'default',
+            align: 'center',
+            width: 100,
+            render: (v, row) => {
+                return <Input defaultChecked={v} onChange={e => {
+                    row.default = e.target.value;
+                    onFieldChange(row.paramType, row)
+                }}/>
+            }
+        }, {
+            title: <>描述<EditOutlined style={{color: '#6d6d6d'}}/></>,
+            dataIndex: 'schemaDesc',
+            ellipsis: true,
+            render: (v, row) => {
+                return <TextArea rows={2} defaultValue={v} autoSize onChange={e => {
+                    row.schemaDesc = e.target.value;
+                    onFieldChange(row.paramType, row)
+                }}/>
             },
-            {
-                title: <>Sensitive<EditOutlined style={{color: '#6d6d6d'}}/></>,
-                dataIndex: 'sensitive',
-                align: 'center',
-                width: 100,
-                render: (v, row) => {
-                    return <Checkbox defaultChecked={v} onChange={e => {
-                        row.sensitive = e.target.checked;
-                        onFieldChange(row.paramType, row)
-                    }}/>
-                }
-            },
-            {
-                title: <>默认值<EditOutlined style={{color: '#6d6d6d'}}/></>,
-                dataIndex: 'default',
-                align: 'center',
-                width: 100,
-                render: (v, row) => {
-                    return <Input defaultChecked={v} onChange={e => {
-                        row.default = e.target.value;
-                        onFieldChange(row.paramType, row)
-                    }}/>
-                }
-            },
-            {
-                title: <>描述<EditOutlined style={{color: '#6d6d6d'}}/></>,
-                dataIndex: 'schemaDesc',
-                ellipsis: true,
-                render: (v, row) => {
-                    return <TextArea rows={2} defaultValue={v} autoSize onChange={e => {
-                        row.schemaDesc = e.target.value;
-                        onFieldChange(row.paramType, row)
-                    }}/>
-                },
-            }]
+        }]
     }];
 
     const outputColumns: ColumnsType<Field> = columns.slice().map((column: any) => {
@@ -437,6 +433,9 @@ const ApiFieldView: React.FC<{
                                             value={apiData.pageMethod}
                                             options={apiData.pageOption}
                                             onChange={(e) => {
+                                                if (!e) {
+                                                    return
+                                                }
                                                 apiData.pageMethod = e;
                                                 onPageIdChange(e)
                                             }}/>
@@ -446,6 +445,9 @@ const ApiFieldView: React.FC<{
                                     DataPath &nbsp;&nbsp;&nbsp;
                                 <Input defaultValue={apiData.dataPath}
                                        onChange={(e) => {
+                                           if (!e) {
+                                               return
+                                           }
                                            apiData.dataPath = e.target.value;
                                            onDataPathChange(e.target.value)
                                        }}
@@ -465,6 +467,9 @@ const ApiFieldView: React.FC<{
                                                     value={apiData.markerKey}
                                                     options={apiData.markerOption}
                                                     onChange={(e) => {
+                                                        if (!e) {
+                                                            return
+                                                        }
                                                         apiData.markerKey = e;
                                                         onMarkerKeyChange(e)
                                                     }}/>
@@ -474,10 +479,13 @@ const ApiFieldView: React.FC<{
                                             NextExp &nbsp;&nbsp;&nbsp;
                                             <Input defaultValue={apiData.nextExp}
                                                    onChange={(e) => {
+                                                       if (!e.target.value) {
+                                                           return
+                                                       }
                                                        apiData.nextExp = e.target.value;
                                                        onNextExpChange(e.target.value)
                                                    }}
-                                                   placeholder="请输入NextExp" style={{width: '145px'}}/>
+                                                   placeholder="请输入NextExp" style={{width: '200px'}}/>
                                         </span>
                                     </span>
                             }
@@ -492,7 +500,7 @@ const ApiFieldView: React.FC<{
                                                apiData.linkExp = e.target.value;
                                                onLinkExpChange(e.target.value)
                                            }}
-                                           placeholder="请输入LinkExp" style={{width: '145px'}}/>
+                                           placeholder="请输入LinkExp" style={{width: '200px'}}/>
                                     </span>
                             }
 
@@ -509,6 +517,9 @@ const ApiFieldView: React.FC<{
                                                     value={apiData.offsetKey}
                                                     options={apiData.offsetOption}
                                                     onChange={(e) => {
+                                                        if (!e) {
+                                                            return
+                                                        }
                                                         apiData.offsetKey = e;
                                                         onOffsetKeyChange(e)
                                                     }}/>
@@ -523,6 +534,9 @@ const ApiFieldView: React.FC<{
                                                     value={apiData.limitKey}
                                                     options={apiData.limitOption}
                                                     onChange={(e) => {
+                                                        if (!e) {
+                                                            return
+                                                        }
                                                         apiData.limitKey = e;
                                                         onLimitKeyChange(e)
                                                     }}/>
@@ -531,6 +545,9 @@ const ApiFieldView: React.FC<{
                                             DefaultLimit &nbsp;&nbsp;&nbsp;
                                             <Input defaultValue={apiData.defaultLimit}
                                                    onChange={(e) => {
+                                                       if (!e) {
+                                                           return
+                                                       }
                                                        apiData.defaultLimit = e.target.value;
                                                        onDefaultLimitChange(e.target.value)
                                                    }}
@@ -552,6 +569,9 @@ const ApiFieldView: React.FC<{
                                                     value={apiData.pageNumKey}
                                                     options={apiData.pageNumOption}
                                                     onChange={(e) => {
+                                                        if (!e) {
+                                                            return
+                                                        }
                                                         apiData.pageNumKey = e;
                                                         onPageNumKeyChange(e)
                                                     }}/>
@@ -566,6 +586,9 @@ const ApiFieldView: React.FC<{
                                                     value={apiData.pageSizeKey}
                                                     options={apiData.pageSizeOption}
                                                     onChange={(e) => {
+                                                        if (!e) {
+                                                            return
+                                                        }
                                                         apiData.pageSizeKey = e;
                                                         onPageSizeKeyChange(e)
                                                     }}/>
@@ -574,6 +597,9 @@ const ApiFieldView: React.FC<{
                                             DefaultSize &nbsp;&nbsp;&nbsp;
                                             <Input defaultValue={apiData.defaultSize}
                                                    onChange={(e) => {
+                                                       if (!e) {
+                                                           return
+                                                       }
                                                        apiData.defaultSize = e.target.value;
                                                        onDefaultSizeChange(e.target.value)
                                                    }}

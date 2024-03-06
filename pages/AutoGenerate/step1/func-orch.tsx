@@ -62,6 +62,7 @@ const FuncOrch: React.FC<{ setData: (data: funData[]) => any, funcOrchDataPar: f
 
     const onAdd = (contextId: string, rows: funData) => {
         const newOrchData = [];
+
         newOrchData.push(rows);
         setFuncOrchData([...funcOrchData, ...newOrchData]);
         setData([...funcOrchData, ...newOrchData]);
@@ -84,6 +85,7 @@ const FuncOrch: React.FC<{ setData: (data: funData[]) => any, funcOrchDataPar: f
                 <AddFunDialog
                     handle={(option: 'ok' | 'cancel', rows: funData) => {
                         if (option === 'ok') {
+                            rows.funName = "";
                             onAdd('', rows);
                         }
                     }}

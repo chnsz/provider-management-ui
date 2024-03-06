@@ -1,28 +1,28 @@
-import { Col, Form, Input, Row, Space, Table } from 'antd';
-import React, { useState } from 'react';
+import {Col, Form, Input, Row, Space, Table} from 'antd';
+import React, {useState} from 'react';
 import CodeEditor from "@/components/CodeEditor";
 import AddExampleDialog from '../components/add-example-dialog';
 
-const { TextArea } = Input;
+const {TextArea} = Input;
 
-export type exampleDate = {
+export type exampleData = {
     title: string;
     script: string;
 };
 
-const Doc: React.FC<{ setData: (data: any) => any, docDataPar: any }> = ({ setData, docDataPar }) => {
+const Doc: React.FC<{ setData: (data: any) => any, docDataPar: any }> = ({setData, docDataPar}) => {
 
-    const [category, setCategory] = useState<string>(docDataPar?.category || '');
-    const [overview, setOverview] = useState<string>(docDataPar?.overview || '');
-    const [imports, setImports] = useState<string>(docDataPar?.imports || '');
-    const [exampleDate, setExampleData] = useState<exampleDate[]>(docDataPar?.exampleDate || []);
+    const [category, setCategory] = useState<string>(docDataPar?.category);
+    const [overview, setOverview] = useState<string>(docDataPar?.overview);
+    const [imports, setImports] = useState<string>(docDataPar?.imports);
+    const [exampleData, setExampleData] = useState<exampleData[]>(docDataPar?.examples || []);
 
     const columns = [
         {
             title: 'title',
             dataIndex: 'title',
             align: 'left',
-            width: 200,
+            width: 500,
         },
         {
             title: 'script',
@@ -34,18 +34,18 @@ const Doc: React.FC<{ setData: (data: any) => any, docDataPar: any }> = ({ setDa
             key: 'action',
             align: 'center',
             with: 90,
-            render: (_, record: exampleDate) => {
+            render: (_, record: exampleData) => {
                 const isEdit = true;
                 return <Space size="middle" style={{width: '90px', alignItems: 'center'}}>
                     <span>
                         <AddExampleDialog
-                            handle={(option: 'ok' | 'cancel', row: exampleDate) => {
+                            handle={(option: 'ok' | 'cancel', row: exampleData) => {
                                 if (option === 'ok') {
                                     onEdit(record, row);
                                 }
                             }}
                             isEdit={isEdit}
-                            backData={{ ...record }}>
+                            backData={{...record}}>
                         </AddExampleDialog>
                     </span>
                     <a onClick={onDelete(record)}>移除</a>
@@ -54,50 +54,50 @@ const Doc: React.FC<{ setData: (data: any) => any, docDataPar: any }> = ({ setDa
         }
     ];
 
-    const onAdd = (row: exampleDate) => {
+    const onAdd = (row: exampleData) => {
         const data = [];
         data.push(row);
-        setExampleData([...exampleDate, ...data]);
+        setExampleData([...exampleData, ...data]);
         setData({
-            category,
-            overview,
-            imports,
-            exampleDate: [...exampleDate, ...data]
+            category: category ?? null,
+            overview: overview ?? null,
+            imports: imports ?? null,
+            examples: [...exampleData, ...data]
         })
     }
 
-    const onDelete = (record: exampleDate) => {
+    const onDelete = (record: exampleData) => {
         return () => {
-            const newData = exampleDate.filter(item =>
+            const newData = exampleData.filter(item =>
                 item.title !== record.title
             );
             setExampleData(newData);
             setData({
-                category,
-                overview,
-                imports,
-                exampleDate: [...newData]
+                category: category ?? null,
+                overview: overview ?? null,
+                imports: imports ?? null,
+                examples: [...newData]
             })
         };
 
     }
 
-    const onEdit = (record: exampleDate, row: exampleDate) => {
-        const index = exampleDate.findIndex(item => item.title === record.title && item.script === record.script);
+    const onEdit = (record: exampleData, row: exampleData) => {
+        const index = exampleData.findIndex(item => item.title === record.title && item.script === record.script);
         if (index !== -1) {
-            exampleDate.splice(index, 1, row);
+            exampleData.splice(index, 1, row);
         }
-        setExampleData([...exampleDate]);
+        setExampleData([...exampleData]);
         setData({
-            category,
-            overview,
-            imports,
-            exampleDate: [...exampleDate]
+            category: category ?? null,
+            overview: overview ?? null,
+            imports: imports ?? null,
+            examples: [...exampleData]
         })
     }
 
     return <>
-        <Space direction={"vertical"} size={20} style={{ width: '100%' }}>
+        <Space direction={"vertical"} size={20} style={{width: '100%'}}>
             <Row>
                 <Col flex="100%">
                     <div className={'portal-card'}>
@@ -122,7 +122,7 @@ const Doc: React.FC<{ setData: (data: any) => any, docDataPar: any }> = ({ setDa
                                             category: e.target.value,
                                             overview,
                                             imports,
-                                            exampleDate
+                                            examples: exampleData,
                                         })
                                     }
                                     }/>
@@ -140,7 +140,7 @@ const Doc: React.FC<{ setData: (data: any) => any, docDataPar: any }> = ({ setDa
                                             category,
                                             overview: e.target.value,
                                             imports,
-                                            exampleDate
+                                            examples: exampleData,
                                         })
                                     }} placeholder='请输入overview'/>
                                 </Form.Item>
@@ -149,7 +149,7 @@ const Doc: React.FC<{ setData: (data: any) => any, docDataPar: any }> = ({ setDa
                                     <div><span style={{color: '#ff4d4f', fontWeight: 'bold'}}>* </span>Example:</div>
                                     <div style={{paddingLeft: '110px'}}>
                                         <AddExampleDialog
-                                            handle={(option: 'ok' | 'cancel', row: exampleDate) => {
+                                            handle={(option: 'ok' | 'cancel', row: exampleData) => {
                                                 if (option === 'ok') {
                                                     onAdd(row);
                                                 }
@@ -159,10 +159,10 @@ const Doc: React.FC<{ setData: (data: any) => any, docDataPar: any }> = ({ setDa
                                         <Table
                                             style={{marginTop: '20px'}}
                                             columns={columns}
-                                            dataSource={exampleDate}
+                                            dataSource={exampleData}
                                             size={'small'}
                                             pagination={false}
-                                            rowKey={(r: exampleDate) => r.title + '_' + r.script}
+                                            rowKey={(r: exampleData) => r.title + '_' + r.script}
                                         />
                                     </div>
 
@@ -176,10 +176,10 @@ const Doc: React.FC<{ setData: (data: any) => any, docDataPar: any }> = ({ setDa
                                         <CodeEditor language={'go'} height={'30vh'} value={imports} onChange={e => {
                                             setImports(e);
                                             setData({
-                                                category,
-                                                overview,
-                                                imports: e,
-                                                exampleDate
+                                                category: category ?? null,
+                                                overview: overview ?? null,
+                                                imports: e ?? null,
+                                                examples: exampleData,
                                             })
                                         }}/>
                                     </div>

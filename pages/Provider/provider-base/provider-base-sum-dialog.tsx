@@ -1,13 +1,15 @@
-import React, { useState } from "react";
-import { getProviderApiBaseSum } from "@/services/provider/api";
-import type { ColumnsType } from "antd/es/table/interface";
-import { Button, Modal, Table } from "antd";
+import React, {useState} from "react";
+import {getProviderApiBaseSum} from "@/services/provider/api";
+import type {ColumnsType} from "antd/es/table/interface";
+import {Button, Modal, Table} from "antd";
 import ProviderBaseDialog from "@/pages/Provider/provider-base/provider-base-dialog";
+import Txt from "@/components/Txt/Txt";
 
 const ProviderBaseSumDialog: React.FC<{
     providerType: string,
     providerName: string,
-    text: any,
+    text?: any,
+    element?: any,
     onClosed?: () => any,
 }> = (props) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -69,7 +71,7 @@ const ProviderBaseSumDialog: React.FC<{
                         apiName={row.apiDetail.apiName + ' / ' + row.apiDetail.apiNameEn}
                         onClosed={loadData}
                         providerType={row.providerType}
-                        providerName={row.providerName} />
+                        providerName={row.providerName}/>
                 }
                 return ''
             },
@@ -125,18 +127,32 @@ const ProviderBaseSumDialog: React.FC<{
         },
     ];
 
+    let cmd = "pms import -r "
+    if (props.providerType === 'DataSource') {
+        cmd = "pms import -d "
+    }
+
     return <>
-        <a onClick={showModal} title={props.text}>{props.text}</a>
+        {
+            props.text && !props.element &&
+            <a onClick={showModal} title={props.text}>{props.text}</a>
+        }
+        {
+            props.element &&
+            <Txt value={cmd + props.text + ' --skip-test'}>
+                <a onClick={showModal} title={props.text}>{props.text}</a>
+            </Txt>
+        }
         <Modal title="维护资源基线"
-            open={isModalOpen}
-            onOk={handleOk}
-            onCancel={handleCancel}
-            transitionName={''}
-            destroyOnClose
-            width={1600}
-            footer={[
-                <Button key="save" type="primary" onClick={handleOk}>关闭</Button>
-            ]}>
+               open={isModalOpen}
+               onOk={handleOk}
+               onCancel={handleCancel}
+               transitionName={''}
+               destroyOnClose
+               width={1600}
+               footer={[
+                   <Button key="save" type="primary" onClick={handleOk}>关闭</Button>
+               ]}>
             <Table
                 columns={columns}
                 dataSource={data}

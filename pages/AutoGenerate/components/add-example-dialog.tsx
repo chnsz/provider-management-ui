@@ -1,18 +1,18 @@
 import React, {useEffect, useState} from 'react';
 import {Button, Form, Input, Modal} from 'antd';
 import CodeEditor from "@/components/CodeEditor";
-import {exampleDate} from '../step2/doc';
+import {exampleData} from '../step2/doc';
 
 
 type AddFunDialogProp = {
     handle?: (option: 'ok' | 'cancel', rows: {}) => any,
     isEdit?: boolean,
-    backData?: exampleDate,
+    backData?: exampleData,
 };
 
 const AddExampleDialog: React.FC<AddFunDialogProp> = (props) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [title, setTitle] = useState<string>();
+    const [title, setTitle] = useState<string>('Example Usage');
     const [script, setScript] = useState<string>();
 
 

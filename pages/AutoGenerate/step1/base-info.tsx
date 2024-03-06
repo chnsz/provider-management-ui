@@ -59,7 +59,7 @@ const BaseInfo: React.FC<{ setData: (data: any) => any, baseInfoPar: any }> = ({
                                     });
                                 }}
                                 placeholder="请选择"
-                                style={{width: '110px'}}
+                                style={{width: '120px'}}
                                 options={resourceOption}/>
                         <Input value={providerName}
                                onChange={(e) => {
@@ -77,7 +77,7 @@ const BaseInfo: React.FC<{ setData: (data: any) => any, baseInfoPar: any }> = ({
                                        deleteTimeout
                                    });
                                }}
-                               placeholder="请输入资源名称" style={{width: '270px'}}/>
+                               placeholder="请输入资源名称" style={{width: '260px'}}/>
                     </Space.Compact>
                 </div>
                 <div className={'info-item'}>

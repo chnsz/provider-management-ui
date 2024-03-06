@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import * as monaco from 'monaco-editor';
 import type {OnChange} from '@monaco-editor/react';
 import Editor, {loader} from '@monaco-editor/react';
@@ -15,16 +15,25 @@ const CodeEditor: React.FC<{
     onChange?: OnChange;
     readOnly?: boolean;
 }> = (props) => {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [height, setHeight] = useState<number>(600);
     const theme = props.theme || 'vs-dark';
 
+    useEffect(() => {
+        const height = containerRef.current?.clientHeight || 0;
+        if (height) {
+            setHeight(height);
+        }
+    }, []);
+
     return (
-        <div>
+        <div ref={containerRef}>
             <Editor
                 language={props.language}
                 width={props.width || '100%'}
                 value={props.value}
                 defaultValue={props.defaultValue}
-                height={props.height || 600}
+                height={props.height || height}
                 onChange={props.onChange}
                 theme={theme}
                 options={{
