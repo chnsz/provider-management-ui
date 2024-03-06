@@ -660,7 +660,7 @@ const ApiConfig: React.FC<{
     apiData = apiDataPar;
 
     useEffect(() => {
-        if (baseInfo?.providerType === 'DataSource') {
+        if (baseInfo?.providerType === 'DataSource' && apiData.length) {
             apiData.forEach(api => {
                 api.schemaType = 'attribute';
             })
