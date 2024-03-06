@@ -462,7 +462,8 @@ const AutoGenerate: React.FC = () => {
                                     apiData={apiData}
                                     funcOrchData={funcOrchData}
                                     handleFunOrchData={onFuncOrchChange}
-                                    allFunDataPar={allFunData}/>
+                                    allFunDataPar={allFunData}
+                                    baseInfo={baseInfo}/>
                             </div>
                         </div>
                     </Col>

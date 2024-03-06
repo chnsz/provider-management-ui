@@ -1,6 +1,6 @@
 import { Button, Checkbox, Col, Collapse, Input, Row, Select, Space, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { EditOutlined } from "@ant-design/icons";
 import '../api-config.less';
 import ChooseApiDialog from '../components/choose-api-dialog';
@@ -658,6 +658,17 @@ const ApiConfig: React.FC<{
     let [apiData, setApiData] = useState<ApiDetail[]>([]);
     const [activeKey, setActiveKey] = useState<string[]>([]);
     apiData = apiDataPar;
+
+    useEffect(() => {
+        if (baseInfo?.providerType === 'DataSource') {
+            apiData.forEach(api => {
+                api.schemaType = 'attribute';
+            })
+            setApiData(apiData);
+            setData(apiData);
+        }
+    }, [baseInfo?.providerType])
+    
     const pageOption = [
         {
             label: 'marker',
@@ -684,6 +695,10 @@ const ApiConfig: React.FC<{
                 const findApiData = apiData.find(item => item.id === api.id);
                 if (findApiData) {
                     api.schemaType = findApiData.schemaType;
+                }
+
+                if (baseInfo?.providerType === 'DataSource') {
+                    api.schemaType = 'attribute';
                 }
                 api.statusCode = '';
                 api.jmespath = '';

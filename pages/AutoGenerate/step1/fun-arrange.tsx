@@ -29,9 +29,10 @@ const FunArrange: React.FC<{
     handleFunOrchData: (data: funData[]) => any,
     apiData: ApiDetail[],
     allFunDataPar: allFunData[],
-    funcOrchData: funData[]
+    funcOrchData: funData[],
+    baseInfo: any,
 }> = ({
-    setData, handleFunOrchData, apiData, funcOrchData, allFunDataPar
+    setData, handleFunOrchData, apiData, funcOrchData, allFunDataPar, baseInfo
 }) => {
         let [activeKey, setActiveKey] = useState<number[]>();
         let [allContext, setAllContext] = useState<allFunData[]>([]);
@@ -47,6 +48,10 @@ const FunArrange: React.FC<{
         useEffect(() => {
             handleContext();
         }, [apiData]);
+
+        useEffect(() => {
+            handleContext();
+        }, [baseInfo?.providerType])
 
         const DragHandle = SortableHandle(() => <MenuOutlined style={{ cursor: 'grab', color: '#999' }} />);
 
@@ -277,25 +282,36 @@ const FunArrange: React.FC<{
                 updateContext = updateContext.filter(i => !deleteData.some(j => j.funType === i.funType && j.funName === i.funName));
             }
 
+            let res: allFunData[] = [];
 
-            const res: allFunData[] = [
-                {
-                    id: 'createContext',
-                    contextValue: [...createData, ...createContext]
-                },
-                {
-                    id: 'readContext',
-                    contextValue: [...readData, ...readContext]
-                },
-                {
-                    id: 'updateContext',
-                    contextValue: [...updateData, ...updateContext]
-                },
-                {
-                    id: 'deleteContext',
-                    contextValue: [...deleteData, ...deleteContext]
-                }
-            ];
+            if (baseInfo?.providerType === 'DataSource') {
+                res = [
+                    {
+                        id: 'readContext',
+                        contextValue: [...readData, ...readContext]
+                    },
+                ]
+            } else {
+                res = [
+                    {
+                        id: 'createContext',
+                        contextValue: [...createData, ...createContext]
+                    },
+                    {
+                        id: 'readContext',
+                        contextValue: [...readData, ...readContext]
+                    },
+                    {
+                        id: 'updateContext',
+                        contextValue: [...updateData, ...updateContext]
+                    },
+                    {
+                        id: 'deleteContext',
+                        contextValue: [...deleteData, ...deleteContext]
+                    }
+                ];
+            }
+
             res.forEach(item => {
                 item.contextValue.forEach((context, index) => {
                     context.index = index;
