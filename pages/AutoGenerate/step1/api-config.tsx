@@ -751,15 +751,13 @@ const ApiConfig: React.FC<{
                 return api;
             });
 
-            const mergedArray = dataId ? [...apiData] : [...tmp];
-            // 编辑自动生成，保留用户之前的api
-            if (dataId) {
-                tmp.forEach(item => {
-                    if (!mergedArray.some(mer => mer.id === item.id)) {
-                        mergedArray.push(item);
-                    }
-                });
-            }
+            const mergedArray = [...apiData];
+            // 保留用户之前的api
+            tmp.forEach(item => {
+                if (!mergedArray.some(mer => mer.id === item.id)) {
+                    mergedArray.push(item);
+                }
+            });
 
             setApiData(mergedArray);
             setData(mergedArray);
