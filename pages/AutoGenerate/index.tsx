@@ -49,6 +49,7 @@ const AutoGenerate: React.FC = () => {
         if (!checkSecond()) {
             return;
         }
+
         const data = {
             id: dataId,
             baseInfo: JSON.stringify(baseInfo),
@@ -280,7 +281,8 @@ const AutoGenerate: React.FC = () => {
                         description: item.schemaDesc,
                         default: item.default,
                         sensitive: item.sensitive,
-                        computed: item.computed
+                        computed: item.computed,
+                        pos: item.index,
                     };
 
                     return result;
@@ -300,6 +302,7 @@ const AutoGenerate: React.FC = () => {
                         relation: item.schemaName,
                         type: getType(item.schemaType),
                         description: item.schemaDesc,
+                        pos: item.index,
                     };
 
                     return result;
@@ -310,6 +313,7 @@ const AutoGenerate: React.FC = () => {
                         name: item.schemaName,
                         type: getType(item.schemaType),
                         description: item.schemaDesc,
+                        pos: item.index,
                     };
 
                     return result;
@@ -320,8 +324,8 @@ const AutoGenerate: React.FC = () => {
                 for (const key in inputObj) {
                     if (outputObj.hasOwnProperty(key)) {
                         mergedObj[key] = {
-                            ...inputObj[key],
-                            ...outputObj[key]
+                            ...outputObj[key],
+                            ...inputObj[key]
                         }
                     } else {
                         mergedObj[key] = inputObj[key];
@@ -360,6 +364,7 @@ const AutoGenerate: React.FC = () => {
                     result[item.fieldName] = {
                         relation: item.schemaName,
                         type: getType(item.schemaType),
+                        pos: item.index,
                     };
 
                     return result;
