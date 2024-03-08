@@ -1,6 +1,6 @@
 import { Button, Checkbox, Col, Collapse, Input, Row, Select, Space, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { EditOutlined, MenuOutlined } from "@ant-design/icons";
 import '../api-config.less';
 import ChooseApiDialog from '../components/choose-api-dialog';
@@ -399,7 +399,7 @@ const ApiFieldView: React.FC<{
                 const newData = arrayMoveImmutable(apiData.inputFieldList.slice(), oldIndex, newIndex).filter(
                     (el: any) => !!el,
                 );
- 
+
                 newData.forEach((item, index) => {
                     item.index = index + 1;
                 })
@@ -779,6 +779,39 @@ const ApiConfig: React.FC<{
     let [apiData, setApiData] = useState<ApiDetail[]>([]);
     const [activeKey, setActiveKey] = useState<string[]>([]);
     apiData = apiDataPar;
+
+    useEffect(() => {
+        if (baseInfo?.providerType === 'DataSource' && apiData.length) {
+            apiData.forEach(api => {
+                const uuOption = api.rosourceOption.find(item => item.value === '$_UUID_$');
+                if (!uuOption) {
+                    api.rosourceOption.unshift({
+                        label: '使用UUID',
+                        value: '$_UUID_$'
+                    });
+
+                    if (!api.resourceId) {
+                        api.resourceId = '$_UUID_$'
+                    }
+                }
+            })
+            setApiData(apiData);
+            setData(apiData);
+        }
+
+        if (baseInfo?.providerType === 'Resource' && apiData.length) {
+            apiData.forEach(api => {
+                api.rosourceOption = api.rosourceOption.filter(item => item.value !== '$_UUID_$')
+                if (api.resourceId === '$_UUID_$') {
+                    api.resourceId = ''
+                }
+                setApiData(apiData);
+                setData(apiData);
+            })
+        }
+
+    }, [baseInfo?.providerType])
+
     const pageOption = [
         {
             label: 'marker',
@@ -809,8 +842,14 @@ const ApiConfig: React.FC<{
                 api.statusCode = '';
                 api.jmespath = '';
                 api.isJmespath = false;
-                api.resourceId = '';
-                api.rosourceOption = [];
+                if (baseInfo?.providerType === 'DataSource') {
+
+                }
+                api.rosourceOption = baseInfo?.providerType === 'DataSource' ? [{
+                    label: '使用UUID',
+                    value: '$_UUID_$'
+                }] : [];
+                api.resourceId = baseInfo?.providerType === 'DataSource' ? '$_UUID_$' : '';
                 api.dataPath = null;
                 api.nextExp = null;
                 api.linkExp = null;
