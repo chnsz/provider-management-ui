@@ -842,9 +842,6 @@ const ApiConfig: React.FC<{
                 api.statusCode = '';
                 api.jmespath = '';
                 api.isJmespath = false;
-                if (baseInfo?.providerType === 'DataSource') {
-
-                }
                 api.rosourceOption = baseInfo?.providerType === 'DataSource' ? [{
                     label: '使用UUID',
                     value: '$_UUID_$'
