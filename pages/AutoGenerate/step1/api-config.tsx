@@ -1,17 +1,16 @@
-import { Button, Checkbox, Col, Collapse, Input, Row, Select, Space, Table } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
-import React, { useEffect, useRef, useState } from 'react';
-import { EditOutlined, MenuOutlined } from "@ant-design/icons";
+import {Button, Checkbox, Col, Collapse, Input, Row, Select, Space, Table} from 'antd';
+import type {ColumnsType} from 'antd/es/table';
+import React, {useEffect, useRef, useState} from 'react';
+import {EditOutlined, MenuOutlined} from "@ant-design/icons";
 import '../api-config.less';
 import ChooseApiDialog from '../components/choose-api-dialog';
-import { getApiFieldList } from '@/services/auto-generate/api';
-import { valueType } from 'antd/lib/statistic/utils';
-import type { SortableContainerProps, SortEnd } from 'react-sortable-hoc';
-import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
-import { arrayMoveImmutable } from '@ant-design/pro-components';
+import {getApiFieldList} from '@/services/auto-generate/api';
+import type {SortableContainerProps, SortEnd} from 'react-sortable-hoc';
+import {SortableContainer, SortableElement, SortableHandle} from 'react-sortable-hoc';
+import {arrayMoveImmutable} from '@ant-design/pro-components';
 
-const { Panel } = Collapse;
-const { TextArea } = Input;
+const {Panel} = Collapse;
+const {TextArea} = Input;
 
 export type ApiDetail = {
     id: number;
@@ -110,14 +109,14 @@ export type Field = {
 }
 
 export const FieldTypeOption = [
-    { value: 'string', label: 'schema.TypeString' },
-    { value: 'integer', label: 'schema.TypeInt' },
-    { value: 'float', label: 'schema.TypeFloat' },
-    { value: 'boolean', label: 'schema.TypeBool' },
-    { value: 'number', label: 'schema.TypeFloat' },
-    { value: 'array', label: 'schema.TypeList' },
-    { value: 'object', label: 'schema.TypeList' },
-    { value: 'map[string]string', label: 'schema.TypeMap' },
+    {value: 'string', label: 'schema.TypeString'},
+    {value: 'integer', label: 'schema.TypeInt'},
+    {value: 'float', label: 'schema.TypeFloat'},
+    {value: 'boolean', label: 'schema.TypeBool'},
+    {value: 'number', label: 'schema.TypeFloat'},
+    {value: 'array', label: 'schema.TypeList'},
+    {value: 'object', label: 'schema.TypeList'},
+    {value: 'map[string]string', label: 'schema.TypeMap'},
 ];
 
 const ApiFieldView: React.FC<{
@@ -145,613 +144,591 @@ const ApiFieldView: React.FC<{
     onCancelIgnore: (paramsType: 'input' | 'output') => any;
     onHandleDragData: (value: any, paramsType: 'input' | 'output') => any;
 }> = ({
-    apiData,
-    baseInfo,
-    apiAllData,
-    onFieldChange,
-    onStatusCodeChange,
-    onJmespathChange,
-    onJmespathChecked,
-    onDataPathChange,
-    onResourceIdChange,
-    onPageChecked,
-    onPageIdChange,
-    onMarkerKeyChange,
-    onNextExpChange,
-    onLinkExpChange,
-    onOffsetKeyChange,
-    onLimitKeyChange,
-    onDefaultLimitChange,
-    onPageNumKeyChange,
-    onPageSizeKeyChange,
-    onDefaultSizeChange,
-    onChooseIgnore,
-    onCancelIgnore,
-    onHandleDragData,
-}) => {
-        const DragHandle = SortableHandle(() => <MenuOutlined style={{ cursor: 'grab', color: '#999' }} />);
-        const columns: ColumnsType<Field> = [
-            {
-                title: 'Sort',
-                dataIndex: 'sort',
-                width: 80,
-                align: 'left',
-                className: 'drag-visible',
-                render: () => <DragHandle />,
-            }, {
-                title: '序号',
-                dataIndex: 'serialNo',
-                align: 'center',
-                width: 80,
-                className: 'api-col',
-                render: (v, r, i) => i + 1,
-            }, {
-                title: 'API 字段',
-                children: [
-                    {
-                        title: <>位置</>,
-                        dataIndex: 'fieldIn',
-                        width: 90,
-                        ellipsis: true,
-                        align: 'center',
-                        className: 'api-col',
-                    }, {
-                        title: '类型',
-                        dataIndex: 'fieldType',
-                        align: 'center',
-                        ellipsis: true,
-                        width: 150,
-                        className: 'api-col',
-                    }, {
-                        title: '名称',
-                        dataIndex: 'fieldName',
-                        ellipsis: true,
-                        width: 200,
-                        className: 'api-col',
-                    }, {
-                        title: '描述',
-                        dataIndex: 'fieldDesc',
-                        ellipsis: true,
-                        className: 'api-col',
-                        render: (v) => {
-                            return <TextArea autoSize value={v} bordered={false} />
+          apiData,
+          baseInfo,
+          apiAllData,
+          onFieldChange,
+          onStatusCodeChange,
+          onJmespathChange,
+          onJmespathChecked,
+          onDataPathChange,
+          onResourceIdChange,
+          onPageChecked,
+          onPageIdChange,
+          onMarkerKeyChange,
+          onNextExpChange,
+          onLinkExpChange,
+          onOffsetKeyChange,
+          onLimitKeyChange,
+          onDefaultLimitChange,
+          onPageNumKeyChange,
+          onPageSizeKeyChange,
+          onDefaultSizeChange,
+          onChooseIgnore,
+          onCancelIgnore,
+          onHandleDragData,
+      }) => {
+    const DragHandle = SortableHandle(() => <MenuOutlined style={{cursor: 'grab', color: '#999'}}/>);
+    const columns: ColumnsType<Field> = [
+        {
+            title: '序号',
+            dataIndex: 'serialNo',
+            align: 'center',
+            width: 70,
+            className: 'api-col',
+            render: (v, r, i) => i + 1,
+        }, {
+            title: 'API 字段信息',
+            dataIndex: 'fieldName',
+            ellipsis: true,
+            width: 350,
+            className: 'api-col',
+            render: (v, row) => {
+                return <Space direction={'vertical'} size={8}>
+                    <div>位置：{row.fieldIn}</div>
+                    <div>名称：{row.fieldName}</div>
+                    <div>类型：{row.fieldType}</div>
+                </Space>
+            },
+        },
+        {
+            dataIndex: 'sort',
+            width: 40,
+            align: 'left',
+            className: 'api-col',
+            render: () => <DragHandle/>,
+        }, {
+            title: <>忽略<EditOutlined style={{color: '#6d6d6d'}}/></>,
+            dataIndex: 'ignore',
+            align: 'center',
+            width: 90,
+            render: (v, row) => {
+                return <Checkbox defaultChecked={v} checked={row.ignore} onChange={e => {
+                    row.ignore = e.target.checked;
+                    onFieldChange(row.paramType, row)
+                }}/>
+            }
+        }, {
+            title: <>字段信息<EditOutlined style={{color: '#6d6d6d'}}/></>,
+            dataIndex: 'schemaName',
+            ellipsis: true,
+            width: 500,
+            render: (v, row) => {
+                let schemaTypeOption: Array<any> = [{
+                    label: 'id',
+                    value: 'id'
+                }];
+                const isArgumentApi = apiAllData.some(item => item.schemaType === 'argument');
+                if (isArgumentApi) {
+                    apiAllData.forEach(item => {
+                        if (item.schemaType === 'argument') {
+                            item.inputFieldList.forEach(i => {
+                                schemaTypeOption.push({
+                                    label: i.schemaName,
+                                    value: i.schemaName
+                                });
+                            })
                         }
-                    }]
-            }, {
-                title: 'Schema 字段',
-                children: [{
-                    title: <>是否忽略<EditOutlined style={{ color: '#6d6d6d' }} /></>,
-                    dataIndex: 'ignore',
-                    align: 'center',
-                    width: 90,
-                    render: (v, row) => {
-                        return <Checkbox defaultChecked={v} checked={row.ignore} onChange={e => {
-                            row.ignore = e.target.checked;
-                            onFieldChange(row.paramType, row)
-                        }} />
-                    }
-                }, {
-                    title: <>名称<EditOutlined style={{ color: '#6d6d6d' }} /></>,
-                    dataIndex: 'schemaName',
-                    ellipsis: true,
-                    width: 300,
-                    render: (v, row) => {
-                        let schemaTypeOption: Array<any> = [{
-                            label: 'id',
-                            value: 'id'
-                        }];
-                        const isArgumentApi = apiAllData.some(item => item.schemaType === 'argument');
-                        if (isArgumentApi) {
-                            apiAllData.forEach(item => {
-                                if (item.schemaType === 'argument') {
-                                    item.inputFieldList.forEach(i => {
-                                        schemaTypeOption.push({
-                                            label: i.schemaName,
-                                            value: i.schemaName
-                                        });
-                                    })
-                                }
-                            });
+                    });
 
-                            schemaTypeOption = [...new Set(schemaTypeOption.map(item => JSON.stringify(item)))].map(item => JSON.parse(item));
-                        }
-                        // 通过row.apiId,找到api,使用api.schemaType去判断
-                        const api = apiAllData.find(item => item.id === row.apiId);
-                        if (isArgumentApi && baseInfo?.providerType === 'Resource' && row.paramType === 'input' && api && ['attribute', 'delete', 'update'].includes(api.schemaType)) {
-                            row.schemaTypeOption = schemaTypeOption;
-                            return <Select
-                                allowClear
-                                showSearch
-                                defaultValue={row.selectSchemaName}
-                                placeholder="请选择"
-                                style={{ width: '100%' }}
-                                bordered={false}
+                    schemaTypeOption = [...new Set(schemaTypeOption.map(item => JSON.stringify(item)))].map(item => JSON.parse(item));
+                }
+                // 通过row.apiId,找到api,使用api.schemaType去判断
+                const api = apiAllData.find(item => item.id === row.apiId);
+                if (isArgumentApi && baseInfo?.providerType === 'Resource' && row.paramType === 'input' && api && ['attribute', 'delete', 'update'].includes(api.schemaType)) {
+                    row.schemaTypeOption = schemaTypeOption;
+                    return <Select
+                        allowClear
+                        showSearch
+                        defaultValue={row.selectSchemaName}
+                        placeholder="请选择"
+                        style={{width: '100%'}}
+                        bordered={false}
+                        onChange={v => {
+                            row.schemaName = v;
+                            row.selectSchemaName = v;
+                            onFieldChange(row.paramType, row)
+                        }}
+                        options={schemaTypeOption}
+                    />
+                } else {
+                    return <>
+                        <div>
+                            名&nbsp;&nbsp;&nbsp;&nbsp;称：
+                            <Input defaultValue={v}
+                                   size={"middle"}
+                                   style={{width: '420px'}}
+                                   onChange={e => {
+                                       row.schemaName = e.target.value;
+                                       const oldValue = v;
+                                       const newValue = e.target.value;
+                                       const schemaValue = {
+                                           oldValue,
+                                           newValue
+                                       };
+                                       onFieldChange(row.paramType, row, 'schemaName', schemaValue)
+                                   }}/>
+                        </div>
+                        <div>
+                            类&nbsp;&nbsp;&nbsp;&nbsp;型：
+                            <Select
+                                defaultValue={row.schemaType}
+                                size={"middle"}
+                                style={{width: '420px'}}
                                 onChange={v => {
-                                    row.schemaName = v;
-                                    row.selectSchemaName = v;
+                                    row.schemaType = v;
                                     onFieldChange(row.paramType, row)
                                 }}
-                                options={schemaTypeOption}
+                                options={FieldTypeOption}
                             />
-                        } else {
-                            return <Input defaultValue={v}
-                                onChange={e => {
-                                    row.schemaName = e.target.value;
-                                    const oldValue = v;
-                                    const newValue = e.target.value;
-                                    const schemaValue = {
-                                        oldValue,
-                                        newValue
-                                    };
-                                    onFieldChange(row.paramType, row, 'schemaName', schemaValue)
-                                }} />
-                        }
-                    },
-                }, {
-                    title: <>类型<EditOutlined style={{ color: '#6d6d6d' }} /></>,
-                    dataIndex: 'schemaType',
-                    align: 'center',
-                    ellipsis: true,
-                    width: 175,
-                    render: (v: any, row) => {
-                        return <Select
-                            defaultValue={v}
-                            style={{ width: '100%' }}
-                            bordered={false}
-                            onChange={v => {
-                                row.schemaType = v;
-                                onFieldChange(row.paramType, row)
-                            }}
-                            options={FieldTypeOption}
-                        />
-                    }
-                }, {
-                    title: <>必填<EditOutlined style={{ color: '#6d6d6d' }} /></>,
-                    dataIndex: 'schemaRequired',
-                    align: 'center',
-                    width: 80,
-                    render: (v, row) => {
-                        return <Checkbox defaultChecked={v} onChange={e => {
+                        </div>
+                        <div>
+                            默认值：
+                            <Input defaultChecked={v}
+                                   size={"middle"}
+                                   style={{width: '420px'}}
+                                   onChange={e => {
+                                       row.default = e.target.value;
+                                       onFieldChange(row.paramType, row)
+                                   }}/>
+                        </div>
+                    </>
+                }
+            },
+        }, {
+            title: <>其他属性<EditOutlined style={{color: '#6d6d6d'}}/></>,
+            width: 150,
+            align: 'center',
+            render: (v, row) => {
+                return <Space direction={'vertical'} size={8} style={{textAlign: 'left', marginLeft: '5px'}}>
+                    <div>
+                        <Checkbox defaultChecked={row.schemaRequired} onChange={e => {
                             row.schemaRequired = e.target.checked;
-                            onFieldChange(row.paramType, row)
-                        }} />
-                    }
-                }, {
-                    title: <>Computed<EditOutlined style={{ color: '#6d6d6d' }} /></>,
-                    dataIndex: 'computed',
-                    align: 'center',
-                    width: 100,
-                    render: (v, row) => {
-                        return <Checkbox defaultChecked={v} onChange={e => {
+                            onFieldChange(row.paramType, row);
+                        }}>
+                            Required
+                        </Checkbox>
+                    </div>
+                    <div>
+                        <Checkbox defaultChecked={row.computed} onChange={e => {
                             row.computed = e.target.checked;
-                            onFieldChange(row.paramType, row)
-                        }} />
-                    }
-                }, {
-                    title: <>Sensitive<EditOutlined style={{ color: '#6d6d6d' }} /></>,
-                    dataIndex: 'sensitive',
-                    align: 'center',
-                    width: 100,
-                    render: (v, row) => {
-                        return <Checkbox defaultChecked={v} onChange={e => {
+                            onFieldChange(row.paramType, row);
+                        }}>
+                            Computed
+                        </Checkbox>
+                    </div>
+                    <div>
+                        <Checkbox defaultChecked={row.sensitive} onChange={e => {
                             row.sensitive = e.target.checked;
-                            onFieldChange(row.paramType, row)
-                        }} />
-                    }
-                }, {
-                    title: <>默认值<EditOutlined style={{ color: '#6d6d6d' }} /></>,
-                    dataIndex: 'default',
-                    align: 'center',
-                    width: 100,
-                    render: (v, row) => {
-                        return <Input defaultChecked={v} onChange={e => {
-                            row.default = e.target.value;
-                            onFieldChange(row.paramType, row)
-                        }} />
-                    }
-                }, {
-                    title: <>描述<EditOutlined style={{ color: '#6d6d6d' }} /></>,
-                    dataIndex: 'schemaDesc',
-                    ellipsis: true,
-                    render: (v, row) => {
-                        return <TextArea rows={2} autoSize defaultValue={v} onChange={e => {
-                            row.schemaDesc = e.target.value;
-                            onFieldChange(row.paramType, row)
-                        }} />
-                    },
-                }]
-            }];
+                            onFieldChange(row.paramType, row);
+                        }}>
+                            Sensitive
+                        </Checkbox>
+                    </div>
+                </Space>
+            },
+        }, {
+            title: <>描述<EditOutlined style={{color: '#6d6d6d'}}/></>,
+            dataIndex: 'schemaDesc',
+            ellipsis: true,
+            render: (v, row) => {
+                return <TextArea rows={4} defaultValue={v} onChange={e => {
+                    row.schemaDesc = e.target.value;
+                    onFieldChange(row.paramType, row)
+                }}/>
+            },
+        }];
 
-        const outputColumns: ColumnsType<Field> = columns.slice().map((column: any) => {
-            if (column.children) {
-                return {
-                    ...column,
-                    children: column.children.filter((child: any) => !['schemaRequired', 'computed', 'sensitive', 'default'].includes(child.dataIndex))
-                };
-            }
-            return column;
-        });
+    const outputColumns: ColumnsType<Field> = columns.slice().map((column: any) => {
+        if (column.children) {
+            return {
+                ...column,
+                children: column.children.filter((child: any) => !['schemaRequired', 'computed', 'sensitive', 'default'].includes(child.dataIndex))
+            };
+        }
+        return column;
+    });
 
-        const SortableItem = SortableElement((props: React.HTMLAttributes<HTMLTableRowElement>) => (
-            <tr {...props} />
-        ));
-        const SortableBody = SortableContainer((props: React.HTMLAttributes<HTMLTableSectionElement>) => (
-            <tbody {...props} />
-        ));
+    const SortableItem = SortableElement((props: React.HTMLAttributes<HTMLTableRowElement>) => (
+        <tr {...props} />
+    ));
+    const SortableBody = SortableContainer((props: React.HTMLAttributes<HTMLTableSectionElement>) => (
+        <tbody {...props} />
+    ));
 
-        const inputDraggableContainer = (props: SortableContainerProps) => (
-            <SortableBody
-                useDragHandle
-                disableAutoscroll
-                helperClass="row-dragging"
-                onSortEnd={onInputSortEnd}
-                {...props}
-            />
-        );
+    const inputDraggableContainer = (props: SortableContainerProps) => (
+        <SortableBody
+            useDragHandle
+            disableAutoscroll
+            helperClass="row-dragging"
+            onSortEnd={onInputSortEnd}
+            {...props}
+        />
+    );
 
-        const inputDraggableBodyRow: React.FC<any> = ({ className, style, id, ...restProps }) => {
-            const index = apiData.inputFieldList.findIndex(x => x.id === restProps['data-row-key']);
-            return <SortableItem index={index} {...restProps} />;
-        };
+    const inputDraggableBodyRow: React.FC<any> = ({className, style, id, ...restProps}) => {
+        const index = apiData.inputFieldList.findIndex(x => x.id === restProps['data-row-key']);
+        return <SortableItem index={index} {...restProps} />;
+    };
 
-        const onInputSortEnd = ({ oldIndex, newIndex }: SortEnd) => {
-            if (oldIndex !== newIndex) {
-                const newData = arrayMoveImmutable(apiData.inputFieldList.slice(), oldIndex, newIndex).filter(
-                    (el: any) => !!el,
-                );
+    const onInputSortEnd = ({oldIndex, newIndex}: SortEnd) => {
+        if (oldIndex !== newIndex) {
+            const newData = arrayMoveImmutable(apiData.inputFieldList.slice(), oldIndex, newIndex).filter(
+                (el: any) => !!el,
+            );
 
-                newData.forEach((item, index) => {
-                    item.index = index + 1;
-                })
-                onHandleDragData(newData, 'input')
-            }
-        };
+            newData.forEach((item, index) => {
+                item.index = index + 1;
+            })
+            onHandleDragData(newData, 'input')
+        }
+    };
 
-        const outputDraggableContainer = (props: SortableContainerProps) => (
-            <SortableBody
-                useDragHandle
-                disableAutoscroll
-                helperClass="row-dragging"
-                onSortEnd={onOutPutSortEnd}
-                {...props}
-            />
-        );
+    const outputDraggableContainer = (props: SortableContainerProps) => (
+        <SortableBody
+            useDragHandle
+            disableAutoscroll
+            helperClass="row-dragging"
+            onSortEnd={onOutPutSortEnd}
+            {...props}
+        />
+    );
 
-        const outputDraggableBodyRow: React.FC<any> = ({ className, style, id, ...restProps }) => {
-            const index = apiData.outputFieldList.findIndex(x => x.id === restProps['data-row-key']);
-            return <SortableItem index={index} {...restProps} />;
-        };
+    const outputDraggableBodyRow: React.FC<any> = ({className, style, id, ...restProps}) => {
+        const index = apiData.outputFieldList.findIndex(x => x.id === restProps['data-row-key']);
+        return <SortableItem index={index} {...restProps} />;
+    };
 
-        const onOutPutSortEnd = ({ oldIndex, newIndex }: SortEnd) => {
-            if (oldIndex !== newIndex) {
-                const newData = arrayMoveImmutable(apiData.outputFieldList.slice(), oldIndex, newIndex).filter(
-                    (el: any) => !!el,
-                );
+    const onOutPutSortEnd = ({oldIndex, newIndex}: SortEnd) => {
+        if (oldIndex !== newIndex) {
+            const newData = arrayMoveImmutable(apiData.outputFieldList.slice(), oldIndex, newIndex).filter(
+                (el: any) => !!el,
+            );
 
-                newData.forEach((item, index) => {
-                    item.index = index + 1;
-                })
-                onHandleDragData(newData, 'output')
-            }
-        };
+            newData.forEach((item, index) => {
+                item.index = index + 1;
+            })
+            onHandleDragData(newData, 'output')
+        }
+    };
 
-        return <div style={{ margin: '0 6px' }}>
-            <Space className='api-config' direction={'vertical'}>
-                <div style={{ fontWeight: 'bold', fontSize: '16px', marginBottom: '10px' }}>请求参数</div>
-                <div style={{ display: 'flex' }}>
-                    {
-                        (apiData.schemaType === 'argument' || baseInfo?.providerType === 'DataSource') ?
-                            <span style={{ marginRight: '20px' }}>
+    return <div style={{margin: '0 6px'}}>
+        <Space className='api-config' direction={'vertical'}>
+            <div style={{fontWeight: 'bold', fontSize: '16px', marginBottom: '10px'}}>请求参数</div>
+            <div style={{display: 'flex'}}>
+                {
+                    (apiData.schemaType === 'argument' || baseInfo?.providerType === 'DataSource') ?
+                        <span style={{marginRight: '20px'}}>
                                 资源ID &nbsp;&nbsp;&nbsp;
-                                {
-                                    apiData.isJmespath &&
-                                    <Input defaultValue={apiData.jmespath}
-                                        onChange={(e) => {
-                                            apiData.jmespath = e.target.value;
-                                            onJmespathChange(e.target.value)
-                                        }}
-                                        placeholder="jmespath" style={{ width: '180px' }} />
-                                }
+                            {
+                                apiData.isJmespath &&
+                                <Input defaultValue={apiData.jmespath}
+                                       onChange={(e) => {
+                                           apiData.jmespath = e.target.value;
+                                           onJmespathChange(e.target.value)
+                                       }}
+                                       placeholder="jmespath" style={{width: '180px'}}/>
+                            }
 
-                                {
-                                    !apiData.isJmespath &&
-                                    <Select placeholder="请选择资源ID"
+                            {
+                                !apiData.isJmespath &&
+                                <Select placeholder="请选择资源ID"
                                         showSearch
                                         allowClear
-                                        style={{ width: '180px' }}
+                                        style={{width: '180px'}}
                                         value={apiData.resourceId}
                                         options={apiData.rosourceOption}
                                         onChange={(e) => {
                                             apiData.resourceId = e;
                                             onResourceIdChange(e)
-                                        }} />
-                                }
-                                <span style={{ marginLeft: '5px' }}>
+                                        }}/>
+                            }
+                            <span style={{marginLeft: '5px'}}>
                                     <Checkbox defaultChecked={apiData.isJmespath} checked={apiData.isJmespath}
-                                        onChange={e => {
-                                            apiData.isJmespath = e.target.checked;
-                                            onJmespathChecked(e.target.checked)
-                                        }}>jmespath</Checkbox>
+                                              onChange={e => {
+                                                  apiData.isJmespath = e.target.checked;
+                                                  onJmespathChecked(e.target.checked)
+                                              }}>jmespath</Checkbox>
                                 </span>
 
 
                             </span> :
-                            <span></span>
-                    }
+                        <span></span>
+                }
 
-                    <span>
-                        成功状态码 &nbsp;&nbsp;&nbsp;
-                        <Input defaultValue={apiData.statusCode}
-                            onChange={(e) => {
-                                apiData.statusCode = e.target.value;
-                                onStatusCodeChange(e.target.value)
-                            }}
-                            placeholder="请输入成功状态码" style={{ width: '145px' }} />
+                <span>
+                    状态码 &nbsp;&nbsp;&nbsp;
+                    <Input defaultValue={apiData.statusCode || 200}
+                           onChange={(e) => {
+                               apiData.statusCode = e.target.value;
+                               onStatusCodeChange(e.target.value)
+                           }}
+                           placeholder="成功状态码" style={{width: '100px'}}/>
                     </span>
-                    {
-                        apiData.schemaType === 'attribute' ?
-                            <span style={{ marginLeft: '20px', lineHeight: '34px' }}>
+                {
+                    apiData.schemaType === 'attribute' ?
+                        <span style={{marginLeft: '20px', lineHeight: '34px'}}>
                                 <Checkbox defaultChecked={apiData.isPage} checked={apiData.isPage} onChange={e => {
                                     apiData.isPage = e.target.checked;
                                     onPageChecked(e.target.checked)
                                 }}>分页查询</Checkbox>
                             </span> :
-                            <span></span>
-                    }
-
-                    {
-                        apiData.schemaType === 'attribute' && apiData.isPage ?
-                            <div>
-                                <span style={{ marginLeft: '20px' }}>
-                                    <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>* </span>
-                                    分页方式 &nbsp;&nbsp;&nbsp;
-                                    <Select placeholder="请选择分页方式"
-                                        showSearch
-                                        allowClear
-                                        style={{ width: '180px' }}
-                                        value={apiData.pageMethod}
-                                        options={apiData.pageOption}
-                                        onChange={(e) => {
-                                            if (!e) {
-                                                return
-                                            }
-                                            apiData.pageMethod = e;
-                                            onPageIdChange(e)
-                                        }} />
-                                </span>
-                                <span style={{ marginLeft: '20px' }}>
-                                    <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>* </span>
-                                    DataPath &nbsp;&nbsp;&nbsp;
-                                    <Input defaultValue={apiData.dataPath}
-                                        onChange={(e) => {
-                                            if (!e) {
-                                                return
-                                            }
-                                            apiData.dataPath = e.target.value;
-                                            onDataPathChange(e.target.value)
-                                        }}
-                                        placeholder="请输入DataPath" style={{ width: '145px' }} />
-                                </span>
-
-                                {
-                                    apiData.pageMethod === 'marker' &&
-                                    <span>
-                                        <span style={{ marginLeft: '20px' }}>
-                                            <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>* </span>
-                                            MarkerKey &nbsp;&nbsp;&nbsp;
-                                            <Select placeholder="请选择MarkerKey"
-                                                showSearch
-                                                allowClear
-                                                style={{ width: '180px' }}
-                                                value={apiData.markerKey}
-                                                options={apiData.markerOption}
-                                                onChange={(e) => {
-                                                    if (!e) {
-                                                        return
-                                                    }
-                                                    apiData.markerKey = e;
-                                                    onMarkerKeyChange(e)
-                                                }} />
-                                        </span>
-                                        <span style={{ marginLeft: '20px' }}>
-                                            <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>* </span>
-                                            NextExp &nbsp;&nbsp;&nbsp;
-                                            <Input defaultValue={apiData.nextExp}
-                                                onChange={(e) => {
-                                                    if (!e.target.value) {
-                                                        return
-                                                    }
-                                                    apiData.nextExp = e.target.value;
-                                                    onNextExpChange(e.target.value)
-                                                }}
-                                                placeholder="请输入NextExp" style={{ width: '200px' }} />
-                                        </span>
-                                    </span>
-                                }
-
-                                {
-                                    apiData.pageMethod === 'link' &&
-                                    <span style={{ marginLeft: '20px' }}>
-                                        <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>* </span>
-                                        LinkExp &nbsp;&nbsp;&nbsp;
-                                        <Input defaultValue={apiData.linkExp}
-                                            onChange={(e) => {
-                                                apiData.linkExp = e.target.value;
-                                                onLinkExpChange(e.target.value)
-                                            }}
-                                            placeholder="请输入LinkExp" style={{ width: '200px' }} />
-                                    </span>
-                                }
-
-                                {
-                                    apiData.pageMethod === 'offset' &&
-                                    <span>
-                                        <span style={{ marginLeft: '20px' }}>
-                                            <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>* </span>
-                                            OffsetKey &nbsp;&nbsp;&nbsp;
-                                            <Select placeholder="请选择OffsetKey"
-                                                showSearch
-                                                allowClear
-                                                style={{ width: '180px' }}
-                                                value={apiData.offsetKey}
-                                                options={apiData.offsetOption}
-                                                onChange={(e) => {
-                                                    if (!e) {
-                                                        return
-                                                    }
-                                                    apiData.offsetKey = e;
-                                                    onOffsetKeyChange(e)
-                                                }} />
-                                        </span>
-                                        <span style={{ marginLeft: '20px' }}>
-                                            <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>* </span>
-                                            LimitKey &nbsp;&nbsp;&nbsp;
-                                            <Select placeholder="请选择LimitKey"
-                                                showSearch
-                                                allowClear
-                                                style={{ width: '180px' }}
-                                                value={apiData.limitKey}
-                                                options={apiData.limitOption}
-                                                onChange={(e) => {
-                                                    if (!e) {
-                                                        return
-                                                    }
-                                                    apiData.limitKey = e;
-                                                    onLimitKeyChange(e)
-                                                }} />
-                                        </span>
-                                        <span style={{ marginLeft: '20px' }}>
-                                            DefaultLimit &nbsp;&nbsp;&nbsp;
-                                            <Input defaultValue={apiData.defaultLimit}
-                                                onChange={(e) => {
-                                                    if (!e) {
-                                                        return
-                                                    }
-                                                    apiData.defaultLimit = e.target.value;
-                                                    onDefaultLimitChange(e.target.value)
-                                                }}
-                                                placeholder="请输入DefaultLimit" style={{ width: '145px' }} />
-                                        </span>
-                                    </span>
-                                }
-
-                                {
-                                    apiData.pageMethod === 'pageSize' &&
-                                    <span>
-                                        <span style={{ marginLeft: '20px' }}>
-                                            <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>* </span>
-                                            PageNumKey &nbsp;&nbsp;&nbsp;
-                                            <Select placeholder="请选择PageNumKey"
-                                                showSearch
-                                                allowClear
-                                                style={{ width: '180px' }}
-                                                value={apiData.pageNumKey}
-                                                options={apiData.pageNumOption}
-                                                onChange={(e) => {
-                                                    if (!e) {
-                                                        return
-                                                    }
-                                                    apiData.pageNumKey = e;
-                                                    onPageNumKeyChange(e)
-                                                }} />
-                                        </span>
-                                        <span style={{ marginLeft: '20px' }}>
-                                            <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>* </span>
-                                            PageSizeKey &nbsp;&nbsp;&nbsp;
-                                            <Select placeholder="请选择PageSizeKey"
-                                                showSearch
-                                                allowClear
-                                                style={{ width: '180px' }}
-                                                value={apiData.pageSizeKey}
-                                                options={apiData.pageSizeOption}
-                                                onChange={(e) => {
-                                                    if (!e) {
-                                                        return
-                                                    }
-                                                    apiData.pageSizeKey = e;
-                                                    onPageSizeKeyChange(e)
-                                                }} />
-                                        </span>
-                                        <span style={{ marginLeft: '20px' }}>
-                                            DefaultSize &nbsp;&nbsp;&nbsp;
-                                            <Input defaultValue={apiData.defaultSize}
-                                                onChange={(e) => {
-                                                    if (!e) {
-                                                        return
-                                                    }
-                                                    apiData.defaultSize = e.target.value;
-                                                    onDefaultSizeChange(e.target.value)
-                                                }}
-                                                placeholder="请输入DefaultSize" style={{ width: '145px' }} />
-                                        </span>
-                                    </span>
-                                }
-                            </div> :
-                            <span></span>
-
-                    }
-
-                </div>
-                <div style={{ marginTop: '10px' }}>
-                    <Button type="primary" size='small' onClick={() => onChooseIgnore('input')}>全部忽略</Button>
-                    <Button type="primary" size='small' onClick={() => onCancelIgnore('input')}
-                        style={{ marginLeft: '20px' }}>取消全部忽略</Button>
-                </div>
-
-                <Table
-                    columns={columns}
-                    dataSource={apiData.inputFieldList}
-                    size={'middle'}
-                    pagination={false}
-                    rowKey={r => r.id}
-                    components={{
-                        body: {
-                            wrapper: inputDraggableContainer,
-                            row: inputDraggableBodyRow,
-                        },
-                    }}
-                />
-                <div style={{ height: '15px' }}></div>
-                {
-                    ['argument', 'attribute'].includes(apiData.schemaType) &&
-                    <div>
-                        <div style={{ fontWeight: 'bold', fontSize: '16px', marginBottom: '10px' }}>响应参数</div>
-                        <div style={{ marginTop: '10px' }}>
-                            <Button type="primary" size='small' onClick={() => onChooseIgnore('output')}>全部忽略</Button>
-                            <Button type="primary" size='small' onClick={() => onCancelIgnore('output')}
-                                style={{ marginLeft: '20px' }}>取消全部忽略</Button>
-                        </div>
-                        <Table
-                            columns={outputColumns}
-                            dataSource={apiData.outputFieldList}
-                            size={'middle'}
-                            pagination={false}
-                            rowKey={r => r.id}
-                            components={{
-                                body: {
-                                    wrapper: outputDraggableContainer,
-                                    row: outputDraggableBodyRow,
-                                },
-                            }}
-                        />
-                    </div>
+                        <span></span>
                 }
 
-            </Space>
-        </div>;
-    }
+                {
+                    apiData.schemaType === 'attribute' && apiData.isPage ?
+                        <div>
+                                <span style={{marginLeft: '20px'}}>
+                                    <span style={{color: '#ff4d4f', fontWeight: 'bold'}}>* </span>
+                                    分页方式 &nbsp;&nbsp;&nbsp;
+                                    <Select placeholder="请选择分页方式"
+                                            showSearch
+                                            allowClear
+                                            style={{width: '180px'}}
+                                            value={apiData.pageMethod}
+                                            options={apiData.pageOption}
+                                            onChange={(e) => {
+                                                if (!e) {
+                                                    return
+                                                }
+                                                apiData.pageMethod = e;
+                                                onPageIdChange(e)
+                                            }}/>
+                                </span>
+                            <span style={{marginLeft: '20px'}}>
+                                    <span style={{color: '#ff4d4f', fontWeight: 'bold'}}>* </span>
+                                    DataPath &nbsp;&nbsp;&nbsp;
+                                <Input defaultValue={apiData.dataPath}
+                                       onChange={(e) => {
+                                           if (!e) {
+                                               return
+                                           }
+                                           apiData.dataPath = e.target.value;
+                                           onDataPathChange(e.target.value)
+                                       }}
+                                       placeholder="请输入DataPath" style={{width: '145px'}}/>
+                                </span>
+
+                            {
+                                apiData.pageMethod === 'marker' &&
+                                <span>
+                                        <span style={{marginLeft: '20px'}}>
+                                            <span style={{color: '#ff4d4f', fontWeight: 'bold'}}>* </span>
+                                            MarkerKey &nbsp;&nbsp;&nbsp;
+                                            <Select placeholder="请选择MarkerKey"
+                                                    showSearch
+                                                    allowClear
+                                                    style={{width: '180px'}}
+                                                    value={apiData.markerKey}
+                                                    options={apiData.markerOption}
+                                                    onChange={(e) => {
+                                                        if (!e) {
+                                                            return
+                                                        }
+                                                        apiData.markerKey = e;
+                                                        onMarkerKeyChange(e)
+                                                    }}/>
+                                        </span>
+                                        <span style={{marginLeft: '20px'}}>
+                                            <span style={{color: '#ff4d4f', fontWeight: 'bold'}}>* </span>
+                                            NextExp &nbsp;&nbsp;&nbsp;
+                                            <Input defaultValue={apiData.nextExp}
+                                                   onChange={(e) => {
+                                                       if (!e.target.value) {
+                                                           return
+                                                       }
+                                                       apiData.nextExp = e.target.value;
+                                                       onNextExpChange(e.target.value)
+                                                   }}
+                                                   placeholder="请输入NextExp" style={{width: '200px'}}/>
+                                        </span>
+                                    </span>
+                            }
+
+                            {
+                                apiData.pageMethod === 'link' &&
+                                <span style={{marginLeft: '20px'}}>
+                                        <span style={{color: '#ff4d4f', fontWeight: 'bold'}}>* </span>
+                                        LinkExp &nbsp;&nbsp;&nbsp;
+                                    <Input defaultValue={apiData.linkExp}
+                                           onChange={(e) => {
+                                               apiData.linkExp = e.target.value;
+                                               onLinkExpChange(e.target.value)
+                                           }}
+                                           placeholder="请输入LinkExp" style={{width: '200px'}}/>
+                                    </span>
+                            }
+
+                            {
+                                apiData.pageMethod === 'offset' &&
+                                <span>
+                                        <span style={{marginLeft: '20px'}}>
+                                            <span style={{color: '#ff4d4f', fontWeight: 'bold'}}>* </span>
+                                            OffsetKey &nbsp;&nbsp;&nbsp;
+                                            <Select placeholder="请选择OffsetKey"
+                                                    showSearch
+                                                    allowClear
+                                                    style={{width: '180px'}}
+                                                    value={apiData.offsetKey}
+                                                    options={apiData.offsetOption}
+                                                    onChange={(e) => {
+                                                        if (!e) {
+                                                            return
+                                                        }
+                                                        apiData.offsetKey = e;
+                                                        onOffsetKeyChange(e)
+                                                    }}/>
+                                        </span>
+                                        <span style={{marginLeft: '20px'}}>
+                                            <span style={{color: '#ff4d4f', fontWeight: 'bold'}}>* </span>
+                                            LimitKey &nbsp;&nbsp;&nbsp;
+                                            <Select placeholder="请选择LimitKey"
+                                                    showSearch
+                                                    allowClear
+                                                    style={{width: '180px'}}
+                                                    value={apiData.limitKey}
+                                                    options={apiData.limitOption}
+                                                    onChange={(e) => {
+                                                        if (!e) {
+                                                            return
+                                                        }
+                                                        apiData.limitKey = e;
+                                                        onLimitKeyChange(e)
+                                                    }}/>
+                                        </span>
+                                        <span style={{marginLeft: '20px'}}>
+                                            DefaultLimit &nbsp;&nbsp;&nbsp;
+                                            <Input defaultValue={apiData.defaultLimit}
+                                                   onChange={(e) => {
+                                                       if (!e) {
+                                                           return
+                                                       }
+                                                       apiData.defaultLimit = e.target.value;
+                                                       onDefaultLimitChange(e.target.value)
+                                                   }}
+                                                   placeholder="请输入DefaultLimit" style={{width: '145px'}}/>
+                                        </span>
+                                    </span>
+                            }
+
+                            {
+                                apiData.pageMethod === 'pageSize' &&
+                                <span>
+                                        <span style={{marginLeft: '20px'}}>
+                                            <span style={{color: '#ff4d4f', fontWeight: 'bold'}}>* </span>
+                                            PageNumKey &nbsp;&nbsp;&nbsp;
+                                            <Select placeholder="请选择PageNumKey"
+                                                    showSearch
+                                                    allowClear
+                                                    style={{width: '180px'}}
+                                                    value={apiData.pageNumKey}
+                                                    options={apiData.pageNumOption}
+                                                    onChange={(e) => {
+                                                        if (!e) {
+                                                            return
+                                                        }
+                                                        apiData.pageNumKey = e;
+                                                        onPageNumKeyChange(e)
+                                                    }}/>
+                                        </span>
+                                        <span style={{marginLeft: '20px'}}>
+                                            <span style={{color: '#ff4d4f', fontWeight: 'bold'}}>* </span>
+                                            PageSizeKey &nbsp;&nbsp;&nbsp;
+                                            <Select placeholder="请选择PageSizeKey"
+                                                    showSearch
+                                                    allowClear
+                                                    style={{width: '180px'}}
+                                                    value={apiData.pageSizeKey}
+                                                    options={apiData.pageSizeOption}
+                                                    onChange={(e) => {
+                                                        if (!e) {
+                                                            return
+                                                        }
+                                                        apiData.pageSizeKey = e;
+                                                        onPageSizeKeyChange(e)
+                                                    }}/>
+                                        </span>
+                                        <span style={{marginLeft: '20px'}}>
+                                            DefaultSize &nbsp;&nbsp;&nbsp;
+                                            <Input defaultValue={apiData.defaultSize}
+                                                   onChange={(e) => {
+                                                       if (!e) {
+                                                           return
+                                                       }
+                                                       apiData.defaultSize = e.target.value;
+                                                       onDefaultSizeChange(e.target.value)
+                                                   }}
+                                                   placeholder="请输入DefaultSize" style={{width: '145px'}}/>
+                                        </span>
+                                    </span>
+                            }
+                        </div> :
+                        <span></span>
+
+                }
+
+            </div>
+            <div style={{marginTop: '10px'}}>
+                <Button type="primary" size='small' onClick={() => onChooseIgnore('input')}>全部忽略</Button>
+                <Button type="primary" size='small' onClick={() => onCancelIgnore('input')}
+                        style={{marginLeft: '20px'}}>取消全部忽略</Button>
+            </div>
+
+            <Table
+                columns={columns}
+                dataSource={apiData.inputFieldList}
+                size={'middle'}
+                pagination={false}
+                rowKey={r => r.id}
+                components={{
+                    body: {
+                        wrapper: inputDraggableContainer,
+                        row: inputDraggableBodyRow,
+                    },
+                }}
+            />
+            <div style={{height: '15px'}}></div>
+            {
+                ['argument', 'attribute'].includes(apiData.schemaType) &&
+                <div>
+                    <div style={{fontWeight: 'bold', fontSize: '16px', marginBottom: '10px'}}>响应参数</div>
+                    <div style={{marginTop: '10px'}}>
+                        <Button type="primary" size='small' onClick={() => onChooseIgnore('output')}>全部忽略</Button>
+                        <Button type="primary" size='small' onClick={() => onCancelIgnore('output')}
+                                style={{marginLeft: '20px'}}>取消全部忽略</Button>
+                    </div>
+                    <Table
+                        columns={outputColumns}
+                        dataSource={apiData.outputFieldList}
+                        size={'middle'}
+                        pagination={false}
+                        rowKey={r => r.id}
+                        components={{
+                            body: {
+                                wrapper: outputDraggableContainer,
+                                row: outputDraggableBodyRow,
+                            },
+                        }}
+                    />
+                </div>
+            }
+
+        </Space>
+    </div>;
+}
 
 const ApiInfo: React.FC<{ api: ApiDetail, onSchemaTypeChange: (v: string) => any, deleteApiData: () => any }> = ({
-    api,
-    onSchemaTypeChange,
-    deleteApiData
-}) => {
+                                                                                                                     api,
+                                                                                                                     onSchemaTypeChange,
+                                                                                                                     deleteApiData
+                                                                                                                 }) => {
     return <Row>
         <Col span={12}>
             <Select
                 onClick={(e) => e.stopPropagation()}
                 showArrow
-                style={{ width: '140px', marginRight: '10px' }}
+                style={{width: '140px', marginRight: '10px'}}
                 placeholder={'请选择操作'}
                 value={api.schemaType}
                 onChange={onSchemaTypeChange}
@@ -763,9 +740,9 @@ const ApiInfo: React.FC<{ api: ApiDetail, onSchemaTypeChange: (v: string) => any
             </Select>
             #{api.id} 【{api.productName}】&nbsp;&nbsp;{api.apiName} / {api.apiNameEn}
         </Col>
-        <Col span={12} style={{ textAlign: 'right', marginTop: '4px' }}>
+        <Col span={12} style={{textAlign: 'right', marginTop: '4px'}}>
             [{api.method}]&nbsp;&nbsp;{api.uri}
-            <Button size='small' onClick={deleteApiData} style={{ marginLeft: '8px' }}>移除</Button>
+            <Button size='small' onClick={deleteApiData} style={{marginLeft: '8px'}}>移除</Button>
         </Col>
     </Row>;
 }
@@ -775,7 +752,7 @@ const ApiConfig: React.FC<{
     baseInfo: any,
     dataId: number | null,
     apiDataPar: ApiDetail[]
-}> = ({ setData, baseInfo, dataId, apiDataPar }) => {
+}> = ({setData, baseInfo, dataId, apiDataPar}) => {
     let [apiData, setApiData] = useState<ApiDetail[]>([]);
     const [activeKey, setActiveKey] = useState<string[]>([]);
     apiData = apiDataPar;
@@ -834,7 +811,7 @@ const ApiConfig: React.FC<{
     const onAdd = (apiId: number[], rows: Api.Detail[]) => {
         getApiFieldList(apiId).then(rst => {
             const tmp = rst.map(t => {
-                let api: ApiDetail = { ...t };
+                let api: ApiDetail = {...t};
                 const findApiData = apiData.find(item => item.id === api.id);
                 if (findApiData) {
                     api.schemaType = findApiData.schemaType;

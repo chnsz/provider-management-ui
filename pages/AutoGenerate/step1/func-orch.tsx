@@ -100,7 +100,7 @@ const FuncOrch: React.FC<{ setData: (data: funData[]) => any, funcOrchDataPar: f
             dataSource={funcOrchData}
             size={'small'}
             pagination={false}
-            rowKey={r => r.funName + '_' + r.funType}
+            rowKey={(r,n) => r.funName + '_' + r.funType + '_' + n}
         />
     </>
 }
