@@ -168,6 +168,9 @@ const ApiFieldView: React.FC<{
           onCancelIgnore,
           onHandleDragData,
       }) => {
+    const [sortInput, setSortInput] = useState<boolean>(false);
+    const [sortOutput, setSortOutput] = useState<boolean>(false);
+
     const DragHandle = SortableHandle(() => <MenuOutlined style={{cursor: 'grab', color: '#999'}}/>);
     const columns: ColumnsType<Field> = [
         {
@@ -184,9 +187,13 @@ const ApiFieldView: React.FC<{
             width: 350,
             className: 'api-col',
             render: (v, row) => {
+                let required = <></>
+                if (row.fieldRequired === 'yes') {
+                    required = <span style={{color: 'red'}}>&nbsp;*</span>
+                }
                 return <Space direction={'vertical'} size={8}>
                     <div>位置：{row.fieldIn}</div>
-                    <div>名称：{row.fieldName}</div>
+                    <div>名称：{row.fieldName}{required}</div>
                     <div>类型：{row.fieldType}</div>
                 </Space>
             },
@@ -669,20 +676,29 @@ const ApiFieldView: React.FC<{
                 }
 
             </div>
-            <div style={{marginTop: '10px'}}>
-                <Button type="primary" size='small' onClick={() => onChooseIgnore('input')}>全部忽略</Button>
-                <Button type="primary" size='small' onClick={() => onCancelIgnore('input')}
-                        style={{marginLeft: '20px'}}>取消全部忽略</Button>
+            <div style={{margin: '10px 0'}}>
+                <Space direction={'horizontal'}>
+                    {
+                        sortInput ?
+                            <Button type="primary" size='small' onClick={() => setSortInput(false)}>停用排序</Button>
+                            :
+                            <Button type="primary" size='small' onClick={() => setSortInput(true)}>启用排序</Button>
+                    }
+                    <Button type="primary" size='small' onClick={() => onChooseIgnore('input')}>全部忽略</Button>
+                    <Button type="primary" size='small' onClick={() => onCancelIgnore('input')}>取消全部忽略</Button>
+                </Space>
             </div>
 
             <Table
-                columns={columns}
+                columns={
+                    sortInput ? columns : columns.filter(t => t.dataIndex !== 'sort')
+                }
                 dataSource={apiData.inputFieldList}
                 size={'middle'}
                 pagination={false}
                 rowKey={r => r.id}
                 components={{
-                    body: {
+                    body: !sortInput ? {} : {
                         wrapper: inputDraggableContainer,
                         row: inputDraggableBodyRow,
                     },
@@ -694,18 +710,31 @@ const ApiFieldView: React.FC<{
                 <div>
                     <div style={{fontWeight: 'bold', fontSize: '16px', marginBottom: '10px'}}>响应参数</div>
                     <div style={{marginTop: '10px'}}>
-                        <Button type="primary" size='small' onClick={() => onChooseIgnore('output')}>全部忽略</Button>
-                        <Button type="primary" size='small' onClick={() => onCancelIgnore('output')}
-                                style={{marginLeft: '20px'}}>取消全部忽略</Button>
+                        <Space direction={'horizontal'}>
+                            {
+                                sortOutput ?
+                                    <Button type="primary" size='small'
+                                            onClick={() => setSortOutput(false)}>停用排序</Button>
+                                    :
+                                    <Button type="primary" size='small'
+                                            onClick={() => setSortOutput(true)}>启用排序</Button>
+                            }
+                            <Button type="primary" size='small'
+                                    onClick={() => onChooseIgnore('output')}>全部忽略</Button>
+                            <Button type="primary" size='small'
+                                    onClick={() => onCancelIgnore('output')}>取消全部忽略</Button>
+                        </Space>
                     </div>
                     <Table
-                        columns={outputColumns}
+                        columns={
+                            sortOutput ? outputColumns : outputColumns.filter(t => t.dataIndex !== 'sort')
+                        }
                         dataSource={apiData.outputFieldList}
                         size={'middle'}
                         pagination={false}
                         rowKey={r => r.id}
                         components={{
-                            body: {
+                            body: !sortOutput ? {} : {
                                 wrapper: outputDraggableContainer,
                                 row: outputDraggableBodyRow,
                             },
