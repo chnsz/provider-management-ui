@@ -1,5 +1,5 @@
-import {request} from 'umi';
-import {PGS_PATH, PMS_PATH} from "@/services/api";
+import { request } from 'umi';
+import { PGS_PATH, PMS_PATH } from "@/services/api";
 
 /** 查询API对接汇总数据 GET /portal/provider-health-check-sum */
 export async function getProviderHealthCheckSum() {
@@ -15,10 +15,15 @@ export async function getApiPanelSum(productName: string) {
     });
 }
 
-export async function getServiceSumList(ownerArr: string[], levelArr: string[]) {
+export async function getServiceSumList(ownerArr: string[], levelArr: string[], productGroupArr: string[], productName: string) {
+    let params: any = { owner: ownerArr, level: levelArr, productGroup: productGroupArr };
+    if (productName !== '') {
+        params.productName = productName;
+    }
+
     return request<Portal.PortalSum>(`${PMS_PATH}/portal/product/sum`, {
         method: 'GET',
-        params: {owner: ownerArr, level: levelArr}
+        params,
     });
 }
 
@@ -31,25 +36,25 @@ export async function getOwnerSumList() {
 export async function getPartnerSum(cloudName: string) {
     return request<Global.Response<Portal.PartnerSum>>(`${PGS_PATH}/portal/sum/partner`, {
         method: 'GET',
-        params: {cloudName},
+        params: { cloudName },
     });
 }
 
 export async function changePwd(oldPasswd: string, newPasswd: string) {
     return request<Global.Response<{ message: string }>>(`${PGS_PATH}/user/change-passwd`, {
-            method: 'POST',
-            data: {
-                newPasswd: newPasswd,
-                oldPasswd: oldPasswd,
-            },
+        method: 'POST',
+        data: {
+            newPasswd: newPasswd,
+            oldPasswd: oldPasswd,
         },
+    },
     );
 }
 
 export async function changeUserSettings(params: { email: string, githubAccount: string, ip: string }) {
     return request<Global.Response<{ message: string }>>(`${PGS_PATH}/user/change-settings`, {
-            method: 'POST',
-            data: params,
-        },
+        method: 'POST',
+        data: params,
+    },
     );
 }
