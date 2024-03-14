@@ -9,7 +9,6 @@ import type { SortableContainerProps, SortEnd } from 'react-sortable-hoc';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import { arrayMoveImmutable } from '@ant-design/pro-components';
 import CustomSchemaDialog from '../components/custom-schema-dialog';
-import { customSchemaOperatorOption } from '@/services/auto-generate/constants';
 
 const { Panel } = Collapse;
 const { TextArea } = Input;
@@ -100,10 +99,6 @@ export type ApiDetail = {
         value: string
     }[],
     customSchemaOperator: string | null,
-    customSchemaOperatorOption: {
-        label: string,
-        value: string
-    }[]
 };
 
 export type Field = {
@@ -944,7 +939,6 @@ const ApiConfig: React.FC<{
                 api.customSchemaName = null;
                 api.customSchemaNameOption = [];
                 api.customSchemaOperator = null;
-                api.customSchemaOperatorOption = customSchemaOperatorOption;
 
                 api.inputFieldList?.map((t, index) => {
                     t.schemaName = t.fieldName;
@@ -952,6 +946,12 @@ const ApiConfig: React.FC<{
                     t.schemaRequired = t.fieldRequired === 'yes' ? true : false;
                     t.schemaDesc = t.fieldDesc;
                     t.ignore = false;
+                    if (t.fieldIn === 'header') {
+                        t.ignore = true;
+                    } else if (t.fieldIn === 'path' && t.fieldName === 'project_id ') {
+                        t.ignore = true;
+                    }
+
                     t.computed = false;
                     t.default = '';
                     t.sensitive = false;
@@ -1187,7 +1187,6 @@ const ApiConfig: React.FC<{
             findData.customSchemaName = row.customSchemaName;
             findData.customSchemaNameOption = row.customSchemaNameOption;
             findData.customSchemaOperator = row.customSchemaOperator;
-            findData.customSchemaOperatorOption = row.customSchemaOperatorOption;
             findData.dataNode = row.dataNode;
             findData.dataNodeOption = row.dataNodeOption;
         }
@@ -1341,6 +1340,11 @@ const ApiConfig: React.FC<{
                                     if (v === 'attribute') {
                                         api.outputFieldList?.forEach((item) => {
                                             item.ignore = false;
+                                            if (item.fieldIn === 'header') {
+                                                item.ignore = true;
+                                            } else if (item.fieldIn === 'path' && item.fieldName === 'project_id ') {
+                                                item.ignore = true;
+                                            }
                                         })
                                         api.pageOption = pageOption;
                                         const queryMarker = api.inputFieldList.filter(item => item.fieldIn === 'query');

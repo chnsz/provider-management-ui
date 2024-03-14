@@ -10,60 +10,24 @@ export const customSchemaOperatorOption = [
         value: '='
     },
     {
-        label: 'eq',
-        value: 'eq'
-    },
-    {
         label: '!=',
         value: '!='
-    },
-    {
-        label: 'neq',
-        value: 'neq'
-    },
-    {
-        label: '<>',
-        value: '<>'
     },
     {
         label: '>',
         value: '>'
     },
     {
-        label: 'gt',
-        value: 'gt'
-    },
-    {
         label: '<',
         value: '<'
-    },
-    {
-        label: 'lt',
-        value: 'lt'
     },
     {
         label: '>=',
         value: '>='
     },
     {
-        label: 'gte',
-        value: 'gte'
-    },
-    {
         label: '<=',
         value: '<='
-    },
-    {
-        label: 'lte',
-        value: 'lte'
-    },
-    {
-        label: 'in',
-        value: 'in'
-    },
-    {
-        label: 'notIn',
-        value: 'notIn'
     },
     {
         label: 'startsWith',
@@ -82,27 +46,11 @@ export const customSchemaOperatorOption = [
         value: 'strictContains'
     },
     {
-        label: 'leneq',
-        value: 'leneq'
+        label: 'has',
+        value: 'has'
     },
     {
-        label: 'lenneq',
-        value: 'lenneq'
-    },
-    {
-        label: 'lengt',
-        value: 'lengt'
-    },
-    {
-        label: 'lenlt',
-        value: 'lenlt'
-    },
-    {
-        label: 'lengte',
-        value: 'lengte'
-    },
-    {
-        label: 'lenlte',
-        value: 'lenlte'
-    },
+        label: 'hasContains',
+        value: 'hasContains'
+    }
 ];
