@@ -1,18 +1,18 @@
-import LRLayout, {Container, Header, LeftSide} from '@/components/Layout';
+import LRLayout, { Container, Header, LeftSide } from '@/components/Layout';
 import MarkDownViewer from '@/components/MarkDownViewer';
-import {getNotice, getNoticeList, markNoticeNotRead, markNoticeRead} from '@/services/notice/api';
-import {getProductList, getUserList} from '@/services/product/api';
-import {toLongDate, toShortDate} from '@/utils/common';
-import {ProDescriptions} from '@ant-design/pro-components';
-import {Breadcrumb, Button, message, notification, Radio, Select, Space} from 'antd';
-import type {ButtonType} from 'antd/es/button/buttonHelpers';
-import type {SelectProps} from 'antd/es/select';
+import { getNotice, getNoticeList, markNoticeNotRead, markNoticeRead } from '@/services/notice/api';
+import { getProductList, getUserList } from '@/services/product/api';
+import { toLongDate, toShortDate } from '@/utils/common';
+import { ProDescriptions } from '@ant-design/pro-components';
+import { Breadcrumb, Button, message, notification, Radio, Select, Space } from 'antd';
+import type { ButtonType } from 'antd/es/button/buttonHelpers';
+import type { SelectProps } from 'antd/es/select';
 import classNames from 'classnames';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import './notice.less';
 // @ts-ignore
-import {Scrollbars} from 'react-custom-scrollbars';
-import {useLocation} from 'umi';
+import { Scrollbars } from 'react-custom-scrollbars';
+import { useLocation } from 'umi';
 import AddFeaturePlanningDialog from "@/pages/ProviderPlanning/components/creation-dialog/add-feature-planning-dialog";
 import CustomBreadcrumb from "@/components/Breadcrumb";
 
@@ -71,7 +71,7 @@ const Notice: React.FC = () => {
         });
 
         getNoticeList(
-            {isRead: readState, productName: selectedService, owner: ownerArr},
+            { isRead: readState, productName: selectedService, owner: ownerArr },
             50,
             currentPageNum,
         ).then((rsp) => {
@@ -175,12 +175,13 @@ const Notice: React.FC = () => {
 
         getProductList().then((rsp) => {
             const opts = rsp.items
-                .map((p) => p.productName)
-                .sort()
-                .map((n) => {
-                    return {value: n, label: n};
-                });
-            setServiceOptions(opts);
+                .map((p: any) => p.productName)
+                .sort();
+            const optKeys = [...new Set([...opts])];
+            const newOpts: any = optKeys.map((n) => {
+                return { value: n, label: n };
+            });
+            setServiceOptions(newOpts);
         });
 
         getUserList().then((rsp) => {
@@ -201,11 +202,11 @@ const Notice: React.FC = () => {
 
     return (
         <LRLayout className={'notice'}>
-            <CustomBreadcrumb items={[{title: '首页'}, {title: '通知消息'}]}/>
+            <CustomBreadcrumb items={[{ title: '首页' }, { title: '通知消息' }]} />
             <Header>
                 {contextHolder}
                 <div className={'top'}>
-                    <Space direction="vertical" size="middle" style={{display: 'flex'}}>
+                    <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
                         <div>
                             <span className={'custom-label'}>按田主：</span>
                             <Space>
@@ -237,7 +238,7 @@ const Notice: React.FC = () => {
                                 mode="multiple"
                                 allowClear={true}
                                 placeholder="选择服务过滤数据"
-                                style={{width: '45%'}}
+                                style={{ width: '45%' }}
                                 options={serviceOptions}
                                 defaultValue={getProductName()}
                                 onChange={onServiceSelected}
@@ -246,7 +247,7 @@ const Notice: React.FC = () => {
                     </Space>
                 </div>
             </Header>
-            <LeftSide width={window.innerWidth * 0.3} minWidth={500} style={{height: '100%'}}>
+            <LeftSide width={window.innerWidth * 0.3} minWidth={500} style={{ height: '100%' }}>
                 <div className={'custom-title side-header'}>
                     <div className={'side-title'}>消息列表</div>
                     <div className={'side-tools-bar'}>
@@ -312,23 +313,23 @@ const Notice: React.FC = () => {
             </LeftSide>
             <Container>
                 <div className={'custom-title'}>{getDetailTitle()}</div>
-                <div style={{padding: '20px'}}>
-                    <div style={{padding: '0 0 15px 8px'}}>
+                <div style={{ padding: '20px' }}>
+                    <div style={{ padding: '0 0 15px 8px' }}>
                         <Space size={'middle'}>
                             <Button type={'primary'} size={'small'} onClick={markAsUnread}
-                                    disabled={!selectedNotice?.id}
+                                disabled={!selectedNotice?.id}
                             >
                                 标记为未读
                             </Button>
                             <AddFeaturePlanningDialog productName={(selectedNotice?.productName) || ''}
-                                                      onClosed={() => {
-                                                      }}/>
+                                onClosed={() => {
+                                }} />
                         </Space>
                     </div>
                     <div>
                         <div className={'detail-title'}>{selectedNotice?.title}</div>
                         <ProDescriptions column={5}>
-                            <ProDescriptions.Item span={1}/>
+                            <ProDescriptions.Item span={1} />
                             <ProDescriptions.Item span={1} label="所属服务" valueType="text">
                                 {selectedNotice?.productName}
                             </ProDescriptions.Item>
@@ -338,10 +339,10 @@ const Notice: React.FC = () => {
                             <ProDescriptions.Item span={1} label="日期" valueType="text">
                                 {toLongDate(selectedNotice?.created)}
                             </ProDescriptions.Item>
-                            <ProDescriptions.Item span={1}/>
+                            <ProDescriptions.Item span={1} />
                         </ProDescriptions>
                         <div className={'detail'}>
-                            <MarkDownViewer content={selectedNotice?.content}/>
+                            <MarkDownViewer content={selectedNotice?.content} />
                         </div>
                     </div>
                 </div>

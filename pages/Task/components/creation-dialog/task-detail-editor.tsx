@@ -1,24 +1,24 @@
 import Editor from '@/components/editor';
-import {getProductList, getUserList} from '@/services/product/api';
-import {Badge, DatePicker, Descriptions, Input, Select} from 'antd';
-import type {SelectProps} from 'antd/es/select';
-import React, {useEffect, useState} from 'react';
+import { getProductList, getUserList } from '@/services/product/api';
+import { Badge, DatePicker, Descriptions, Input, Select } from 'antd';
+import type { SelectProps } from 'antd/es/select';
+import React, { useEffect, useState } from 'react';
 import dayjs from "dayjs";
 
 export const priorityOptions = [
-    {label: 'P0', value: 0},
-    {label: 'P1', value: 1},
-    {label: 'P2', value: 2},
-    {label: 'P3', value: 3},
+    { label: 'P0', value: 0 },
+    { label: 'P1', value: 1 },
+    { label: 'P2', value: 2 },
+    { label: 'P3', value: 3 },
 ];
 
 export const statusOptions = [
-    {label: '未启动', value: 'new'},
-    {label: '进行中', value: 'processing'},
-    {label: '待合并', value: 'merging'},
-    {label: '已合并', value: 'merged'},
-    {label: '已关闭', value: 'closed'},
-    {label: '冻结', value: 'freeze'},
+    { label: '未启动', value: 'new' },
+    { label: '进行中', value: 'processing' },
+    { label: '待合并', value: 'merging' },
+    { label: '已合并', value: 'merged' },
+    { label: '已关闭', value: 'closed' },
+    { label: '冻结', value: 'freeze' },
 ];
 
 export const getTaskStatus = (status: string) => {
@@ -31,10 +31,10 @@ export const getTaskStatus = (status: string) => {
             break;
         case 'processing':
             text = '进行中';
-            return <Badge status={'processing'} text={text}/>;
+            return <Badge status={'processing'} text={text} />;
         case 'merging':
             text = '待合并';
-            return <Badge status={'processing'} text={text}/>;
+            return <Badge status={'processing'} text={text} />;
         case 'merged':
             text = '已合并';
             color = 'green';
@@ -48,7 +48,7 @@ export const getTaskStatus = (status: string) => {
             color = 'gold';
             break;
     }
-    return <Badge color={color} text={text}/>;
+    return <Badge color={color} text={text} />;
 };
 
 type TaskDetailProps = {
@@ -56,7 +56,7 @@ type TaskDetailProps = {
     onChange?: (opts: Task.CreateOpts) => any;
 };
 
-const TaskDetailEditor: React.FC<TaskDetailProps> = ({task, onChange}) => {
+const TaskDetailEditor: React.FC<TaskDetailProps> = ({ task, onChange }) => {
     const [productList, setProductList] = useState<SelectProps['options']>([]);
     const [ownerList, setOwnerList] = useState<SelectProps['options']>([]);
 
@@ -64,13 +64,15 @@ const TaskDetailEditor: React.FC<TaskDetailProps> = ({task, onChange}) => {
         getProductList().then((d) => {
             const arr = d.items
                 .map((p: Product.Product) => p.productName)
-                .map((productName: string) => {
-                    return {
-                        label: productName,
-                        value: productName,
-                    };
-                });
-            setProductList(arr);
+                .sort();
+            const optKeys = [...new Set([...arr])];
+            const newOpts: any = optKeys.map((productName: string) => {
+                return {
+                    label: productName,
+                    value: productName,
+                };
+            });
+            setProductList(newOpts);
         });
         getUserList().then((d) => {
             const arr = d.items.map((user: Product.User) => {
@@ -151,55 +153,55 @@ const TaskDetailEditor: React.FC<TaskDetailProps> = ({task, onChange}) => {
         <>
             <Descriptions column={4}>
                 <Descriptions.Item label="所属服务" span={1}>
-                    <Select size={'small'} style={{width: '200px'}}
-                            showSearch
-                            value={task.productName}
-                            onChange={onValChange('productName')}
-                            options={productList}
+                    <Select size={'small'} style={{ width: '200px' }}
+                        showSearch
+                        value={task.productName}
+                        onChange={onValChange('productName')}
+                        options={productList}
                     />
                 </Descriptions.Item>
                 <Descriptions.Item label="优先级" span={1}>
-                    <Select size={'small'} style={{width: '200px'}}
-                            value={task.priority}
-                            onChange={onValChange('priority')}
-                            options={priorityOptions}
+                    <Select size={'small'} style={{ width: '200px' }}
+                        value={task.priority}
+                        onChange={onValChange('priority')}
+                        options={priorityOptions}
                     />
                 </Descriptions.Item>
                 <Descriptions.Item label="责任人" span={1}>
-                    <Select size={'small'} style={{width: '200px'}}
-                            value={task.assignee}
-                            onChange={onValChange('assignee')}
-                            options={ownerList}
+                    <Select size={'small'} style={{ width: '200px' }}
+                        value={task.assignee}
+                        onChange={onValChange('assignee')}
+                        options={ownerList}
                     />
                 </Descriptions.Item>
                 <Descriptions.Item label="待办状态" span={1}>
-                    <Select size={'small'} style={{width: '200px'}}
-                            value={task.status}
-                            onChange={onValChange('status')}
-                            options={statusOptions}
+                    <Select size={'small'} style={{ width: '200px' }}
+                        value={task.status}
+                        onChange={onValChange('status')}
+                        options={statusOptions}
                     />
                 </Descriptions.Item>
                 <Descriptions.Item label="标题" span={2}>
                     <Input value={task.title} onChange={onValChange('title')} size={'small'}
-                           style={{width: '615px'}}
+                        style={{ width: '615px' }}
                     />
                 </Descriptions.Item>
                 <Descriptions.Item label="截止日期" span={1}>
                     <DatePicker value={task.deadline ? dayjs(task.deadline, 'YYYY-MM-DD') : undefined}
-                                placeholder={''} size={'small'}
-                                format={'YYYY-MM-DD'}
-                                onChange={(d, s) => {
-                                    const fun = onValChange('deadline');
-                                    if (fun) {
-                                        fun(s)
-                                    }
-                                }}
+                        placeholder={''} size={'small'}
+                        format={'YYYY-MM-DD'}
+                        onChange={(d, s) => {
+                            const fun = onValChange('deadline');
+                            if (fun) {
+                                fun(s)
+                            }
+                        }}
                     />
                 </Descriptions.Item>
             </Descriptions>
             <div className={'custom-label'}>详细内容</div>
-            <div style={{height: 'calc(100vh - 600px)', minHeight: '300px', marginTop: '8px'}}>
-                <Editor defaultValue={task.content || ''} onChange={onValChange('content')}/>
+            <div style={{ height: 'calc(100vh - 600px)', minHeight: '300px', marginTop: '8px' }}>
+                <Editor defaultValue={task.content || ''} onChange={onValChange('content')} />
             </div>
         </>
     );

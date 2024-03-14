@@ -1,13 +1,13 @@
-import {getProductList, getProductListPaged, getUserList, updateProduct} from '@/services/product/api';
-import {Select, Table} from 'antd';
-import type {ColumnsType} from 'antd/es/table';
-import {set} from 'lodash';
-import React, {useEffect, useState} from 'react';
+import { getProductList, getProductListPaged, getUserList, updateProduct } from '@/services/product/api';
+import { Select, Table } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
+import { set } from 'lodash';
+import React, { useEffect, useState } from 'react';
 import '../settings.less';
 import CustomBreadcrumb from "@/components/Breadcrumb";
-import {QueryFilter} from "@ant-design/pro-form";
-import {ProFormSelect} from "@ant-design/pro-components";
-import type {ProSchemaValueEnumObj} from "@ant-design/pro-utils/es/typing";
+import { QueryFilter } from "@ant-design/pro-form";
+import { ProFormSelect } from "@ant-design/pro-components";
+import type { ProSchemaValueEnumObj } from "@ant-design/pro-utils/es/typing";
 
 type FormProps = {
     productGroup: string;
@@ -16,14 +16,14 @@ type FormProps = {
 
 const SearchForm: React.FC<{
     onSearch: (val: FormProps) => any,
-}> = ({data, onSearch}) => {
+}> = ({ data, onSearch }) => {
     const [productGroupOptions, setProductGroupOptions] = useState<ProSchemaValueEnumObj>({});
     const [productNameOptions, setProductNameOptions] = useState<ProSchemaValueEnumObj>({});
     const [productGroup, setProductGroup] = useState<string>('');
     const [productName, setProductName] = useState<string>('');
 
     useEffect(() => {
-        onSearch({productGroup: productGroup, productName: productName})
+        onSearch({ productGroup: productGroup, productName: productName })
     }, [productGroup, productName]);
 
     useEffect(() => {
@@ -59,9 +59,9 @@ const SearchForm: React.FC<{
             span={4}
             labelWidth={80}
             searchGutter={8}
-            style={{marginTop: '20px', marginBottom: '-27px'}}
+            style={{ marginTop: '20px', marginBottom: '-27px' }}
             onFinish={async (values) => onSearch(values)}
-            onReset={async () => onSearch({productGroup: '', productName: ''})}
+            onReset={async () => onSearch({ productGroup: '', productName: '' })}
         >
             <ProFormSelect
                 name="productGroup"
@@ -93,7 +93,7 @@ const OwnerView: React.FC<{
     name: string,
     onChange: (value: string) => any,
     onClear: () => any,
-}> = ({name, onChange, onClear}) => {
+}> = ({ name, onChange, onClear }) => {
     const [value, setValue] = useState<string>();
     const [ownerList, setOwnerList] = useState<{ value: string; label: string }[]>([]);
 
@@ -115,7 +115,7 @@ const OwnerView: React.FC<{
 
     return <Select
         value={value}
-        style={{width: '100%'}}
+        style={{ width: '100%' }}
         bordered={false}
         allowClear
         onClear={onClear}
@@ -134,7 +134,7 @@ const SelectView: React.FC<{
     onChange: (value: string) => any,
     onClear: () => any,
     showSearch?: boolean,
-}> = ({defaultVal, options, onChange, onClear, showSearch}) => {
+}> = ({ defaultVal, options, onChange, onClear, showSearch }) => {
     const [value, setValue] = useState<string>(defaultVal);
     useEffect(() => {
         setValue(defaultVal);
@@ -142,7 +142,7 @@ const SelectView: React.FC<{
 
     return <Select
         value={value}
-        style={{width: '100%'}}
+        style={{ width: '100%' }}
         bordered={false}
         showSearch
         allowClear={!!onClear}
@@ -208,9 +208,14 @@ const ServiceConfig: React.FC = () => {
 
     const saveData = (field: string, val: string, product: Product.Product) => {
         if (field === 'productNameC') {
-            const arr = val.split('@');
-            product.productNameC = arr[0];
-            product.productNameCZh = arr[1];
+            if (!val) {
+                product.productNameC = '';
+                product.productNameCZh = '';
+            } else {
+                const arr = val.split('@');
+                product.productNameC = arr[0];
+                product.productNameCZh = arr[1];
+            }
         } else {
             set(product, field, val);
         }
@@ -237,13 +242,13 @@ const ServiceConfig: React.FC = () => {
             render: (v: any, row) => {
                 const val = row.productNameC + ' / ' + row.productNameCZh;
                 return <SelectView defaultVal={val}
-                                   showSearch
-                                   options={serviceOptions}
-                                   onClear={() =>
-                                       setTimeout(() => {
-                                           saveData('level', '', row);
-                                       }, 50)}
-                                   onChange={(v) => saveData('productNameC', v, row)}
+                    showSearch
+                    options={serviceOptions}
+                    onClear={() =>
+                        setTimeout(() => {
+                            saveData('productNameC', '', row);
+                        }, 50)}
+                    onChange={(v) => saveData('productNameC', v, row)}
                 />;
             },
         },
@@ -264,16 +269,16 @@ const ServiceConfig: React.FC = () => {
             width: '10%',
             render: (v: any, row) => {
                 return <SelectView defaultVal={v === '' ? ' ' : v}
-                                   onClear={() =>
-                                       setTimeout(() => {
-                                           saveData('level', '', row);
-                                       }, 50)}
-                                   onChange={(v) => saveData('level', v, row)}
-                                   options={[
-                                       {value: '核心服务', label: '核心服务'},
-                                       {value: '主力服务', label: '主力服务'},
-                                       {value: '', label: '(清空）'},
-                                   ]}
+                    onClear={() =>
+                        setTimeout(() => {
+                            saveData('level', '', row);
+                        }, 50)}
+                    onChange={(v) => saveData('level', v, row)}
+                    options={[
+                        { value: '核心服务', label: '核心服务' },
+                        { value: '主力服务', label: '主力服务' },
+                        { value: '', label: '(清空）' },
+                    ]}
                 />;
             },
         },
@@ -308,12 +313,12 @@ const ServiceConfig: React.FC = () => {
                 return (
                     <Select
                         defaultValue={v}
-                        style={{width: '100%'}}
+                        style={{ width: '100%' }}
                         bordered={false}
                         onChange={(v) => saveData('statusCode', v, row)}
                         options={[
-                            {value: 'active', label: '监听中'},
-                            {value: 'ignore', label: '不监听'},
+                            { value: 'active', label: '监听中' },
+                            { value: 'ignore', label: '不监听' },
                         ]}
                     />
                 );
@@ -323,17 +328,17 @@ const ServiceConfig: React.FC = () => {
 
     return (
         <div>
-            <div style={{marginTop: '25px'}}>
+            <div style={{ marginTop: '25px' }}>
                 <CustomBreadcrumb
                     items={[
-                        {title: '首页'},
-                        {title: <a href="">系统配置</a>},
-                        {title: <a href="">服务配置</a>},
+                        { title: '首页' },
+                        { title: <a href="">系统配置</a> },
+                        { title: <a href="">服务配置</a> },
                     ]}
                 />
             </div>
-            <SearchForm onSearch={setParams}/>
-            <div className={'serve-card'} style={{marginTop: '15px'}}>
+            <SearchForm onSearch={setParams} />
+            <div className={'serve-card'} style={{ marginTop: '15px' }}>
                 <h3>服务列表</h3>
                 <Table
                     rowClassName={() => 'editable-row'}
