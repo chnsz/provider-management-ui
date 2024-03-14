@@ -136,7 +136,8 @@ export const FieldTypeOption = [
     { value: 'float', label: 'schema.TypeFloat' },
     { value: 'boolean', label: 'schema.TypeBool' },
     { value: 'number', label: 'schema.TypeFloat' },
-    { value: 'array', label: 'schema.TypeList' },
+    { value: 'array', label: 'schema.TypeSet' },
+    { value: 'array_list', label: 'schema.TypeList' },
     { value: 'object', label: 'schema.TypeList' },
     { value: 'map[string]string', label: 'schema.TypeMap' },
 ];
@@ -215,6 +216,10 @@ const ApiFieldView: React.FC<{
                     if (row.fieldRequired === 'yes') {
                         required = <span style={{ color: 'red' }}>&nbsp;*</span>
                     }
+                    if (row.ignore || sortInput || sortOutput) {
+                        return <>{row.fieldIn} / {row.fieldType} / {row.fieldName}{required}</>;
+                    }
+
                     return <Space direction={'vertical'} size={8}>
                         <div>位置：{row.fieldIn}</div>
                         <div>名称：{row.fieldName}{required}</div>
@@ -245,6 +250,16 @@ const ApiFieldView: React.FC<{
                 ellipsis: true,
                 width: 500,
                 render: (v, row) => {
+                    if (row.ignore) {
+                        return '';
+                    }
+
+                    if (sortInput || sortOutput) {
+                        return <>
+                            {v} / {row.schemaType} / {row.default}
+                        </>;
+                    }
+
                     let schemaTypeOption: Array<any> = [{
                         label: 'id',
                         value: 'id'
@@ -283,12 +298,12 @@ const ApiFieldView: React.FC<{
                             options={schemaTypeOption}
                         />
                     } else {
-                        return <>
+                        return <Space direction={'vertical'} size={4}>
                             <div>
                                 名&nbsp;&nbsp;&nbsp;&nbsp;称：
                                 <Input defaultValue={v}
                                     size={"middle"}
-                                    style={{ width: '420px' }}
+                                    className={'middle'}
                                     onChange={e => {
                                         row.schemaName = e.target.value;
                                         const oldValue = v;
@@ -305,7 +320,7 @@ const ApiFieldView: React.FC<{
                                 <Select
                                     defaultValue={row.schemaType}
                                     size={"middle"}
-                                    style={{ width: '420px' }}
+                                    className={'middle'}
                                     onChange={v => {
                                         row.schemaType = v;
                                         onFieldChange(row.paramType, row)
@@ -317,13 +332,13 @@ const ApiFieldView: React.FC<{
                                 默认值：
                                 <Input defaultValue={row.default}
                                     size={"middle"}
-                                    style={{ width: '420px' }}
+                                    className={'middle'}
                                     onChange={e => {
                                         row.default = e.target.value;
                                         onFieldChange(row.paramType, row)
                                     }} />
                             </div>
-                        </>
+                        </Space>
                     }
                 },
             }, {
@@ -331,7 +346,11 @@ const ApiFieldView: React.FC<{
                 width: 150,
                 align: 'center',
                 render: (v, row) => {
-                    return <Space direction={'vertical'} size={8} style={{ textAlign: 'left', marginLeft: '5px' }}>
+                    if (row.ignore || sortInput || sortOutput) {
+                        return '';
+                    }
+
+                    return <Space direction={'vertical'} size={2} style={{ textAlign: 'left', marginLeft: '5px' }}>
                         <div>
                             <Checkbox defaultChecked={row.schemaRequired} onChange={e => {
                                 row.schemaRequired = e.target.checked;
@@ -361,7 +380,7 @@ const ApiFieldView: React.FC<{
                                 row.keepZero = e.target.checked;
                                 onFieldChange(row.paramType, row);
                             }}>
-                                保留空值
+                                KeepZero
                             </Checkbox>
                         </div>
                     </Space>
@@ -371,6 +390,13 @@ const ApiFieldView: React.FC<{
                 dataIndex: 'schemaDesc',
                 ellipsis: true,
                 render: (v, row) => {
+                    if (row.ignore) {
+                        return <></>;
+                    }
+                    if (sortInput || sortOutput) {
+                        return <>{row.schemaDesc}</>;
+                    }
+
                     return <TextArea rows={4} defaultValue={v} onChange={e => {
                         row.schemaDesc = e.target.value;
                         onFieldChange(row.paramType, row)
@@ -496,7 +522,7 @@ const ApiFieldView: React.FC<{
                     }
 
                     <span>
-                        状态码 &nbsp;&nbsp;&nbsp;
+                        状态码 &nbsp;&nbsp;
                         <Input defaultValue={apiData.statusCode || 200}
                             onChange={(e) => {
                                 apiData.statusCode = e.target.value;
@@ -504,7 +530,7 @@ const ApiFieldView: React.FC<{
                             }}
                             placeholder="成功状态码" style={{ width: '100px' }} />
                     </span>
-                    <span style={{ marginLeft: '20px', lineHeight: '34px' }}>
+                    <span style={{ marginLeft: '15px', lineHeight: '34px' }}>
                         <CustomSchemaDialog apiData={apiData}
                             handle={(option: 'ok' | 'cancel', rows: Api.Detail[], apiId: number[]) => {
                                 if (option === 'ok') {

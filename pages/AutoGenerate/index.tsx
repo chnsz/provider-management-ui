@@ -303,7 +303,12 @@ const AutoGenerate: React.FC = () => {
                     result[item.fieldName] = {
                         relation: item.schemaName,
                         type: getType(item.schemaType),
+                        required: item.schemaRequired,
+                        optional: !item.schemaRequired,
                         description: item.schemaDesc,
+                        default: item.default,
+                        sensitive: item.sensitive,
+                        computed: item.computed,
                         pos: item.index,
                         keepZero: item.keepZero,
                     };
@@ -315,7 +320,12 @@ const AutoGenerate: React.FC = () => {
                     result[item.fieldName] = {
                         name: item.schemaName,
                         type: getType(item.schemaType),
+                        required: item.schemaRequired,
+                        optional: !item.schemaRequired,
                         description: item.schemaDesc,
+                        default: item.default,
+                        sensitive: item.sensitive,
+                        computed: item.computed,
                         pos: item.index,
                         keepZero: item.keepZero,
                     };
@@ -380,7 +390,6 @@ const AutoGenerate: React.FC = () => {
             if (api.dataNode) {
                 obj.filters[api.dataNode] = api.customSchemaData;
             }
-            
 
             schema.push(obj);
         });

@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Form, Modal, Tabs, Table, Select, Space } from 'antd';
-import { ApiDetail } from '../step1/api-config';
+import React, {useEffect, useState} from 'react';
+import {Button, Form, Modal, Tabs, Table, Select, Space} from 'antd';
+import {ApiDetail} from '../step1/api-config';
 
-const { TabPane } = Tabs;
+const {TabPane} = Tabs;
 
 
-const CustomSchemaDialog: React.FC<{ apiData: ApiDetail, handle?: (option: 'ok' | 'cancel', rows: {}) => any, }> = ({ apiData, handle }) => {
+const CustomSchemaDialog: React.FC<{
+    apiData: ApiDetail,
+    handle?: (option: 'ok' | 'cancel', rows: {}) => any,
+}> = ({apiData, handle}) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     let [dataNode, setDataNode] = useState<string | null>();
     let [dataNodeOption, setDataNodeOption] = useState<any>();
@@ -131,88 +134,78 @@ const CustomSchemaDialog: React.FC<{ apiData: ApiDetail, handle?: (option: 'ok' 
 
     return (
         <>
-            <Button onClick={showModal} size={'small'} type={'primary'}>自定义Schema</Button>
+            <Button onClick={showModal} size={'small'} type={'link'}>自定义Schema</Button>
 
             <Modal title="更多配置"
-                destroyOnClose
-                transitionName={''}
-                open={isModalOpen}
-                onOk={handleOk('ok')}
-                onCancel={handleOk('cancel')}
-                width={'60%'}>
+                   destroyOnClose
+                   transitionName={''}
+                   open={isModalOpen}
+                   onOk={handleOk('ok')}
+                   onCancel={handleOk('cancel')}
+                   width={'1000px'}>
 
                 <Tabs defaultActiveKey={defaultActiveKey} onChange={tabChange}>
                     <TabPane tab="自定义Schema" key="tab1">
-                        <Form
-                            name="basic"
-                            labelAlign="left"
-                            labelCol={{ span: 2 }}
-                            wrapperCol={{ span: 20 }}
-                            initialValues={{ remember: true }}
-                            autoComplete="off"
-                        >
-                            <Form.Item
-                                label="数据节点"
-                                name="dataNode"
-                                rules={[{ required: true, message: '请选择数据节点' }]}>
-
+                        <Space direction={'vertical'} size={20} style={{width: '100%'}}>
+                            <div>
+                                <span style={{color: '#ff4d4f', fontWeight: 'bold'}}>* </span>
+                                <span style={{marginRight: '10px'}}>数据根节点:</span>
                                 <Select placeholder="请选择数据节点"
-                                    showSearch
-                                    allowClear
-                                    defaultValue={dataNode}
-                                    options={dataNodeOption}
-                                    onChange={e => {
-                                        setDataNode(e);
-                                        onDataNodeChange(e);
-                                    }}
-                                    style={{ width: '180px' }} />
-                            </Form.Item>
-
-                            <Form.Item
-                                label="自定义字段"
-                                name="customField"
-                            >
+                                        showSearch
+                                        allowClear
+                                        defaultValue={dataNode}
+                                        options={dataNodeOption}
+                                        onChange={e => {
+                                            setDataNode(e);
+                                            onDataNodeChange(e);
+                                        }}
+                                        style={{width: '300px'}}/>
+                            </div>
+                            <div>
+                                <h4>自定义字段列表</h4>
                                 <Table
                                     columns={columns}
+                                    size={'middle'}
                                     pagination={false}
                                     dataSource={customSchemaData}
                                     rowKey={r => r.name + '_' + r.operator}
                                 />
-                            </Form.Item>
-                        </Form>
-                        <div>
+                            </div>
+                            <div>
                             <span>
-                                <span style={{ width: '90px', display: 'inline-block' }}>
-                                    <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>* </span>
-                                    字段名称:
+                                <span style={{color: '#ff4d4f', fontWeight: 'bold'}}>* </span>
+                                <span style={{marginRight: '10px', display: 'inline-block'}}>
+                                    新增字段:
                                 </span>
                                 <Select placeholder="请选择字段名称"
-                                    showSearch
-                                    allowClear
-                                    value={customSchemaName}
-                                    options={customSchemaNameOption}
-                                    onChange={e => {
-                                        setCustomSchemaName(e);
-                                    }}
-                                    style={{ width: '180px' }} />
+                                        showSearch
+                                        allowClear
+                                        value={customSchemaName}
+                                        options={customSchemaNameOption}
+                                        onChange={e => {
+                                            setCustomSchemaName(e);
+                                        }}
+                                        style={{width: '300px'}}/>
                             </span>
-                            <span style={{ marginLeft: '20px' }}>
-                                <span style={{ width: '90px', display: 'inline-block' }}>
-                                    <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>* </span>
+                                <span style={{marginLeft: '20px'}}>
+                                <span style={{marginRight: '10px', display: 'inline-block'}}>
+                                    <span style={{color: '#ff4d4f', fontWeight: 'bold'}}>* </span>
                                     运算符:
                                 </span>
                                 <Select placeholder="请选择运算符"
-                                    showSearch
-                                    allowClear
-                                    value={customSchemaOperator}
-                                    options={customSchemaOperatorOption}
-                                    onChange={e => {
-                                        setCustomSchemaOperator(e);
-                                    }}
-                                    style={{ width: '180px' }} />
+                                        showSearch
+                                        allowClear
+                                        value={customSchemaOperator}
+                                        options={customSchemaOperatorOption}
+                                        onChange={e => {
+                                            setCustomSchemaOperator(e);
+                                        }}
+                                        style={{width: '180px'}}/>
                             </span>
-                            <Button size='small' style={{ marginLeft: '20px' }} onClick={onAddCustomData}>增加</Button>
-                        </div>
+                                <Button type={'primary'} size='small' style={{marginLeft: '20px'}}
+                                        onClick={onAddCustomData}>增加</Button>
+                            </div>
+                        </Space>
                     </TabPane>
                 </Tabs>
             </Modal>
