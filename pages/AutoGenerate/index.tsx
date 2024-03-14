@@ -269,6 +269,7 @@ const AutoGenerate: React.FC = () => {
                 requestIgnore: api.inputFieldList.filter(field => field.ignore).map(field => field.fieldName),
                 responseIgnore: api.outputFieldList?.filter(field => field.ignore).map(field => field.fieldName),
                 schemas: {},
+                filters: {},
             };
 
             if (api.schemaType === 'argument') {
@@ -283,6 +284,7 @@ const AutoGenerate: React.FC = () => {
                         sensitive: item.sensitive,
                         computed: item.computed,
                         pos: item.index,
+                        keepZero: item.keepZero,
                     };
 
                     return result;
@@ -303,6 +305,7 @@ const AutoGenerate: React.FC = () => {
                         type: getType(item.schemaType),
                         description: item.schemaDesc,
                         pos: item.index,
+                        keepZero: item.keepZero,
                     };
 
                     return result;
@@ -314,6 +317,7 @@ const AutoGenerate: React.FC = () => {
                         type: getType(item.schemaType),
                         description: item.schemaDesc,
                         pos: item.index,
+                        keepZero: item.keepZero,
                     };
 
                     return result;
@@ -365,11 +369,18 @@ const AutoGenerate: React.FC = () => {
                         relation: item.schemaName,
                         type: getType(item.schemaType),
                         pos: item.index,
+                        keepZero: item.keepZero,
                     };
 
                     return result;
                 }, {});
             }
+
+            // 自定义Schema
+            if (api.dataNode) {
+                obj.filters[api.dataNode] = api.customSchemaData;
+            }
+            
 
             schema.push(obj);
         });
