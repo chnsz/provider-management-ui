@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import {Button, Form, Input, Modal, Select} from 'antd';
-import type {SelectProps} from "antd/es/select";
-import {getProductList} from "@/services/product/api";
-import {createProductFeature} from "@/services/product-feature/api";
+import React, { useEffect, useState } from 'react';
+import { Button, Form, Input, Modal, Select } from 'antd';
+import type { SelectProps } from "antd/es/select";
+import { getProductList } from "@/services/product/api";
+import { createProductFeature } from "@/services/product-feature/api";
 
 const AddFeatureDialog: React.FC<{
     productName?: string,
@@ -18,11 +18,12 @@ const AddFeatureDialog: React.FC<{
         getProductList().then((data) => {
             const opts = data.items
                 .map((product: Product.Product) => product.productName)
-                .sort()
-                .map((productName: string) => {
-                    return {value: productName, label: productName};
-                });
-            setServiceOptions(opts);
+                .sort();
+            const optKeys = [...new Set([...opts])];
+            const newOpts: any = optKeys.map((productName: string) => {
+                return { value: productName, label: productName };
+            });
+            setServiceOptions(newOpts);
         });
     }, []);
 
@@ -31,7 +32,7 @@ const AddFeatureDialog: React.FC<{
     };
 
     const handleOk = () => {
-        createProductFeature({productName, name, actualCoverage}).then(rsp => {
+        createProductFeature({ productName, name, actualCoverage }).then(rsp => {
             setIsModalOpen(false);
             props.onSuccess(rsp);
         });
@@ -45,16 +46,16 @@ const AddFeatureDialog: React.FC<{
         <>
             <Button onClick={showModal} size={'small'} type={'primary'}>新增特性</Button>
             <Modal title="新建特性"
-                   destroyOnClose
-                   transitionName={''}
-                   open={isModalOpen}
-                   onOk={handleOk}
-                   onCancel={handleCancel}>
+                destroyOnClose
+                transitionName={''}
+                open={isModalOpen}
+                onOk={handleOk}
+                onCancel={handleCancel}>
                 <Form
                     name="basic"
-                    labelCol={{span: 6}}
-                    wrapperCol={{span: 16}}
-                    initialValues={{remember: true}}
+                    labelCol={{ span: 6 }}
+                    wrapperCol={{ span: 16 }}
+                    initialValues={{ remember: true }}
                     autoComplete="off"
                 >
 
@@ -62,7 +63,7 @@ const AddFeatureDialog: React.FC<{
                         label="所属服务"
                         name="productName"
                         initialValue={productName}
-                        rules={[{required: true, message: '请选择特性所属的服务'}]}
+                        rules={[{ required: true, message: '请选择特性所属的服务' }]}
                     >
                         <Select
                             showSearch
@@ -74,23 +75,23 @@ const AddFeatureDialog: React.FC<{
                     <Form.Item
                         label="特性名称"
                         name="name"
-                        rules={[{required: true, message: '请输入特性名称'}]}
+                        rules={[{ required: true, message: '请输入特性名称' }]}
                     >
-                        <Input value={name} maxLength={128} onChange={e => setName(e.target.value)}/>
+                        <Input value={name} maxLength={128} onChange={e => setName(e.target.value)} />
                     </Form.Item>
 
                     <Form.Item
                         label="覆盖状态"
                         name="actualCoverage"
                         initialValue={actualCoverage}
-                        rules={[{required: true, message: '请选择特性覆盖状态'}]}
+                        rules={[{ required: true, message: '请选择特性覆盖状态' }]}
                     >
                         <Select
                             onChange={(v) => setActualCoverage(v)}
                             options={[
-                                {value: 'covered', label: '已覆盖'},
-                                {value: 'partially_covered', label: '部分覆盖'},
-                                {value: 'not_covered', label: '未覆盖'},
+                                { value: 'covered', label: '已覆盖' },
+                                { value: 'partially_covered', label: '部分覆盖' },
+                                { value: 'not_covered', label: '未覆盖' },
                             ]}
                         />
                     </Form.Item>
