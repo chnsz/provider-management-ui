@@ -1,4 +1,4 @@
-import { Button, Checkbox, Col, Collapse, Input, Row, Select, Space, Table } from 'antd';
+import {Button, Checkbox, Col, Collapse, Input, Row, Select, Space, Table, Tag} from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import React, { useEffect, useRef, useState } from 'react';
 import { EditOutlined, MenuOutlined } from "@ant-design/icons";
@@ -221,9 +221,9 @@ const ApiFieldView: React.FC<{
                     }
 
                     return <Space direction={'vertical'} size={8}>
-                        <div>位置：{row.fieldIn}</div>
                         <div>名称：{row.fieldName}{required}</div>
                         <div>类型：{row.fieldType}</div>
+                        <div>位置：{row.fieldIn}</div>
                     </Space>
                 },
             },
@@ -746,7 +746,7 @@ const ApiFieldView: React.FC<{
                     <Space direction={'horizontal'}>
                         {
                             sortInput ?
-                                <Button type="primary" size='small' onClick={() => setSortInput(false)}>停用排序</Button>
+                                <Button type="primary" size='small' onClick={() => setSortInput(false)}>结束排序</Button>
                                 :
                                 <Button type="primary" size='small' onClick={() => setSortInput(true)}>启用排序</Button>
                         }
@@ -780,7 +780,7 @@ const ApiFieldView: React.FC<{
                                 {
                                     sortOutput ?
                                         <Button type="primary" size='small'
-                                            onClick={() => setSortOutput(false)}>停用排序</Button>
+                                            onClick={() => setSortOutput(false)}>结束排序</Button>
                                         :
                                         <Button type="primary" size='small'
                                             onClick={() => setSortOutput(true)}>启用排序</Button>

@@ -321,7 +321,6 @@ const AutoGenerate: React.FC = () => {
                         name: item.schemaName,
                         type: getType(item.schemaType),
                         required: item.schemaRequired,
-                        optional: !item.schemaRequired,
                         description: item.schemaDesc,
                         default: item.default,
                         sensitive: item.sensitive,
@@ -387,7 +386,7 @@ const AutoGenerate: React.FC = () => {
             }
 
             // 自定义Schema
-            if (api.dataNode) {
+            if (api.dataNode && api.customSchemaData.length > 0) {
                 obj.filters[api.dataNode] = api.customSchemaData;
             }
 

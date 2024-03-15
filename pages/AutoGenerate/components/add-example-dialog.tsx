@@ -70,7 +70,7 @@ const AddExampleDialog: React.FC<AddFunDialogProp> = (props) => {
                         initialValue={script}
                     >
                         <div style={{height: '40vh'}}>
-                            <CodeEditor language={'go'} height={'40vh'} value={script} onChange={e => setScript(e)}/>
+                            <CodeEditor language={'hcl'} height={'40vh'} value={script} onChange={e => setScript(e)}/>
                         </div>
                     </Form.Item>
                 </Form>

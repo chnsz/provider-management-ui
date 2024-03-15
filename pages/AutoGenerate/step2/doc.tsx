@@ -6,6 +6,7 @@ import AddExampleDialog from '../components/add-example-dialog';
 const {TextArea} = Input;
 
 export type exampleData = {
+    id: number;
     title: string;
     script: string;
 };
@@ -41,6 +42,9 @@ const Doc: React.FC<{ setData: (data: any) => any, docDataPar: any }> = ({setDat
                         <AddExampleDialog
                             handle={(option: 'ok' | 'cancel', row: exampleData) => {
                                 if (option === 'ok') {
+                                    if (!row.id) {
+                                        row.id = new Date() * 1;
+                                    }
                                     onEdit(record, row);
                                 }
                             }}
@@ -69,7 +73,7 @@ const Doc: React.FC<{ setData: (data: any) => any, docDataPar: any }> = ({setDat
     const onDelete = (record: exampleData) => {
         return () => {
             const newData = exampleData.filter(item =>
-                item.title !== record.title
+                item.id !== record.id
             );
             setExampleData(newData);
             setData({
@@ -151,6 +155,7 @@ const Doc: React.FC<{ setData: (data: any) => any, docDataPar: any }> = ({setDat
                                         <AddExampleDialog
                                             handle={(option: 'ok' | 'cancel', row: exampleData) => {
                                                 if (option === 'ok') {
+                                                    row.id = new Date() * 1;
                                                     onAdd(row);
                                                 }
                                             }}
@@ -173,15 +178,16 @@ const Doc: React.FC<{ setData: (data: any) => any, docDataPar: any }> = ({setDat
                                     name="imports"
                                 >
                                     <div style={{height: '30vh', marginTop: '25px'}}>
-                                        <CodeEditor language={'go'} height={'30vh'} value={imports} onChange={e => {
-                                            setImports(e);
-                                            setData({
-                                                category: category ?? null,
-                                                overview: overview ?? null,
-                                                imports: e ?? null,
-                                                examples: exampleData,
-                                            })
-                                        }}/>
+                                        <CodeEditor language={'markdown'} height={'30vh'} value={imports}
+                                                    onChange={e => {
+                                                        setImports(e);
+                                                        setData({
+                                                            category: category ?? null,
+                                                            overview: overview ?? null,
+                                                            imports: e ?? null,
+                                                            examples: exampleData,
+                                                        })
+                                                    }}/>
                                     </div>
                                 </Form.Item>
                             </Form>

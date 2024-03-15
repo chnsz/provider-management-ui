@@ -60,22 +60,28 @@ const CustomSchemaDialog: React.FC<{
         {
             title: '字段名称',
             dataIndex: 'name',
-            align: 'left',
+            ellipsis: true,
+            width: 300,
         },
         {
             title: '运算符',
             dataIndex: 'operator',
-            align: 'left',
+            align: 'center',
+            width: 90,
+        },
+        {
+            title: '字段描述',
+            dataIndex: 'description',
         },
         {
             title: '操作',
-            key: 'action',
-            align: 'left',
-            with: 150,
+            dataIndex: 'name',
+            align: 'center',
+            width: 90,
             render: (_, record: any) => {
-                return <Space size="middle">
+                return <>
                     <a onClick={onDelete(record)}>移除</a>
-                </Space>
+                </>
             },
         }
     ];
@@ -126,6 +132,7 @@ const CustomSchemaDialog: React.FC<{
             const newData = [{
                 name: customSchemaName,
                 operator: customSchemaOperator,
+                description: '',
             }];
 
             setCustomSchemaData([...customSchemaData, ...newData]);
@@ -200,7 +207,7 @@ const CustomSchemaDialog: React.FC<{
                                         onChange={e => {
                                             setCustomSchemaOperator(e);
                                         }}
-                                        style={{width: '180px'}}/>
+                                        style={{width: '120px'}}/>
                             </span>
                                 <Button type={'primary'} size='small' style={{marginLeft: '20px'}}
                                         onClick={onAddCustomData}>增加</Button>
