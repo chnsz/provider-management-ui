@@ -9,4 +9,18 @@ declare namespace AutoGenerate {
         docsData: string,
         templateData: string
     };
+
+    type ProviderGenerate = {
+        id: number;
+        productName: string;
+        providerType: string;
+        providerName: string;
+        apiCount: number;
+        version: string;
+        archiveTag: number;
+        lastUpdateBy: string;
+        updated: string;
+        createdBy: string;
+        created: string;
+    }
 }

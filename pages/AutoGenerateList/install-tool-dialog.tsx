@@ -10,7 +10,7 @@ const InstallToolDialog: React.FC = () => {
         setIsModalOpen(false);
     };
     return <>
-        <Button type="link" size='middle' onClick={() => setIsModalOpen(true)}>安装客户端</Button>
+        <Button type="link" size='middle' onClick={() => setIsModalOpen(true)} style={{marginLeft: '-20px'}}>安装 pms 客户端</Button>
         <Modal
             title={'安装客户端'}
             transitionName={''}
