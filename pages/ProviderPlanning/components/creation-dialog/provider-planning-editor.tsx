@@ -60,14 +60,15 @@ const ProviderPlanningEditor: React.FC<PlanningDetailProps> = ({providerPlanning
         getProductList().then((d) => {
             const arr = d.items
                 .map((p) => p.productName)
-                .sort()
-                .map((n) => {
+                .sort();
+            const optKeys = [...new Set([...arr])];
+            const newOpts: any = optKeys.map((n) => {
                     return {
                         label: n,
                         value: n,
                     };
                 });
-            setProductList(arr);
+            setProductList(newOpts);
         });
 
         loadFeature(providerPlanning.productName);

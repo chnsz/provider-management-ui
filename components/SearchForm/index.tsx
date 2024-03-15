@@ -1,8 +1,8 @@
-import {getProductList, getUserList} from '@/services/product/api';
-import {Button, Select, Space} from 'antd';
-import type {ButtonType} from 'antd/es/button/buttonHelpers';
-import type {SelectProps} from 'antd/es/select';
-import React, {useEffect, useState} from 'react';
+import { getProductList, getUserList } from '@/services/product/api';
+import { Button, Select, Space } from 'antd';
+import type { ButtonType } from 'antd/es/button/buttonHelpers';
+import type { SelectProps } from 'antd/es/select';
+import React, { useEffect, useState } from 'react';
 
 export type SearchFormProps = {
     productName: string[];
@@ -17,12 +17,12 @@ type defaultValueType = {
 }
 
 const taskStatus: { label: string, value: string }[] = [
-    {label: '未启动', value: 'new'},
-    {label: '进行中', value: 'processing'},
-    {label: '待合并', value: 'merging'},
-    {label: '已合并', value: 'merged'},
-    {label: '冻结', value: 'freeze'},
-    {label: '已关闭', value: 'closed'},
+    { label: '未启动', value: 'new' },
+    { label: '进行中', value: 'processing' },
+    { label: '待合并', value: 'merging' },
+    { label: '已合并', value: 'merged' },
+    { label: '冻结', value: 'freeze' },
+    { label: '已关闭', value: 'closed' },
 ];
 
 const SearchForm: React.FC<{
@@ -40,11 +40,12 @@ const SearchForm: React.FC<{
         getProductList().then((data) => {
             const opts = data.items
                 .map((product: Product.Product) => product.productName)
-                .sort()
-                .map((productName: string) => {
-                    return {value: productName, label: productName};
-                });
-            setServiceOptions(opts);
+                .sort();
+            const optsList = [...new Set([...opts])];
+            const newOpts = optsList.map((productName: string) => {
+                return { value: productName, label: productName };
+            });
+            setServiceOptions(newOpts);
         });
 
         getUserList().then((rsp) => {
@@ -101,7 +102,7 @@ const SearchForm: React.FC<{
     const items = props.options || ['status', 'owner', 'product'];
 
     return (
-        <Space direction="vertical" size="middle" style={{display: 'flex'}}>
+        <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
             {
                 items.includes('status') ?
                     <div>
@@ -112,7 +113,7 @@ const SearchForm: React.FC<{
                                     const type: ButtonType = selectedStatus.includes(s.value) ? 'primary' : 'dashed';
 
                                     return <Button key={s.value} size={'small'} type={type}
-                                                   onClick={onStatusClick(s.value)}>
+                                        onClick={onStatusClick(s.value)}>
                                         {s.label}
                                     </Button>
                                 })
@@ -151,7 +152,7 @@ const SearchForm: React.FC<{
                             mode="multiple"
                             allowClear={true}
                             placeholder="选择服务过滤数据"
-                            style={{minWidth: '45%', maxWidth: '80%'}}
+                            style={{ minWidth: '45%', maxWidth: '80%' }}
                             options={serviceOptions}
                             defaultValue={props.defaultValue?.productName || []}
                             onChange={onServiceSelected}
