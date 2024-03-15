@@ -60,22 +60,25 @@ const CustomSchemaDialog: React.FC<{
             title: '字段名称',
             dataIndex: 'name',
             align: 'left',
+            width: '35%'
         },
         {
             title: '运算符',
             dataIndex: 'operator',
             align: 'left',
+            width: 150,
         },
         {
             title: '字段描述',
             dataIndex: 'description',
             align: 'left',
+            width: '35%'
         },
         {
             title: '操作',
             key: 'action',
             align: 'left',
-            with: 150,
+            width: 150,
             render: (_, record: any) => {
                 return <Space size="middle">
                     <a onClick={onDelete(record)}>移除</a>
