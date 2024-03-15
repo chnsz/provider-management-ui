@@ -948,7 +948,7 @@ const ApiConfig: React.FC<{
                     t.ignore = false;
                     if (t.fieldIn === 'header') {
                         t.ignore = true;
-                    } else if (t.fieldIn === 'path' && t.fieldName === 'project_id ') {
+                    } else if (t.fieldIn === 'path' && t.fieldName === 'project_id') {
                         t.ignore = true;
                     }
 
@@ -1342,7 +1342,7 @@ const ApiConfig: React.FC<{
                                             item.ignore = false;
                                             if (item.fieldIn === 'header') {
                                                 item.ignore = true;
-                                            } else if (item.fieldIn === 'path' && item.fieldName === 'project_id ') {
+                                            } else if (item.fieldIn === 'path' && item.fieldName === 'project_id') {
                                                 item.ignore = true;
                                             }
                                         })
