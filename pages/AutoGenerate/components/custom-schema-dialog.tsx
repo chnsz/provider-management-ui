@@ -1,14 +1,15 @@
-import React, {useEffect, useState} from 'react';
-import {Button, Form, Modal, Tabs, Table, Select, Space} from 'antd';
-import {ApiDetail} from '../step1/api-config';
+import React, { useEffect, useState } from 'react';
+import { Button, Form, Modal, Tabs, Table, Select, Space, Input } from 'antd';
+import { ApiDetail } from '../step1/api-config';
+import { customSchemaOperatorOption } from '@/services/auto-generate/constants';
 
-const {TabPane} = Tabs;
+const { TabPane } = Tabs;
 
 
 const CustomSchemaDialog: React.FC<{
     apiData: ApiDetail,
     handle?: (option: 'ok' | 'cancel', rows: {}) => any,
-}> = ({apiData, handle}) => {
+}> = ({ apiData, handle }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     let [dataNode, setDataNode] = useState<string | null>();
     let [dataNodeOption, setDataNodeOption] = useState<any>();
@@ -16,7 +17,7 @@ const CustomSchemaDialog: React.FC<{
     let [customSchemaName, setCustomSchemaName] = useState<string | null>();
     let [customSchemaNameOption, setCustomSchemaNameOption] = useState<any>([]);
     let [customSchemaOperator, setCustomSchemaOperator] = useState<string | null>();
-    let [customSchemaOperatorOption, setCustomSchemaOperatorOption] = useState<any>([]);
+    let [customSchemaDes, setCustomSchemaDes] = useState<string>();
 
     const [defaultActiveKey, setDefaultActiveKey] = useState<string>('tab1');
 
@@ -31,7 +32,6 @@ const CustomSchemaDialog: React.FC<{
         setCustomSchemaName(apiData.customSchemaName);
         setCustomSchemaNameOption(apiData.customSchemaNameOption);
         setCustomSchemaOperator(apiData.customSchemaOperator);
-        setCustomSchemaOperatorOption(apiData.customSchemaOperatorOption);
     }
 
     const showModal = () => {
@@ -49,7 +49,6 @@ const CustomSchemaDialog: React.FC<{
                     customSchemaName,
                     customSchemaNameOption,
                     customSchemaOperator,
-                    customSchemaOperatorOption
                 };
                 handle(option, rows);
             }
@@ -66,12 +65,13 @@ const CustomSchemaDialog: React.FC<{
         {
             title: '运算符',
             dataIndex: 'operator',
-            align: 'center',
+            align: 'left',
             width: 90,
         },
         {
             title: '字段描述',
             dataIndex: 'description',
+            align: 'left',
         },
         {
             title: '操作',
@@ -120,19 +120,19 @@ const CustomSchemaDialog: React.FC<{
             return;
         }
 
-        if (customSchemaData?.find(item => item.name === customSchemaName && item.operator === customSchemaOperator)) {
+        if (customSchemaData?.find(item => item.name === customSchemaName && item.operator === customSchemaOperator && item.description === customSchemaDes)) {
             return;
         }
 
-        const index = customSchemaData?.findIndex(item => item.name === customSchemaName && item.operator !== customSchemaOperator)
+        const index = customSchemaData?.findIndex(item => item.name === customSchemaName)
         if (index >= 0) {
-            customSchemaData[index].operator = customSchemaOperator;
+            customSchemaData[index] = {name: customSchemaName, operator: customSchemaOperator, description: customSchemaDes};
             setCustomSchemaData([...customSchemaData]);
         } else {
             const newData = [{
                 name: customSchemaName,
                 operator: customSchemaOperator,
-                description: '',
+                description: customSchemaDes
             }];
 
             setCustomSchemaData([...customSchemaData, ...newData]);
@@ -144,29 +144,29 @@ const CustomSchemaDialog: React.FC<{
             <Button onClick={showModal} size={'small'} type={'link'}>自定义Schema</Button>
 
             <Modal title="更多配置"
-                   destroyOnClose
-                   transitionName={''}
-                   open={isModalOpen}
-                   onOk={handleOk('ok')}
-                   onCancel={handleOk('cancel')}
-                   width={'1000px'}>
+                destroyOnClose
+                transitionName={''}
+                open={isModalOpen}
+                onOk={handleOk('ok')}
+                onCancel={handleOk('cancel')}
+                width={'1150px'}>
 
                 <Tabs defaultActiveKey={defaultActiveKey} onChange={tabChange}>
                     <TabPane tab="自定义Schema" key="tab1">
-                        <Space direction={'vertical'} size={20} style={{width: '100%'}}>
+                        <Space direction={'vertical'} size={20} style={{ width: '100%' }}>
                             <div>
-                                <span style={{color: '#ff4d4f', fontWeight: 'bold'}}>* </span>
-                                <span style={{marginRight: '10px'}}>数据根节点:</span>
+                                <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>* </span>
+                                <span style={{ marginRight: '10px' }}>数据根节点:</span>
                                 <Select placeholder="请选择数据节点"
-                                        showSearch
-                                        allowClear
-                                        defaultValue={dataNode}
-                                        options={dataNodeOption}
-                                        onChange={e => {
-                                            setDataNode(e);
-                                            onDataNodeChange(e);
-                                        }}
-                                        style={{width: '300px'}}/>
+                                    showSearch
+                                    allowClear
+                                    defaultValue={dataNode}
+                                    options={dataNodeOption}
+                                    onChange={e => {
+                                        setDataNode(e);
+                                        onDataNodeChange(e);
+                                    }}
+                                    style={{ width: '300px' }} />
                             </div>
                             <div>
                                 <h4>自定义字段列表</h4>
@@ -179,12 +179,12 @@ const CustomSchemaDialog: React.FC<{
                                 />
                             </div>
                             <div>
-                            <span>
-                                <span style={{color: '#ff4d4f', fontWeight: 'bold'}}>* </span>
-                                <span style={{marginRight: '10px', display: 'inline-block'}}>
-                                    新增字段:
-                                </span>
-                                <Select placeholder="请选择字段名称"
+                                <span>
+                                    <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>* </span>
+                                    <span style={{ marginRight: '10px', display: 'inline-block' }}>
+                                        新增字段:
+                                    </span>
+                                    <Select placeholder="请选择字段名称"
                                         showSearch
                                         allowClear
                                         value={customSchemaName}
@@ -192,14 +192,14 @@ const CustomSchemaDialog: React.FC<{
                                         onChange={e => {
                                             setCustomSchemaName(e);
                                         }}
-                                        style={{width: '300px'}}/>
-                            </span>
-                                <span style={{marginLeft: '20px'}}>
-                                <span style={{marginRight: '10px', display: 'inline-block'}}>
-                                    <span style={{color: '#ff4d4f', fontWeight: 'bold'}}>* </span>
-                                    运算符:
+                                        style={{ width: '300px' }} />
                                 </span>
-                                <Select placeholder="请选择运算符"
+                                <span style={{ marginLeft: '20px' }}>
+                                    <span style={{ marginRight: '10px', display: 'inline-block' }}>
+                                        <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>* </span>
+                                        运算符:
+                                    </span>
+                                    <Select placeholder="请选择运算符"
                                         showSearch
                                         allowClear
                                         value={customSchemaOperator}
@@ -207,10 +207,25 @@ const CustomSchemaDialog: React.FC<{
                                         onChange={e => {
                                             setCustomSchemaOperator(e);
                                         }}
-                                        style={{width: '120px'}}/>
-                            </span>
-                                <Button type={'primary'} size='small' style={{marginLeft: '20px'}}
-                                        onClick={onAddCustomData}>增加</Button>
+                                        style={{ width: '120px' }} />
+                                </span>
+                                <span style={{ marginLeft: '20px' }}>
+                                    <span style={{ marginRight: '10px', display: 'inline-block' }}>
+                                        描述信息:
+                                    </span>
+                                    <Input
+                                        placeholder="请输入描述信息"
+                                        defaultValue={customSchemaDes}
+                                        size={"middle"}
+                                        className={'middle'}
+                                        style={{ width: '300px' }}
+                                        onChange={e => {
+                                            setCustomSchemaDes(e.target.value)
+                                        }}
+                                    />
+                                </span>
+                                <Button type={'primary'} size='small' style={{ marginLeft: '20px' }}
+                                    onClick={onAddCustomData}>增加</Button>
                             </div>
                         </Space>
                     </TabPane>

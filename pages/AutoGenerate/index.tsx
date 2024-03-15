@@ -33,7 +33,10 @@ const AutoGenerate: React.FC = () => {
                 setApiData([...JSON.parse(data.apiData)]);
                 setFuncOrchData([...JSON.parse(data.funcFormationData)]);
                 setAllFunData([...JSON.parse(data.funcData)]);
-                setDocData({...JSON.parse(data.docsData)});
+                if (data?.docsData) {
+                    setDocData({...JSON.parse(data?.docsData)});
+                }
+                
                 setPreviewData({
                     codeContent: data.codeContent,
                     docsContent: data.docsContent,
@@ -46,9 +49,7 @@ const AutoGenerate: React.FC = () => {
 
     const review = () => {
         // 校验DOC
-        if (!checkSecond()) {
-            return;
-        }
+        checkSecond();
 
         const data = {
             id: dataId,
