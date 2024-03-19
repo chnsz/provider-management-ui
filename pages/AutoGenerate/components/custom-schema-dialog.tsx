@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Form, Modal, Tabs, Table, Select, Space, Input } from 'antd';
 import { ApiDetail } from '../step1/api-config';
 import { customSchemaOperatorOption } from '@/services/auto-generate/constants';
-import TextArea from "antd/es/input/TextArea";
+import TextArea from 'antd/lib/input/TextArea';
 
 const { TabPane } = Tabs;
 
@@ -215,11 +215,9 @@ const CustomSchemaDialog: React.FC<{
                                         描述信息:
                                     </span>
                                     <TextArea
-                                        row={1}
                                         placeholder="请输入描述信息"
                                         defaultValue={customSchemaDes}
-                                        size={"middle"}
-                                        style={{ width: '300px' }}
+                                        style={{ width: '300px', height: '30px' }}
                                         onChange={e => {
                                             setCustomSchemaDes(e.target.value)
                                         }}
