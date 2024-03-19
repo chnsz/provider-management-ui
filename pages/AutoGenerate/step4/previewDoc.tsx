@@ -18,6 +18,7 @@ const PreviewDoc: React.FC<{
     const [docsContent, setDocsContent] = useState<string>();
     const [testCodeContent, setTestCodeContent] = useState<string>();
     const [exampleContent, setExampleContent] = useState<string>();
+    const [msgContent, setMsgContent] = useState<string>();
     const [height, setHeight] = useState<number>(600);
 
     useEffect(() => {
@@ -25,6 +26,7 @@ const PreviewDoc: React.FC<{
         setDocsContent(previewDataPar?.docsContent);
         setTestCodeContent(previewDataPar?.testCodeContent);
         setExampleContent(previewDataPar?.exampleContent);
+        setMsgContent(previewDataPar?.message);
 
         const height = containerRef.current?.clientHeight || 0;
         if (height > 200) {
@@ -51,6 +53,9 @@ const PreviewDoc: React.FC<{
                             </TabPane>
                             <TabPane tab="脚本样例" key="tab4">
                                 <CodeEditor language={'hcl'} value={exampleContent} height={height}/>
+                            </TabPane>
+                            <TabPane tab="Log" key="tab5">
+                                <CodeEditor language={'shell'} value={msgContent} height={height}/>
                             </TabPane>
                         </Tabs>
                 }

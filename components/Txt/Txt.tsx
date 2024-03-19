@@ -4,7 +4,7 @@ import React, {useState} from "react";
 import {message, Tooltip} from "antd";
 import {CopyOutlined} from "@ant-design/icons";
 
-function copyTxt(val: string) {
+export const copyTxt = (val: string) => {
     if (!navigator.clipboard) {
         const input = document.createElement("input");
         document.body.appendChild(input);
