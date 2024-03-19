@@ -91,9 +91,11 @@ export type ApiDetail = {
     }[],
     customSchemaData: {
         name: string,
+        schemaName: string,
         operator: string
     }[],
     customSchemaName: string | null,
+    schemaName: string | null,
     customSchemaNameOption: {
         label: string,
         value: string
@@ -532,6 +534,7 @@ const ApiFieldView: React.FC<{
         if (findData) {
             findData.customSchemaData = row.customSchemaData;
             findData.customSchemaName = row.customSchemaName;
+            findData.schemaName = row.schemaName;
             findData.customSchemaNameOption = row.customSchemaNameOption;
             findData.customSchemaOperator = row.customSchemaOperator;
             findData.dataNode = row.dataNode;
