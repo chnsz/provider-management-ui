@@ -493,33 +493,17 @@ const ApiFieldView: React.FC<{
             api.pageSizeKey = null;
             api.defaultSize = null;
         }
-    
-        const onChooseIgnore = (apiId: number, paramType: ('input' | 'output')) => {
+
+        const onHandleIgnore = (apiId: number, paramType: ('input' | 'output'), handleType: ('choose' | 'cancel')) => {
             let findData = apiAllData.find(item => item.id === apiId);
             if (findData) {
                 if (paramType === 'input') {
                     findData.inputFieldList.forEach(t => {
-                        t.ignore = true;
+                        t.ignore = handleType === 'choose' ? true : false;
                     })
                 } else {
                     findData.outputFieldList.forEach(t => {
-                        t.ignore = true;
-                    })
-                }
-            }
-            onApiChange(apiAllData);
-        }
-    
-        const onCancelIgnore = (apiId: number, paramType: ('input' | 'output')) => {
-            let findData = apiAllData.find(item => item.id === apiId);
-            if (findData) {
-                if (paramType === 'input') {
-                    findData.inputFieldList.forEach(t => {
-                        t.ignore = false;
-                    })
-                } else {
-                    findData.outputFieldList.forEach(t => {
-                        t.ignore = false;
+                        t.ignore = handleType === 'choose' ? true : false;
                     })
                 }
             }
@@ -826,8 +810,8 @@ const ApiFieldView: React.FC<{
                                 :
                                 <Button type="primary" size='small' onClick={() => setSortInput(true)}>启用排序</Button>
                         }
-                        <Button type="primary" size='small' onClick={() => onChooseIgnore(apiData.id, 'input')}>全部忽略</Button>
-                        <Button type="primary" size='small' onClick={() => onCancelIgnore(apiData.id, 'input')}>取消全部忽略</Button>
+                        <Button type="primary" size='small' onClick={() => onHandleIgnore(apiData.id, 'input', 'choose')}>全部忽略</Button>
+                        <Button type="primary" size='small' onClick={() => onHandleIgnore(apiData.id, 'input', 'cancel')}>取消全部忽略</Button>
                     </Space>
                 </div>
 
@@ -862,9 +846,9 @@ const ApiFieldView: React.FC<{
                                             onClick={() => setSortOutput(true)}>启用排序</Button>
                                 }
                                 <Button type="primary" size='small'
-                                    onClick={() => onChooseIgnore(apiData.id, 'output')}>全部忽略</Button>
+                                    onClick={() => onHandleIgnore(apiData.id, 'output', 'choose')}>全部忽略</Button>
                                 <Button type="primary" size='small'
-                                    onClick={() => onCancelIgnore(apiData.id, 'output')}>取消全部忽略</Button>
+                                    onClick={() => onHandleIgnore(apiData.id, 'output', 'cancel')}>取消全部忽略</Button>
                             </Space>
                         </div>
                         <Table
