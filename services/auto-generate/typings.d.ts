@@ -23,4 +23,10 @@ declare namespace AutoGenerate {
         createdBy: string;
         created: string;
     }
+
+    type queryListParams = {
+        productName?: string;
+        providerType?: string;
+        providerName?: string;
+    };
 }
