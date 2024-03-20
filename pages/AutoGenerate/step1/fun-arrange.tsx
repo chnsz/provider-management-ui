@@ -66,7 +66,7 @@ const FunArrange: React.FC<{
             align: 'center',
             width: '100px',
             render: (_, record: funData) => {
-                if (record.funType === 'callApi') {
+                if (['callApi', 'setSchema'].includes(record.funType)) {
                     return <Text disabled>移除</Text>
                 }
 
@@ -256,6 +256,12 @@ const FunArrange: React.FC<{
                 funName: item.apiNameEn,
                 funTitle: handleFunTitle(item.schemaType)
             };
+
+            const readFunItem = {
+                funType: 'setSchema',
+                funName: `${item.apiNameEn}ToSchema`,
+                funTitle: handleFunTitle(item.schemaType)
+            }
             if (item.schemaType === 'argument') {
                 if (!(createContext.some(v => JSON.stringify(v) === JSON.stringify(funItem)))) {
                     createData.push(funItem);
@@ -266,6 +272,11 @@ const FunArrange: React.FC<{
                 if (!(readContext.some(v => JSON.stringify(v) === JSON.stringify(funItem)))) {
                     readData.push(funItem);
                 }
+
+                if (!(readContext.some(v => JSON.stringify(v) === JSON.stringify(readFunItem)))) {
+                    readData.push(readFunItem);
+                }
+                
             }
 
             if (item.schemaType === 'update') {
@@ -282,6 +293,7 @@ const FunArrange: React.FC<{
         });
         if (createData.length) {
             readContext = readContext.filter(i => !createData.some(j => j.funType === i.funType && j.funName === i.funName));
+            readContext = readContext.filter(i => !createData.some(j => i.funType === 'setSchema' && `${j.funName}ToSchema` === i.funName));
             updateContext = updateContext.filter(i => !createData.some(j => j.funType === i.funType && j.funName === i.funName));
             deleteContext = deleteContext.filter(i => !createData.some(j => j.funType === i.funType && j.funName === i.funName));
         }
@@ -295,12 +307,14 @@ const FunArrange: React.FC<{
         if (updateData.length) {
             createContext = createContext.filter(i => !updateData.some(j => j.funType === i.funType && j.funName === i.funName));
             readContext = readContext.filter(i => !updateData.some(j => j.funType === i.funType && j.funName === i.funName));
+            readContext = readContext.filter(i => !updateData.some(j => i.funType === 'setSchema' && `${j.funName}ToSchema` === i.funName));
             deleteContext = deleteContext.filter(i => !updateData.some(j => j.funType === i.funType && j.funName === i.funName));
         }
 
         if (deleteData.length) {
             createContext = createContext.filter(i => !deleteData.some(j => j.funType === i.funType && j.funName === i.funName));
             readContext = readContext.filter(i => !deleteData.some(j => j.funType === i.funType && j.funName === i.funName));
+            readContext = readContext.filter(i => !deleteData.some(j => i.funType === 'setSchema' && `${j.funName}ToSchema` === i.funName));
             updateContext = updateContext.filter(i => !deleteData.some(j => j.funType === i.funType && j.funName === i.funName));
         }
 
