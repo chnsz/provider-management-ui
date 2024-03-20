@@ -1,4 +1,4 @@
-import LRLayout, {Container, Header, LeftSide} from '@/components/Layout';
+import LRLayout, { Container, Header, LeftSide } from '@/components/Layout';
 import ProviderPlanningDetail from '@/pages/ProviderPlanning/components/provider-planning-detail';
 import SideList from '@/pages/ProviderPlanning/components/sider-list';
 import {
@@ -8,15 +8,15 @@ import {
     getProviderPlanning,
     getProviderPlanningList,
 } from '@/services/provider-planning/api';
-import {SendOutlined} from '@ant-design/icons';
-import {Button, message, Space} from 'antd';
-import React, {useEffect, useState} from 'react';
+import { SendOutlined } from '@ant-design/icons';
+import { Button, message, Space } from 'antd';
+import React, { useEffect, useState } from 'react';
 import './provider-planning.less';
 // @ts-ignore
-import {Scrollbars} from 'react-custom-scrollbars';
-import type {SearchFormProps} from "@/components/SearchForm";
+import { Scrollbars } from 'react-custom-scrollbars';
+import type { SearchFormProps } from "@/components/SearchForm";
 import SearchForm from "@/components/SearchForm";
-import {useLocation} from "umi";
+import { useLocation } from "umi";
 import DeleteBtn from "@/components/delete";
 import CustomBreadcrumb from "@/components/Breadcrumb";
 
@@ -30,16 +30,18 @@ export const defaultVal = {
     updated: '',
 };
 
+const productNameArr: string[] = [];
+const ownerArr: string[] = [];
+const statusArr: string[] = [];
+let page = 1;
+let isAllDataShow = false;
+
 const ProviderPlanning: React.FC = () => {
     const [providerPlanningList, setProviderPlanningList] = useState<ProviderPlanning.ProviderPlanning[]>([]);
     const [selectedPlanning, setSelectedPlanning] = useState<ProviderPlanning.ProviderPlanning>(defaultVal);
     const [messageApi, contextHolder] = message.useMessage();
     const location = useLocation();
 
-    let page = 1;
-    let productNameArr: string[] = [];
-    let ownerArr: string[] = [];
-    let statusArr: string[] = [];
 
     useEffect(() => {
         const hashArr = location.hash.split('/');
@@ -56,9 +58,10 @@ const ProviderPlanning: React.FC = () => {
             owner: ownerArr,
             status: statusArr,
         };
+
         getProviderPlanningList(queryParams, 50, pageNum).then((data) => {
-            if (data.items.length === 0 && pageNum > 1) {
-                page--
+            if (data.items.length === 0) {
+                isAllDataShow = true;
                 messageApi.warning('没有更多数据');
                 return;
             }
@@ -78,14 +81,27 @@ const ProviderPlanning: React.FC = () => {
     }
 
     const onSearch = (query: SearchFormProps) => {
-        productNameArr = query.productName;
-        ownerArr = query.owner;
-        statusArr = query.status;
+        isAllDataShow = false;
+        productNameArr.length = 0;
+        ownerArr.length = 0;
+        statusArr.length = 0;
+
+        query.productName.forEach(v => productNameArr.push(v));
+        query.owner.forEach(v => ownerArr.push(v));
+        query.status.forEach(v => statusArr.push(v));
+
+        page = 1;
         loadData(1, false);
     };
 
     const loadMore = () => {
-        loadData(++page, true);
+        if (isAllDataShow) {
+            messageApi.warning('没有更多数据');
+            return;
+        } else {
+            page = page + 1;
+            loadData(page, true);
+        }
     };
 
     const createPlanning = () => {
@@ -156,13 +172,13 @@ const ProviderPlanning: React.FC = () => {
 
     return (
         <LRLayout className={'provider-planning'}>
-            <CustomBreadcrumb items={[{title: '首页'}, {title: '资源规划'}]}/>
+            <CustomBreadcrumb items={[{ title: '首页' }, { title: '资源规划' }]} />
             <Header>
-                <div style={{background: '#fff', padding: '20px 20px'}}>
-                    <SearchForm onSearch={onSearch} defaultValue={{productName: getProductName()}}/>
+                <div style={{ background: '#fff', padding: '20px 20px' }}>
+                    <SearchForm onSearch={onSearch} defaultValue={{ productName: getProductName() }} />
                 </div>
             </Header>
-            <LeftSide width={window.innerWidth * 0.3} minWidth={500} style={{height: '100%'}}>
+            <LeftSide width={window.innerWidth * 0.3} minWidth={500} style={{ height: '100%' }}>
                 <div className={'custom-title side-header'}>
                     <div className={'side-title'}>资源规划</div>
                     <div className={'side-tools-bar'}>
@@ -173,7 +189,7 @@ const ProviderPlanning: React.FC = () => {
                 </div>
                 <div className={'list'}>
                     <Scrollbars>
-                        <div style={{padding: '10px'}}>
+                        <div style={{ padding: '10px' }}>
                             <SideList
                                 selectedValue={selectedPlanning}
                                 data={providerPlanningList}
@@ -188,30 +204,30 @@ const ProviderPlanning: React.FC = () => {
             </LeftSide>
             <Container>
                 <div className={'custom-title'}>{getDetailTitle()}</div>
-                <div style={{padding: '20px'}}>
+                <div style={{ padding: '20px' }}>
                     <div className={'tools-bar'}>
                         <div className={'left-bar'}>
                             <Space size={'middle'}>
-                                <Button type="primary" size={'small'} icon={<SendOutlined/>}
-                                        disabled={selectedPlanning.id === 0}
-                                        onClick={createKanboardTask}
+                                <Button type="primary" size={'small'} icon={<SendOutlined />}
+                                    disabled={selectedPlanning.id === 0}
+                                    onClick={createKanboardTask}
                                 >
                                     推送卡片
                                 </Button>
                                 <DeleteBtn size={'small'} text={'删除规划'} onOk={deletePlanning}
-                                           disabled={selectedPlanning.id === 0}
-                                           title={'删除资源规划'}
-                                           content={
-                                               <>
-                                                   <div>确定要删除该资源规划吗？关联的卡片会被同步删除。</div>
-                                                   <div>删除后可联系管理员恢复，请谨慎操作。</div>
-                                                   <p>
-                                                       <a>
-                                                           #{selectedPlanning.id} {selectedPlanning.title}
-                                                       </a>
-                                                   </p>
-                                               </>
-                                           }
+                                    disabled={selectedPlanning.id === 0}
+                                    title={'删除资源规划'}
+                                    content={
+                                        <>
+                                            <div>确定要删除该资源规划吗？关联的卡片会被同步删除。</div>
+                                            <div>删除后可联系管理员恢复，请谨慎操作。</div>
+                                            <p>
+                                                <a>
+                                                    #{selectedPlanning.id} {selectedPlanning.title}
+                                                </a>
+                                            </p>
+                                        </>
+                                    }
                                 />
                                 {contextHolder}
                             </Space>
