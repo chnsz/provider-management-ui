@@ -1,17 +1,19 @@
-import { Button, Checkbox, Col, Collapse, Input, Row, Select, Space, Table, Tooltip } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
-import React, { useEffect, useRef, useState } from 'react';
-import { EditOutlined, MenuOutlined } from "@ant-design/icons";
+import {Button, Checkbox, Col, Collapse, Input, Row, Select, Space, Table, Tooltip} from 'antd';
+import type {ColumnsType} from 'antd/es/table';
+import React, {useEffect, useRef, useState} from 'react';
+import {EditOutlined, MenuOutlined} from "@ant-design/icons";
 import '../api-config.less';
 import ChooseApiDialog from '../components/choose-api-dialog';
-import { getApiFieldList } from '@/services/auto-generate/api';
-import type { SortableContainerProps, SortEnd } from 'react-sortable-hoc';
-import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
-import { arrayMoveImmutable } from '@ant-design/pro-components';
+import {getApiFieldList} from '@/services/auto-generate/api';
+import type {SortableContainerProps, SortEnd} from 'react-sortable-hoc';
+import {SortableContainer, SortableElement, SortableHandle} from 'react-sortable-hoc';
+import {arrayMoveImmutable} from '@ant-design/pro-components';
 import CustomSchemaDialog from '../components/custom-schema-dialog';
+import {camelToSnake} from "@/utils/common";
+import {SchemaEditDialog} from "@/pages/AutoGenerate/components/schema-edit-dialog";
 
-const { Panel } = Collapse;
-const { TextArea } = Input;
+const {Panel} = Collapse;
+const {TextArea} = Input;
 
 export type ApiDetail = {
     id: number;
@@ -125,18 +127,31 @@ export type Field = {
     schemaTypeOption?: any;
     selectSchemaName?: string;
     index?: number;
+    getterCode?: string;
+    setterCode?: string;
 }
 
 export const FieldTypeOption = [
-    { value: 'string', label: 'schema.TypeString' },
-    { value: 'integer', label: 'schema.TypeInt' },
-    { value: 'float', label: 'schema.TypeFloat' },
-    { value: 'boolean', label: 'schema.TypeBool' },
-    { value: 'number', label: 'schema.TypeFloat' },
-    { value: 'array', label: 'schema.TypeSet' },
-    { value: 'array_list', label: 'schema.TypeList' },
-    { value: 'object', label: 'schema.TypeList' },
-    { value: 'map[string]string', label: 'schema.TypeMap' },
+    {value: 'string', label: 'schema.TypeString'},
+    {value: 'integer', label: 'schema.TypeInt'},
+    {value: 'float', label: 'schema.TypeFloat'},
+    {value: 'boolean', label: 'schema.TypeBool'},
+    {value: 'number', label: 'schema.TypeFloat'},
+    {value: 'array', label: 'schema.TypeSet'},
+    {value: 'array_list', label: 'schema.TypeList'},
+    {value: 'object', label: 'schema.TypeList'},
+    {value: 'map[string]object', label: 'schema.TypeList'},
+    {value: 'map[string]string', label: 'schema.TypeMap'},
+];
+
+const SchemaTypeOption = [
+    {value: 'schema.TypeString', label: 'schema.TypeString'},
+    {value: 'schema.TypeInt', label: 'schema.TypeInt'},
+    {value: 'schema.TypeFloat', label: 'schema.TypeFloat'},
+    {value: 'schema.TypeBool', label: 'schema.TypeBool'},
+    {value: 'schema.TypeSet', label: 'schema.TypeSet'},
+    {value: 'schema.TypeList', label: 'schema.TypeList'},
+    {value: 'map[string]string', label: 'schema.TypeMap'},
 ];
 
 const ApiFieldView: React.FC<{
@@ -152,10 +167,16 @@ const ApiFieldView: React.FC<{
           onApiChange,
           onFieldChange,
       }) => {
-    const [sortInput, setSortInput] = useState<boolean>(false);
-    const [sortOutput, setSortOutput] = useState<boolean>(false);
+    const [sort, setSort] = useState<boolean>(false);
+    const [inputFieldList, setInputFieldData] = useState<Field[]>(apiData.inputFieldList);
+    const [outputFieldList, setOutputFieldData] = useState<Field[]>(apiData.outputFieldList);
 
-    const DragHandle = SortableHandle(() => <MenuOutlined style={{ cursor: 'grab', color: '#999' }} />);
+    useEffect(() => {
+        setInputFieldData(apiData.inputFieldList);
+        setOutputFieldData(apiData.outputFieldList);
+    }, [apiData]);
+
+    const DragHandle = SortableHandle(() => <MenuOutlined style={{cursor: 'grab', color: '#999'}}/>);
     const columns: ColumnsType<Field> = [
         {
             title: '序号',
@@ -173,9 +194,9 @@ const ApiFieldView: React.FC<{
             render: (v, row) => {
                 let required = <></>
                 if (row.fieldRequired === 'yes') {
-                    required = <span style={{ color: 'red' }}>&nbsp;*</span>
+                    required = <span style={{color: 'red'}}>&nbsp;*</span>
                 }
-                if (row.ignore || sortInput || sortOutput) {
+                if (row.ignore || sort) {
                     return <>{row.fieldIn} / {row.fieldType} / {row.fieldName}{required}</>;
                 }
 
@@ -195,9 +216,9 @@ const ApiFieldView: React.FC<{
             width: 40,
             align: 'left',
             className: 'api-col',
-            render: () => <DragHandle />,
+            render: () => <DragHandle/>,
         }, {
-            title: <>忽略<EditOutlined style={{ color: '#6d6d6d' }} /></>,
+            title: <>忽略<EditOutlined style={{color: '#6d6d6d'}}/></>,
             dataIndex: 'ignore',
             align: 'center',
             width: 90,
@@ -205,10 +226,10 @@ const ApiFieldView: React.FC<{
                 return <Checkbox defaultChecked={v} checked={row.ignore} onChange={e => {
                     row.ignore = e.target.checked;
                     onFieldChange(row.paramType, row)
-                }} />
+                }}/>
             }
         }, {
-            title: <>字段信息<EditOutlined style={{ color: '#6d6d6d' }} /></>,
+            title: <>字段信息<EditOutlined style={{color: '#6d6d6d'}}/></>,
             dataIndex: 'schemaName',
             ellipsis: true,
             width: 500,
@@ -217,7 +238,7 @@ const ApiFieldView: React.FC<{
                     return '';
                 }
 
-                if (sortInput || sortOutput) {
+                if (sort) {
                     return <>
                         {v} / {row.schemaType} / {row.default}
                     </>;
@@ -251,7 +272,7 @@ const ApiFieldView: React.FC<{
                         showSearch
                         defaultValue={row.selectSchemaName}
                         placeholder="请选择"
-                        style={{ width: '100%' }}
+                        style={{width: '100%'}}
                         bordered={false}
                         onChange={v => {
                             row.schemaName = v;
@@ -276,7 +297,7 @@ const ApiFieldView: React.FC<{
                                            newValue
                                        };
                                        onFieldChange(row.paramType, row, 'schemaName', schemaValue)
-                                   }} />
+                                   }}/>
                         </div>
                         <div>
                             类&nbsp;&nbsp;&nbsp;&nbsp;型：
@@ -288,7 +309,7 @@ const ApiFieldView: React.FC<{
                                     row.schemaType = v;
                                     onFieldChange(row.paramType, row)
                                 }}
-                                options={FieldTypeOption}
+                                options={SchemaTypeOption}
                             />
                         </div>
                         <div>
@@ -299,71 +320,65 @@ const ApiFieldView: React.FC<{
                                    onChange={e => {
                                        row.default = e.target.value;
                                        onFieldChange(row.paramType, row)
-                                   }} />
+                                   }}/>
                         </div>
                     </Space>
                 }
             },
         }, {
-            title: <>其他属性<EditOutlined style={{ color: '#6d6d6d' }} /></>,
+            title: <>其他属性<EditOutlined style={{color: '#6d6d6d'}}/></>,
             width: 150,
             align: 'center',
             render: (v, row) => {
-                if (row.ignore || sortInput || sortOutput) {
+                if (row.ignore || sort) {
                     return '';
                 }
 
-                return <Space direction={'vertical'} size={2} style={{ textAlign: 'left', marginLeft: '5px' }}>
-                    <div>
-                        <Checkbox defaultChecked={row.schemaRequired} onChange={e => {
-                            row.schemaRequired = e.target.checked;
-                            onFieldChange(row.paramType, row);
-                        }}>
-                            Required
-                        </Checkbox>
-                    </div>
-                    <div>
-                        <Checkbox defaultChecked={row.computed} onChange={e => {
-                            row.computed = e.target.checked;
-                            onFieldChange(row.paramType, row);
-                        }}>
-                            Computed
-                        </Checkbox>
-                    </div>
-                    <div>
-                        <Checkbox defaultChecked={row.sensitive} onChange={e => {
-                            row.sensitive = e.target.checked;
-                            onFieldChange(row.paramType, row);
-                        }}>
-                            Sensitive
-                        </Checkbox>
-                    </div>
-                    <div>
-                        <Checkbox defaultChecked={row.keepZero} onChange={e => {
-                            row.keepZero = e.target.checked;
-                            onFieldChange(row.paramType, row);
-                        }}>
-                            KeepZero
-                        </Checkbox>
-                    </div>
-                </Space>
+                return <SchemaEditDialog schemaField={row} onChange={(data) => {
+                    if (row.paramType === 'output') {
+                        const arr = [...outputFieldList];
+                        arr.forEach(t => {
+                            if (t.id === row.id) {
+                                t.schemaRequired = row.schemaRequired;
+                                t.computed = row.computed;
+                                t.sensitive = row.sensitive;
+                                t.keepZero = row.keepZero;
+                                t.setterCode = row.setterCode;
+                            }
+                        });
+                        setOutputFieldData(arr);
+                    } else if (row.paramType === 'input') {
+                        const arr = [...inputFieldList];
+                        arr.forEach(t => {
+                            if (t.id === row.id) {
+                                t.schemaRequired = row.schemaRequired;
+                                t.computed = row.computed;
+                                t.sensitive = row.sensitive;
+                                t.keepZero = row.keepZero;
+                                t.setterCode = row.setterCode;
+                            }
+                        });
+                        setInputFieldData(arr);
+                    }
+                    onFieldChange(row.paramType, data);
+                }}/>
             },
         }, {
-            title: <>描述<EditOutlined style={{ color: '#6d6d6d' }} /></>,
+            title: <>描述<EditOutlined style={{color: '#6d6d6d'}}/></>,
             dataIndex: 'schemaDesc',
             ellipsis: true,
             render: (v, row) => {
                 if (row.ignore) {
                     return <></>;
                 }
-                if (sortInput || sortOutput) {
+                if (sort) {
                     return <>{row.schemaDesc}</>;
                 }
 
                 return <TextArea rows={4} defaultValue={v} onChange={e => {
                     row.schemaDesc = e.target.value;
                     onFieldChange(row.paramType, row)
-                }} />
+                }}/>
             },
         }];
 
@@ -394,12 +409,12 @@ const ApiFieldView: React.FC<{
         />
     );
 
-    const inputDraggableBodyRow: React.FC<any> = ({ className, style, id, ...restProps }) => {
+    const inputDraggableBodyRow: React.FC<any> = ({className, style, id, ...restProps}) => {
         const index = apiData.inputFieldList.findIndex(x => x.id === restProps['data-row-key']);
         return <SortableItem index={index} {...restProps} />;
     };
 
-    const onInputSortEnd = ({ oldIndex, newIndex }: SortEnd) => {
+    const onInputSortEnd = ({oldIndex, newIndex}: SortEnd) => {
         if (oldIndex !== newIndex) {
             const newData = arrayMoveImmutable(apiData.inputFieldList.slice(), oldIndex, newIndex).filter(
                 (el: any) => !!el,
@@ -422,12 +437,12 @@ const ApiFieldView: React.FC<{
         />
     );
 
-    const outputDraggableBodyRow: React.FC<any> = ({ className, style, id, ...restProps }) => {
+    const outputDraggableBodyRow: React.FC<any> = ({className, style, id, ...restProps}) => {
         const index = apiData.outputFieldList.findIndex(x => x.id === restProps['data-row-key']);
         return <SortableItem index={index} {...restProps} />;
     };
 
-    const onOutPutSortEnd = ({ oldIndex, newIndex }: SortEnd) => {
+    const onOutPutSortEnd = ({oldIndex, newIndex}: SortEnd) => {
         if (oldIndex !== newIndex) {
             const newData = arrayMoveImmutable(apiData.outputFieldList.slice(), oldIndex, newIndex).filter(
                 (el: any) => !!el,
@@ -529,7 +544,7 @@ const ApiFieldView: React.FC<{
         onApiChange(apiAllData);
     }
 
-    const onAddSchemaData =  (apiId: number, row: any) => {
+    const onAddSchemaData = (apiId: number, row: any) => {
         let findData = apiAllData.find(item => item.id === apiId);
         if (findData) {
             findData.customSchemaData = row.customSchemaData;
@@ -544,13 +559,13 @@ const ApiFieldView: React.FC<{
         onApiChange(apiAllData);
     }
 
-    return <div style={{ margin: '0 6px' }}>
+    return <div style={{margin: '0 6px'}}>
         <Space className='api-config' direction={'vertical'}>
-            <div style={{ fontWeight: 'bold', fontSize: '16px', marginBottom: '10px' }}>请求参数</div>
-            <div style={{ display: 'flex' }}>
+            <div style={{fontWeight: 'bold', fontSize: '16px', marginBottom: '10px'}}>请求参数</div>
+            <div style={{display: 'flex'}}>
                 {
                     (apiData.schemaType === 'argument' || baseInfo?.providerType === 'DataSource') ?
-                        <span style={{ marginRight: '20px' }}>
+                        <span style={{marginRight: '20px'}}>
                                 资源ID &nbsp;&nbsp;&nbsp;
                             {
                                 apiData.isJmespath &&
@@ -559,7 +574,7 @@ const ApiFieldView: React.FC<{
                                            apiData.jmespath = e.target.value;
                                            onApiOperate(apiData.id, e.target.value, 'jmespath')
                                        }}
-                                       placeholder="jmespath" style={{ width: '180px' }} />
+                                       placeholder="jmespath" style={{width: '180px'}}/>
                             }
 
                             {
@@ -567,15 +582,15 @@ const ApiFieldView: React.FC<{
                                 <Select placeholder="请选择资源ID"
                                         showSearch
                                         allowClear
-                                        style={{ width: '180px' }}
+                                        style={{width: '180px'}}
                                         value={apiData.resourceId}
                                         options={apiData.rosourceOption}
                                         onChange={(e) => {
                                             apiData.resourceId = e;
                                             onApiOperate(apiData.id, e, 'resourceId', 'jmespath')
-                                        }} />
+                                        }}/>
                             }
-                            <span style={{ marginLeft: '5px' }}>
+                            <span style={{marginLeft: '5px'}}>
                                     <Checkbox defaultChecked={apiData.isJmespath} checked={apiData.isJmespath}
                                               onChange={e => {
                                                   apiData.isJmespath = e.target.checked;
@@ -589,15 +604,15 @@ const ApiFieldView: React.FC<{
                 }
 
                 <span>
-                        状态码 &nbsp;&nbsp;
+                        状态码 &nbsp;
                     <Input defaultValue={apiData.statusCode || 200}
                            onChange={(e) => {
                                apiData.statusCode = e.target.value;
                                onApiOperate(apiData.id, e.target.value, 'statusCode')
                            }}
-                           placeholder="成功状态码" style={{ width: '100px' }} />
+                           placeholder="成功状态码" style={{width: '100px'}}/>
                     </span>
-                <span style={{ marginLeft: '15px', lineHeight: '34px' }}>
+                <span style={{marginLeft: '15px', lineHeight: '34px'}}>
                         <CustomSchemaDialog apiData={apiData}
                                             handle={(option: 'ok' | 'cancel', rows: Api.Detail[], apiId: number[]) => {
                                                 if (option === 'ok') {
@@ -607,7 +622,7 @@ const ApiFieldView: React.FC<{
                     </span>
                 {
                     apiData.schemaType === 'attribute' ?
-                        <span style={{ marginLeft: '20px', lineHeight: '34px' }}>
+                        <span style={{lineHeight: '34px'}}>
                                 <Checkbox defaultChecked={apiData.isPage} checked={apiData.isPage} onChange={e => {
                                     apiData.isPage = e.target.checked;
                                     onApiOperate(apiData.id, e.target.checked, 'isPage')
@@ -619,13 +634,13 @@ const ApiFieldView: React.FC<{
                 {
                     apiData.schemaType === 'attribute' && apiData.isPage ?
                         <div>
-                                <span style={{ marginLeft: '20px' }}>
-                                    <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>* </span>
-                                    分页方式 &nbsp;&nbsp;&nbsp;
+                                <span style={{marginLeft: '5px'}}>
+                                    <span style={{color: '#ff4d4f', fontWeight: 'bold'}}>* </span>
+                                    分页方式&nbsp;
                                     <Select placeholder="请选择分页方式"
                                             showSearch
                                             allowClear
-                                            style={{ width: '180px' }}
+                                            style={{width: '100px'}}
                                             value={apiData.pageMethod}
                                             options={apiData.pageOption}
                                             onChange={(e) => {
@@ -634,11 +649,11 @@ const ApiFieldView: React.FC<{
                                                 }
                                                 apiData.pageMethod = e;
                                                 onPageIdChange(apiData.id, e)
-                                            }} />
+                                            }}/>
                                 </span>
-                            <span style={{ marginLeft: '20px' }}>
-                                    <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>* </span>
-                                    DataPath &nbsp;&nbsp;&nbsp;
+                            <span style={{marginLeft: '5px'}}>
+                                    <span style={{color: '#ff4d4f', fontWeight: 'bold'}}>* </span>
+                                    DataPath&nbsp;
                                 <Input defaultValue={apiData.dataPath}
                                        onChange={(e) => {
                                            if (!e) {
@@ -647,19 +662,19 @@ const ApiFieldView: React.FC<{
                                            apiData.dataPath = e.target.value;
                                            onApiOperate(apiData.id, e.target.value, 'dataPath')
                                        }}
-                                       placeholder="请输入DataPath" style={{ width: '145px' }} />
+                                       placeholder="请输入DataPath" style={{width: '140px'}}/>
                                 </span>
 
                             {
                                 apiData.pageMethod === 'marker' &&
                                 <span>
-                                        <span style={{ marginLeft: '20px' }}>
-                                            <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>* </span>
-                                            MarkerKey &nbsp;&nbsp;&nbsp;
+                                        <span style={{marginLeft: '5px'}}>
+                                            <span style={{color: '#ff4d4f', fontWeight: 'bold'}}>* </span>
+                                            MarkerKey&nbsp;
                                             <Select placeholder="请选择MarkerKey"
                                                     showSearch
                                                     allowClear
-                                                    style={{ width: '180px' }}
+                                                    style={{width: '180px'}}
                                                     value={apiData.markerKey}
                                                     options={apiData.markerOption}
                                                     onChange={(e) => {
@@ -668,11 +683,11 @@ const ApiFieldView: React.FC<{
                                                         }
                                                         apiData.markerKey = e;
                                                         onApiOperate(apiData.id, e, 'markerKey')
-                                                    }} />
+                                                    }}/>
                                         </span>
-                                        <span style={{ marginLeft: '20px' }}>
-                                            <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>* </span>
-                                            NextExp &nbsp;&nbsp;&nbsp;
+                                        <span style={{marginLeft: '5px'}}>
+                                            <span style={{color: '#ff4d4f', fontWeight: 'bold'}}>* </span>
+                                            NextExp &nbsp;
                                             <Input defaultValue={apiData.nextExp}
                                                    onChange={(e) => {
                                                        if (!e.target.value) {
@@ -681,64 +696,10 @@ const ApiFieldView: React.FC<{
                                                        apiData.nextExp = e.target.value;
                                                        onApiOperate(apiData.id, e.target.value, 'nextExp')
                                                    }}
-                                                   placeholder="请输入NextExp" style={{ width: '200px' }} />
+                                                   placeholder="请输入NextExp" style={{width: '150px'}}/>
                                         </span>
-                                    </span>
-                            }
-
-                            {
-                                apiData.pageMethod === 'link' &&
-                                <span style={{ marginLeft: '20px' }}>
-                                        <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>* </span>
-                                        LinkExp &nbsp;&nbsp;&nbsp;
-                                    <Input defaultValue={apiData.linkExp}
-                                           onChange={(e) => {
-                                               apiData.linkExp = e.target.value;
-                                               onApiOperate(apiData.id, e.target.value, 'linkExp')
-                                           }}
-                                           placeholder="请输入LinkExp" style={{ width: '200px' }} />
-                                    </span>
-                            }
-
-                            {
-                                apiData.pageMethod === 'offset' &&
-                                <span>
-                                        <span style={{ marginLeft: '20px' }}>
-                                            <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>* </span>
-                                            OffsetKey &nbsp;&nbsp;&nbsp;
-                                            <Select placeholder="请选择OffsetKey"
-                                                    showSearch
-                                                    allowClear
-                                                    style={{ width: '180px' }}
-                                                    value={apiData.offsetKey}
-                                                    options={apiData.offsetOption}
-                                                    onChange={(e) => {
-                                                        if (!e) {
-                                                            return
-                                                        }
-                                                        apiData.offsetKey = e;
-                                                        onApiOperate(apiData.id, e, 'offsetKey')
-                                                    }} />
-                                        </span>
-                                        <span style={{ marginLeft: '20px' }}>
-                                            <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>* </span>
-                                            LimitKey &nbsp;&nbsp;&nbsp;
-                                            <Select placeholder="请选择LimitKey"
-                                                    showSearch
-                                                    allowClear
-                                                    style={{ width: '180px' }}
-                                                    value={apiData.limitKey}
-                                                    options={apiData.limitOption}
-                                                    onChange={(e) => {
-                                                        if (!e) {
-                                                            return
-                                                        }
-                                                        apiData.limitKey = e;
-                                                        onApiOperate(apiData.id, e, 'limitKey')
-                                                    }} />
-                                        </span>
-                                        <span style={{ marginLeft: '20px' }}>
-                                            DefaultLimit &nbsp;&nbsp;&nbsp;
+                                        <span style={{marginLeft: '5px'}}>
+                                            DefaultLimit&nbsp;
                                             <Input defaultValue={apiData.defaultLimit}
                                                    onChange={(e) => {
                                                        if (!e) {
@@ -747,21 +708,86 @@ const ApiFieldView: React.FC<{
                                                        apiData.defaultLimit = e.target.value;
                                                        onApiOperate(apiData.id, e.target.value, 'defaultLimit')
                                                    }}
-                                                   placeholder="请输入DefaultLimit" style={{ width: '145px' }} />
+                                                   placeholder="" style={{width: '60px'}}/>
                                         </span>
                                     </span>
                             }
 
                             {
-                                apiData.pageMethod === 'pageSize' &&
+                                apiData.pageMethod === 'link' &&
+                                <span style={{marginLeft: '5px'}}>
+                                        <span style={{color: '#ff4d4f', fontWeight: 'bold'}}>* </span>
+                                        LinkExp&nbsp;
+                                    <Input defaultValue={apiData.linkExp}
+                                           onChange={(e) => {
+                                               apiData.linkExp = e.target.value;
+                                               onApiOperate(apiData.id, e.target.value, 'linkExp')
+                                           }}
+                                           placeholder="请输入LinkExp" style={{width: '150px'}}/>
+                                    </span>
+                            }
+
+                            {
+                                apiData.pageMethod === 'offset' &&
                                 <span>
-                                        <span style={{ marginLeft: '20px' }}>
-                                            <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>* </span>
-                                            PageNumKey &nbsp;&nbsp;&nbsp;
-                                            <Select placeholder="请选择PageNumKey"
+                                        <span style={{marginLeft: '5px'}}>
+                                            <span style={{color: '#ff4d4f', fontWeight: 'bold'}}>* </span>
+                                            OffsetKey&nbsp;
+                                            <Select placeholder="请选择OffsetKey"
                                                     showSearch
                                                     allowClear
-                                                    style={{ width: '180px' }}
+                                                    style={{width: '140px'}}
+                                                    value={apiData.offsetKey}
+                                                    options={apiData.offsetOption}
+                                                    onChange={(e) => {
+                                                        if (!e) {
+                                                            return
+                                                        }
+                                                        apiData.offsetKey = e;
+                                                        onApiOperate(apiData.id, e, 'offsetKey')
+                                                    }}/>
+                                        </span>
+                                        <span style={{marginLeft: '5px'}}>
+                                            <span style={{color: '#ff4d4f', fontWeight: 'bold'}}>* </span>
+                                            LimitKey&nbsp;
+                                            <Select placeholder="请选择LimitKey"
+                                                    showSearch
+                                                    allowClear
+                                                    style={{width: '140px'}}
+                                                    value={apiData.limitKey}
+                                                    options={apiData.limitOption}
+                                                    onChange={(e) => {
+                                                        if (!e) {
+                                                            return
+                                                        }
+                                                        apiData.limitKey = e;
+                                                        onApiOperate(apiData.id, e, 'limitKey')
+                                                    }}/>
+                                        </span>
+                                        <span style={{marginLeft: '5px'}}>
+                                            DefaultLimit&nbsp;
+                                            <Input defaultValue={apiData.defaultLimit}
+                                                   onChange={(e) => {
+                                                       if (!e) {
+                                                           return
+                                                       }
+                                                       apiData.defaultLimit = e.target.value;
+                                                       onApiOperate(apiData.id, e.target.value, 'defaultLimit')
+                                                   }}
+                                                   placeholder="" style={{width: '60px'}}/>
+                                        </span>
+                                    </span>
+                            }
+                            {
+                                apiData.pageMethod === 'pageSize' &&
+                                <span>
+                                        <span style={{marginLeft: '5px'}}>
+                                            <span style={{color: '#ff4d4f', fontWeight: 'bold'}}>* </span>
+                                            PageNumKey&nbsp;
+                                            <Select placeholder="请选择"
+                                                    showSearch
+                                                    allowClear
+                                                    style={{width: '120px'}}
                                                     value={apiData.pageNumKey}
                                                     options={apiData.pageNumOption}
                                                     onChange={(e) => {
@@ -770,15 +796,15 @@ const ApiFieldView: React.FC<{
                                                         }
                                                         apiData.pageNumKey = e;
                                                         onApiOperate(apiData.id, e, 'pageNumKey')
-                                                    }} />
+                                                    }}/>
                                         </span>
-                                        <span style={{ marginLeft: '20px' }}>
-                                            <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>* </span>
-                                            PageSizeKey &nbsp;&nbsp;&nbsp;
-                                            <Select placeholder="请选择PageSizeKey"
+                                        <span style={{marginLeft: '5px'}}>
+                                            <span style={{color: '#ff4d4f', fontWeight: 'bold'}}>* </span>
+                                            PageSizeKey&nbsp;
+                                            <Select placeholder="请选择"
                                                     showSearch
                                                     allowClear
-                                                    style={{ width: '180px' }}
+                                                    style={{width: '120px'}}
                                                     value={apiData.pageSizeKey}
                                                     options={apiData.pageSizeOption}
                                                     onChange={(e) => {
@@ -787,10 +813,10 @@ const ApiFieldView: React.FC<{
                                                         }
                                                         apiData.pageSizeKey = e;
                                                         onApiOperate(apiData.id, e, 'pageSizeKey')
-                                                    }} />
+                                                    }}/>
                                         </span>
-                                        <span style={{ marginLeft: '20px' }}>
-                                            DefaultSize &nbsp;&nbsp;&nbsp;
+                                        <span style={{marginLeft: '5px'}}>
+                                            DefaultSize&nbsp;
                                             <Input defaultValue={apiData.defaultSize}
                                                    onChange={(e) => {
                                                        if (!e) {
@@ -799,7 +825,7 @@ const ApiFieldView: React.FC<{
                                                        apiData.defaultSize = e.target.value;
                                                        onApiOperate(apiData.id, e.target.value, 'defaultSize')
                                                    }}
-                                                   placeholder="请输入DefaultSize" style={{ width: '145px' }} />
+                                                   style={{width: '60px'}}/>
                                         </span>
                                     </span>
                             }
@@ -809,48 +835,50 @@ const ApiFieldView: React.FC<{
                 }
 
             </div>
-            <div style={{ margin: '10px 0' }}>
+            <div style={{margin: '10px 0'}}>
                 <Space direction={'horizontal'}>
                     {
-                        sortInput ?
-                            <Button type="primary" size='small' onClick={() => setSortInput(false)}>结束排序</Button>
+                        sort ?
+                            <Button type="primary" size='small' onClick={() => setSort(false)}>结束排序</Button>
                             :
-                            <Button type="primary" size='small' onClick={() => setSortInput(true)}>启用排序</Button>
+                            <Button type="primary" size='small' onClick={() => setSort(true)}>启用排序</Button>
                     }
-                    <Button type="primary" size='small' onClick={() => onHandleIgnore(apiData.id, 'input', 'choose')}>全部忽略</Button>
-                    <Button type="primary" size='small' onClick={() => onHandleIgnore(apiData.id, 'input', 'cancel')}>取消全部忽略</Button>
+                    <Button type="primary" size='small'
+                            onClick={() => onHandleIgnore(apiData.id, 'input', 'choose')}>全部忽略</Button>
+                    <Button type="primary" size='small'
+                            onClick={() => onHandleIgnore(apiData.id, 'input', 'cancel')}>取消全部忽略</Button>
                 </Space>
             </div>
 
             <Table
                 columns={
-                    sortInput ? columns : columns.filter(t => t.dataIndex !== 'sort')
+                    sort ? columns : columns.filter(t => t.dataIndex !== 'sort')
                 }
-                dataSource={apiData.inputFieldList}
+                dataSource={inputFieldList}
                 size={'middle'}
                 pagination={false}
                 rowKey={r => r.id}
                 components={{
-                    body: !sortInput ? {} : {
+                    body: !sort ? {} : {
                         wrapper: inputDraggableContainer,
                         row: inputDraggableBodyRow,
                     },
                 }}
             />
-            <div style={{ height: '15px' }}></div>
+            <div style={{height: '15px'}}></div>
             {
                 ['argument', 'attribute'].includes(apiData.schemaType) &&
                 <div>
-                    <div style={{ fontWeight: 'bold', fontSize: '16px', marginBottom: '10px' }}>响应参数</div>
-                    <div style={{ marginTop: '10px' }}>
+                    <div style={{fontWeight: 'bold', fontSize: '16px', marginBottom: '10px'}}>响应参数</div>
+                    <div style={{marginTop: '10px'}}>
                         <Space direction={'horizontal'}>
                             {
-                                sortOutput ?
+                                sort ?
                                     <Button type="primary" size='small'
-                                            onClick={() => setSortOutput(false)}>结束排序</Button>
+                                            onClick={() => setSort(false)}>结束排序</Button>
                                     :
                                     <Button type="primary" size='small'
-                                            onClick={() => setSortOutput(true)}>启用排序</Button>
+                                            onClick={() => setSort(true)}>启用排序</Button>
                             }
                             <Button type="primary" size='small'
                                     onClick={() => onHandleIgnore(apiData.id, 'output', 'choose')}>全部忽略</Button>
@@ -860,14 +888,14 @@ const ApiFieldView: React.FC<{
                     </div>
                     <Table
                         columns={
-                            sortOutput ? outputColumns : outputColumns.filter(t => t.dataIndex !== 'sort')
+                            sort ? outputColumns : outputColumns.filter(t => t.dataIndex !== 'sort')
                         }
-                        dataSource={apiData.outputFieldList}
+                        dataSource={outputFieldList}
                         size={'middle'}
                         pagination={false}
                         rowKey={r => r.id}
                         components={{
-                            body: !sortOutput ? {} : {
+                            body: !sort ? {} : {
                                 wrapper: outputDraggableContainer,
                                 row: outputDraggableBodyRow,
                             },
@@ -890,7 +918,7 @@ const ApiInfo: React.FC<{ api: ApiDetail, onSchemaTypeChange: (v: string) => any
             <Select
                 onClick={(e) => e.stopPropagation()}
                 showArrow
-                style={{ width: '140px', marginRight: '10px' }}
+                style={{width: '140px', marginRight: '10px'}}
                 placeholder={'请选择操作'}
                 value={api.schemaType}
                 onChange={onSchemaTypeChange}
@@ -902,11 +930,20 @@ const ApiInfo: React.FC<{ api: ApiDetail, onSchemaTypeChange: (v: string) => any
             </Select>
             #{api.id} 【{api.productName}】&nbsp;&nbsp;{api.apiName} / {api.apiNameEn}
         </Col>
-        <Col span={12} style={{ textAlign: 'right', marginTop: '4px' }}>
+        <Col span={12} style={{textAlign: 'right', marginTop: '4px'}}>
             [{api.method}]&nbsp;&nbsp;{api.uri}
-            <Button size='small' onClick={deleteApiData} style={{ marginLeft: '8px' }}>移除</Button>
+            <Button size='small' onClick={deleteApiData} style={{marginLeft: '8px'}}>移除</Button>
         </Col>
     </Row>;
+}
+
+export const getType = (originType: string): string => {
+    let newType = originType;
+    const ft = FieldTypeOption.filter(t => t.value == originType)
+    if (ft.length > 0) {
+        newType = ft[0].label;
+    }
+    return newType || originType;
 }
 
 const ApiConfig: React.FC<{
@@ -914,7 +951,7 @@ const ApiConfig: React.FC<{
     baseInfo: any,
     dataId: number | null,
     apiDataPar: ApiDetail[]
-}> = ({ setData, baseInfo, dataId, apiDataPar }) => {
+}> = ({setData, baseInfo, dataId, apiDataPar}) => {
     let [apiData, setApiData] = useState<ApiDetail[]>([]);
     const [activeKey, setActiveKey] = useState<string[]>([]);
     apiData = apiDataPar;
@@ -973,7 +1010,7 @@ const ApiConfig: React.FC<{
     const onAdd = (apiId: number[], rows: Api.Detail[]) => {
         getApiFieldList(apiId).then(rst => {
             const tmp = rst.map(t => {
-                let api: ApiDetail = { ...t };
+                let api: ApiDetail = {...t};
                 const findApiData = apiData.find(item => item.id === api.id);
                 if (findApiData) {
                     api.schemaType = findApiData.schemaType;
@@ -1013,17 +1050,14 @@ const ApiConfig: React.FC<{
                 api.customSchemaOperator = null;
 
                 api.inputFieldList?.map((t, index) => {
-                    t.schemaName = t.fieldName;
-                    t.schemaType = t.fieldType;
+                    t.schemaName = camelToSnake(t.fieldName);
+                    t.schemaType = getType(t.fieldType);
                     t.schemaRequired = t.fieldRequired === 'yes' ? true : false;
                     t.schemaDesc = t.fieldDesc;
                     t.ignore = false;
-                    if (t.fieldIn === 'header') {
-                        t.ignore = true;
-                    } else if (t.fieldIn === 'path' && t.fieldName === 'project_id') {
+                    if (t.fieldIn === 'header' || (t.fieldIn === 'path' && t.fieldName === 'project_id') || (t.fieldIn === 'path' && t.fieldName === 'domain_id')) {
                         t.ignore = true;
                     }
-
                     t.computed = false;
                     t.default = '';
                     t.sensitive = false;
@@ -1034,8 +1068,8 @@ const ApiConfig: React.FC<{
                 });
 
                 api.outputFieldList?.forEach((t, index) => {
-                    t.schemaName = t.fieldName;
-                    t.schemaType = t.fieldType;
+                    t.schemaName = camelToSnake(t.fieldName);
+                    t.schemaType = getType(t.fieldType);
                     t.schemaRequired = t.fieldRequired === 'yes' ? true : false;
                     t.schemaDesc = t.fieldDesc;
                     t.ignore = true;
@@ -1161,9 +1195,7 @@ const ApiConfig: React.FC<{
                                     if (v === 'attribute') {
                                         api.outputFieldList?.forEach((item) => {
                                             item.ignore = false;
-                                            if (item.fieldIn === 'header') {
-                                                item.ignore = true;
-                                            } else if (item.fieldIn === 'path' && item.fieldName === 'project_id') {
+                                            if (item.fieldIn === 'header' || (item.fieldIn === 'path' && item.fieldName === 'project_id') || (item.fieldIn === 'path' && item.fieldName === 'domain_id')) {
                                                 item.ignore = true;
                                             }
                                         })

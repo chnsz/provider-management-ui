@@ -1,4 +1,4 @@
-import {Collapse, Space, Table} from 'antd';
+import {Collapse, Space, Table, Typography} from 'antd';
 import React, {useEffect, useState, useRef} from 'react';
 import '../api-config.less';
 import {ApiDetail} from './api-config';
@@ -9,6 +9,7 @@ import type {SortableContainerProps, SortEnd} from 'react-sortable-hoc';
 import AddFunDialog from '../components/add-fun-dialog';
 import {valueMap} from '@/services/auto-generate/constants';
 
+const {Text} = Typography;
 const {Panel} = Collapse;
 
 export type funData = {
@@ -52,17 +53,32 @@ const FunArrange: React.FC<{
 
     const columns = [
         {
-            title: 'Sort',
+            title: '排序',
             dataIndex: 'sort',
-            width: 30,
-            align: 'left',
+            width: 80,
+            align: 'center',
             className: 'drag-visible',
             render: () => <DragHandle/>,
         },
         {
+            title: '操作',
+            dataIndex: 'action',
+            align: 'center',
+            width: '100px',
+            render: (_, record: funData) => {
+                if (record.funType === 'callApi') {
+                    return <Text disabled>移除</Text>
+                }
+
+                return <Space size="middle">
+                    <a onClick={onDelete(record)}>移除</a>
+                </Space>
+            },
+        },
+        {
             title: '类型',
             dataIndex: 'funType',
-            align: 'left',
+            align: 'center',
             width: 150,
             render: (text: string) => {
                 return valueMap[text];
@@ -71,23 +87,14 @@ const FunArrange: React.FC<{
         {
             title: '名称',
             dataIndex: 'funName',
-            align: 'left',
-        },
-        {
-            title: '操作',
-            key: 'action',
-            align: 'left',
-            with: 150,
-            render: (_, record: funData) => {
-                switch (record.funType) {
-                    case 'callApi':
-                        return <Space size="middle"><a style={{color: '#adb0b8'}}>移除</a></Space>
+            ellipsis: true,
+            render: (v, row) => {
+                if (v) {
+                    return v;
                 }
-                return <Space size="middle">
-                    <a onClick={onDelete(record)}>移除</a>
-                </Space>
-            },
-        }
+                return row.funCode;
+            }
+        },
     ];
 
     const SortableItem = SortableElement((props: React.HTMLAttributes<HTMLTableRowElement>) => (
@@ -364,7 +371,7 @@ const FunArrange: React.FC<{
                                                 }
                                             }}
                                             isEdit={isEdit}
-                                            isTable={isTable}
+                                            isTable={true} /*暂时不支持调用已定义的函数*/
                                             funcOrchData={funcOrchData}>
                                         </AddFunDialog>
                                     </Space>

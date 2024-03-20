@@ -61,7 +61,7 @@ const BaseInfo: React.FC<{ setData: (data: any) => any, baseInfoPar: any }> = ({
                                 placeholder="请选择"
                                 style={{width: '120px'}}
                                 options={resourceOption}/>
-                        <Input value={providerName}
+                        <Input value={providerName || 'huaweicloud_'}
                                onChange={(e) => {
                                    setProviderName(e.target.value);
                                    setData({

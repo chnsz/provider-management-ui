@@ -9,6 +9,7 @@ import {toLongDate} from "@/utils/common";
 import {history, useLocation} from 'umi';
 import ProviderBaseSumDialog from "@/pages/Provider/provider-base/provider-base-sum-dialog";
 import InstallToolDialog from "@/pages/AutoGenerateList/install-tool-dialog";
+import Txt from "@/components/Txt/Txt";
 
 const AutoGenerateList: React.FC = () => {
     const location = useLocation();
@@ -43,10 +44,53 @@ const AutoGenerateList: React.FC = () => {
             render: (v, r, i) => i + 1,
         },
         {
+            title: '操作',
+            dataIndex: 'operate',
+            align: 'center',
+            width: 200,
+            render: (v, record) => {
+                let saveArchiveBtn = <>
+                    <a rel="noreferrer"
+                       onClick={() => {
+                           saveGenerateArchive(record.id).then(() => message.info('归档成功'));
+                       }}
+                    >
+                        存档
+                    </a>
+                    <ProviderBaseSumDialog
+                        text={'基线'}
+                        providerType={record.providerType}
+                        providerName={record.providerName}
+                    />
+                </>
+                if (archiveTag) {
+                    saveArchiveBtn = <>
+                        <span style={{color: '#00000040'}}>存档</span>
+                        <span style={{color: '#00000040'}}>基线</span>
+                    </>
+                }
+
+                return (
+                    <Space size={15}>
+                        <a rel="noreferrer" onClick={() => history.push(`/auto-generate-provider#/id/${record.id}`)}>
+                            编辑
+                        </a>
+                        {saveArchiveBtn}
+                        <DeleteBtn text={'删除'}
+                                   title={'删除确认'}
+                                   link
+                                   content={<div>确定要删除吗？删除后不可恢复</div>}
+                                   onOk={() => onDeleteData(record)}
+                        />
+                    </Space>
+                );
+            },
+        },
+        {
             title: '服务名称',
             dataIndex: 'productName',
             ellipsis: true,
-            width: 180,
+            width: 100,
             align: 'center',
         },
         {
@@ -54,27 +98,40 @@ const AutoGenerateList: React.FC = () => {
             dataIndex: 'providerType',
             key: 'providerType',
             align: 'center',
-            width: 150,
+            width: 120,
         },
         {
-            title: '版本',
-            dataIndex: 'version',
-            key: 'version',
-            align: 'center',
-            width: 70,
-        },
-        {
-            title: <>资源名称<span style={{fontWeight: 'normal'}}>（点击查看基线）</span></>,
+            title: <>资源名称<span style={{fontWeight: 'normal'}}>（点击进入编辑）</span></>,
             dataIndex: 'providerName',
             key: 'providerName',
             ellipsis: true,
-            render: (v, row) =>
-                <ProviderBaseSumDialog
-                    text={v}
-                    element={'yes'}
-                    providerType={row.providerType}
-                    providerName={row.providerName}
-                />,
+            render: (v, row) => {
+                if (archiveTag) {
+                    return <>
+                        <a rel="noreferrer"
+                           onClick={() => history.push(`/auto-generate-provider#/id/${row.id}`)}
+                        >
+                            {v}
+                        </a>
+                        &nbsp;&nbsp;
+                        <Tag>{row.version}</Tag>
+                    </>
+                }
+
+                let cmd = `pms import -r ${row.providerName} --skip-test`
+                if (row.providerType === 'DataSource') {
+                    cmd = `pms import -d ${row.providerName} --skip-test`
+                }
+                return <>
+                    <Txt value={cmd} tooltip={row.providerName} style={{display: 'inline-block'}}>
+                        <a rel="noreferrer"
+                           onClick={() => history.push(`/auto-generate-provider#/id/${row.id}`)}
+                        >
+                            {v}
+                        </a>
+                    </Txt>
+                </>;
+            },
         },
         {
             title: 'API变更',
@@ -109,43 +166,7 @@ const AutoGenerateList: React.FC = () => {
             dataIndex: 'createdBy',
             key: 'createdBy',
             align: 'center',
-            width: 150,
-        },
-        {
-            title: '创建日期',
-            dataIndex: 'created',
-            align: 'center',
-            width: 180,
-            render: toLongDate,
-        },
-        {
-            title: '操作',
-            dataIndex: 'operate',
-            align: 'center',
-            width: 150,
-            render: (v, record) => {
-                let saveArchiveBtn = <a rel="noreferrer" onClick={() => {
-                    saveGenerateArchive(record.id).then(() => message.info('归档成功'));
-                }}>存档</a>
-                if (archiveTag) {
-                    saveArchiveBtn = <>&nbsp;</>
-                }
-
-                return (
-                    <Space>
-                        <a rel="noreferrer" onClick={() => history.push(`/auto-generate-provider#/id/${record.id}`)}>
-                            编辑
-                        </a>
-                        {saveArchiveBtn}
-                        <DeleteBtn text={'删除'}
-                                   title={'删除确认'}
-                                   link
-                                   content={<div>确定要删除吗？删除后不可恢复</div>}
-                                   onOk={() => onDeleteData(record)}
-                        />
-                    </Space>
-                );
-            },
+            width: 120,
         },
     ];
 
@@ -154,14 +175,6 @@ const AutoGenerateList: React.FC = () => {
             return;
         }
         deleteAutoGenerateData(record.id).then(() => loadData(pageSize, pageNum));
-    }
-
-    const getColumn = () => {
-        if (!archiveTag) {
-            return columns.filter(t => t.key !== 'version');
-        }
-
-        return columns;
     }
 
     return <>
@@ -189,7 +202,7 @@ const AutoGenerateList: React.FC = () => {
             </Row>
             <Table
                 style={{marginTop: '20px'}}
-                columns={getColumn()}
+                columns={columns}
                 dataSource={data}
                 size={'middle'}
                 rowKey={(record) => record.id}

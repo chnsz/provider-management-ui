@@ -32,12 +32,13 @@ type TxtProps = {
     value?: string;
     children?: React.ReactNode | ReactElement[];
     disableCopy?: boolean;
+    tooltip?: string | undefined;
     className?: string | undefined;
     style?: CSSProperties | undefined;
 }
 
 const Txt: React.FC<TxtProps> = (
-    {value, children, disableCopy, className}
+    {value, children, disableCopy, tooltip, className}
 ) => {
     const [btnDisplay, setBtnDisplay] = useState<string>('none');
 
@@ -56,12 +57,12 @@ const Txt: React.FC<TxtProps> = (
     }
 
     return <div
-        className={'txt ' + className}
+        className={'txt ' + className || ''}
         onMouseOver={() => btnTrigger('block')}
         onMouseOut={() => btnTrigger('none')}
     >
         <div className={'content'}>
-            <Tooltip title={value}>
+            <Tooltip title={tooltip || value}>
                 {children ? children : value}
             </Tooltip>
         </div>

@@ -10,24 +10,10 @@ const FuncOrch: React.FC<{ setData: (data: funData[]) => any, funcOrchDataPar: f
     const isTable = true;
     const columns = [
         {
-            title: '类型',
-            dataIndex: 'funType',
-            align: 'left',
-            width: 150,
-            render: (text: string) => {
-                return valueMap[text];
-            }
-        },
-        {
-            title: '名称',
-            dataIndex: 'funName',
-            align: 'left',
-        },
-        {
             title: '操作',
-            key: 'action',
-            align: 'left',
-            with: 150,
+            dataIndex: 'funType',
+            align: 'center',
+            width: 100,
             render: (_, record: funData) => {
                 const isEdit = true;
                 return <Space size="middle">
@@ -46,6 +32,26 @@ const FuncOrch: React.FC<{ setData: (data: funData[]) => any, funcOrchDataPar: f
                     <a onClick={onDelete(record)}>移除</a>
                 </Space>
             },
+        },
+        {
+            title: '类型',
+            dataIndex: 'funType',
+            align: 'center',
+            width: 150,
+            render: (text: string) => {
+                return valueMap[text];
+            }
+        },
+        {
+            title: '名称',
+            dataIndex: 'funName',
+            align: 'left',
+            width: 150,
+        },
+        {
+            title: '内容',
+            dataIndex: 'funCode',
+            align: 'left',
         }
     ];
 
@@ -56,7 +62,6 @@ const FuncOrch: React.FC<{ setData: (data: funData[]) => any, funcOrchDataPar: f
             );
             setFuncOrchData(newOrchData);
             setData(newOrchData);
-
         };
     };
 

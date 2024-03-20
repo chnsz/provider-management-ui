@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Form, Input, Modal, Tabs, Radio, Table } from 'antd';
+import React, {useEffect, useState} from 'react';
+import {Button, Form, Input, Modal, Tabs, Radio, Table} from 'antd';
 import CodeEditor from "@/components/CodeEditor";
-import { funData } from '../step1/fun-arrange';
-import { valueMap } from '@/services/auto-generate/constants';
+import {funData} from '../step1/fun-arrange';
+import {valueMap} from '@/services/auto-generate/constants';
 
-const { TabPane } = Tabs;
+const {TabPane} = Tabs;
 
 type AddFunDialogProp = {
     handle?: (option: 'ok' | 'cancel', rows: {}) => any,
@@ -99,12 +99,12 @@ const AddFunDialog: React.FC<AddFunDialogProp> = (props) => {
             }
 
             <Modal title="新增函数"
-                destroyOnClose
-                transitionName={''}
-                open={isModalOpen}
-                onOk={handleOk('ok')}
-                onCancel={handleOk('cancel')}
-                width={'80%'}>
+                   destroyOnClose
+                   transitionName={''}
+                   open={isModalOpen}
+                   onOk={handleOk('ok')}
+                   onCancel={handleOk('cancel')}
+                   width={'80%'}>
 
                 <Tabs defaultActiveKey={defaultActiveKey} onChange={tabChange}>
                     {
@@ -123,16 +123,16 @@ const AddFunDialog: React.FC<AddFunDialogProp> = (props) => {
                     <TabPane tab="新增自定义" key="tab2">
                         <Form
                             name="basic"
-                            labelCol={{ span: 2 }}
-                            wrapperCol={{ span: 20 }}
-                            initialValues={{ remember: true }}
+                            labelCol={{span: 2}}
+                            wrapperCol={{span: 20}}
+                            initialValues={{remember: true}}
                             autoComplete="off"
                         >
                             <Form.Item
                                 label="类型"
                                 name="funType"
                                 initialValue={funType}
-                                rules={[{ required: true, message: '请选择函数类型' }]}>
+                                rules={[{required: true, message: '请选择函数类型'}]}>
 
                                 <Radio.Group onChange={(e) => setFunType(e.target.value)} value={funType}>
                                     <Radio value={'fun'} disabled>函数</Radio>
@@ -144,19 +144,21 @@ const AddFunDialog: React.FC<AddFunDialogProp> = (props) => {
                                 label="名称"
                                 name="funName"
                                 initialValue={funName}
-                                rules={[{ required: true, message: '请输入名称' }]}
+                                hidden
+                                rules={[{required: true, message: '请输入名称'}]}
                             >
-                                <Input value={funName} maxLength={128} onChange={e => setFunName(e.target.value)} />
+                                <Input value={funName} maxLength={128} onChange={e => setFunName(e.target.value)}/>
                             </Form.Item>
 
                             <Form.Item
                                 label="代码"
                                 name="name"
                                 initialValue={funCode}
-                                rules={[{ required: true, message: '请输入函数名称' }]}
+                                rules={[{required: true, message: '请输入函数名称'}]}
                             >
-                                <div style={{ height: '60vh' }}>
-                                    <CodeEditor language={'go'} height={'60vh'} value={funCode} onChange={e => setFunCode(e)} />
+                                <div style={{height: '50vh'}}>
+                                    <CodeEditor language={'go'} height={'50vh'} value={funCode}
+                                                onChange={e => setFunCode(e)}/>
                                 </div>
                             </Form.Item>
                         </Form>
