@@ -4,6 +4,7 @@ export const valueMap = {
     code: '代码块',
     code_afterApi: '调用API后',
     code_afterSetSchema: '设置Schema后',
+    setSchema: 'Set Schema',
 };
 
 export const customSchemaOperatorOption = [
