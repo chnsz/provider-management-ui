@@ -11,6 +11,7 @@ import ProviderBaseSumDialog from "@/pages/Provider/provider-base/provider-base-
 import InstallToolDialog from "@/pages/AutoGenerateList/install-tool-dialog";
 import { getProductList } from "@/services/product/api";
 import { ProFormSelect, ProFormText, ProSchemaValueEnumObj, QueryFilter } from '@ant-design/pro-components';
+import Txt from "@/components/Txt/Txt";
 
 type FormProps = {
     productName: string;
@@ -323,7 +324,7 @@ const AutoGenerateList: React.FC = () => {
                 onSearch={onSearch}/>
             <Table
                 style={{ marginTop: '20px' }}
-                columns={getColumn()}
+                columns={columns}
                 dataSource={data}
                 size={'middle'}
                 rowKey={(record) => record.id}
