@@ -1,4 +1,4 @@
-import ApiDialogList from '@/pages/Portal/components/api-dialog-list';
+import ApiDialogList from '@/pages/PortalNew/components/api-dialog-list';
 import { getApiPanelSum } from '@/services/portal/api';
 import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { Col, Modal, Row } from 'antd';

@@ -3,10 +3,9 @@ import { Button, Modal, Space, Table, Tag, Tooltip, Select, Input, Col, Row } fr
 import type { ColumnsType } from "antd/es/table/interface";
 import { getServiceSumList } from "@/services/portal/api";
 import { getUserList } from "@/services/product/api";
-import ProviderListDialog from "@/pages/Portal/components/provider-list-dialog";
-import ApiDialogList from "@/pages/Portal/components/api-dialog-list";
+import ProviderListDialog from "@/pages/PortalNew/components/provider-list-dialog";
+import ApiDialogList from "@/pages/PortalNew/components/api-dialog-list";
 import { useModel } from 'umi';
-import type { ButtonType } from "antd/lib/button";
 import { InfoCircleOutlined } from "@ant-design/icons";
 
 const { Search } = Input;
@@ -305,7 +304,6 @@ const SearchFormNew: React.FC<{ onSearch: (owner: string[], level: string[], pro
     // 获取所有服务领域下拉框
     useEffect(() => {
         getServiceSumList([], [], [], '').then(rsp => {
-            console.log(rsp);
             setProductGroupOptions([]);
             if (rsp.productSumList.length === 0) {
                 return;
@@ -386,11 +384,6 @@ const ServiceSumList: React.FC<{
     const [productList, setProductList] = useState<ServiceSumProps[]>([]);
 
     const onSearch = (ownerArr: string[], levelArr: string[], productGroupArr: string[], productName: string) => {
-        console.log(ownerArr)
-        console.log(levelArr)
-        console.log(productGroupArr)
-        console.log(productName)
-
         getServiceSumList(ownerArr, levelArr, productGroupArr, productName).then(rsp => {
             setProductList([]);
             onload(rsp);
