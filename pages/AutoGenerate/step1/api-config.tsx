@@ -410,13 +410,13 @@ const ApiFieldView: React.FC<{
     );
 
     const inputDraggableBodyRow: React.FC<any> = ({className, style, id, ...restProps}) => {
-        const index = apiData.inputFieldList.findIndex(x => x.id === restProps['data-row-key']);
+        const index = inputFieldList.findIndex(x => x.id === restProps['data-row-key']);
         return <SortableItem index={index} {...restProps} />;
     };
 
     const onInputSortEnd = ({oldIndex, newIndex}: SortEnd) => {
         if (oldIndex !== newIndex) {
-            const newData = arrayMoveImmutable(apiData.inputFieldList.slice(), oldIndex, newIndex).filter(
+            const newData = arrayMoveImmutable(inputFieldList.slice(), oldIndex, newIndex).filter(
                 (el: any) => !!el,
             );
 
@@ -438,13 +438,13 @@ const ApiFieldView: React.FC<{
     );
 
     const outputDraggableBodyRow: React.FC<any> = ({className, style, id, ...restProps}) => {
-        const index = apiData.outputFieldList.findIndex(x => x.id === restProps['data-row-key']);
+        const index = outputFieldList.findIndex(x => x.id === restProps['data-row-key']);
         return <SortableItem index={index} {...restProps} />;
     };
 
     const onOutPutSortEnd = ({oldIndex, newIndex}: SortEnd) => {
         if (oldIndex !== newIndex) {
-            const newData = arrayMoveImmutable(apiData.outputFieldList.slice(), oldIndex, newIndex).filter(
+            const newData = arrayMoveImmutable(outputFieldList.slice(), oldIndex, newIndex).filter(
                 (el: any) => !!el,
             );
 
@@ -535,9 +535,10 @@ const ApiFieldView: React.FC<{
         let findData = apiAllData.find(item => item.id === apiId);
         if (findData) {
             if (paramType === 'input') {
+                setInputFieldData(value);
                 findData.inputFieldList = value;
-
             } else {
+                setOutputFieldData(value);
                 findData.outputFieldList = value;
             }
         }
