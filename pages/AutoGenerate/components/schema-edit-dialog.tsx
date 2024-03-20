@@ -9,10 +9,22 @@ const defaultSetter = `func(body, data *gjson.Result) string {
     return data.Get("xx").String()
 }`
 
+const defaultSetter2 = `func(body *gjson.Result) string {
+    return body.Get("xx").String()
+}`
+
 const defaultGetter = `func() string {
     v, _ := w.Get("xx").(string)
     return v
 }`
+
+
+const getDefSetter = (schema: Field): string => {
+    if (schema.schemaName.includes(".")) {
+        return defaultSetter;
+    }
+    return defaultSetter2;
+}
 
 export const SchemaEditDialog: React.FC<{
     schemaField: Field,
@@ -119,9 +131,9 @@ export const SchemaEditDialog: React.FC<{
                     schema.paramType === 'output' &&
                     <div>
                         <Title level={5}>自定义 Schema Setter 函数</Title>
-                        <CodeEditor language={'go'} value={schema.setterCode || defaultSetter} height={300}
+                        <CodeEditor language={'go'} value={schema.setterCode || getDefSetter(schema)} height={300}
                                     onChange={(v: string) => {
-                                        if (v.trim() == defaultSetter) {
+                                        if (v.trim() == getDefSetter(schema)) {
                                             v = '';
                                         }
                                         const newSchema = {...schema};
