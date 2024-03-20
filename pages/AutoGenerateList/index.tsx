@@ -169,13 +169,6 @@ const AutoGenerateList: React.FC = () => {
             width: 120,
         },
         {
-            title: '版本',
-            dataIndex: 'version',
-            key: 'version',
-            align: 'center',
-            width: 70,
-        },
-        {
             title: <>资源名称<span style={{fontWeight: 'normal'}}>（点击进入编辑）</span></>,
             dataIndex: 'providerName',
             key: 'providerName',
@@ -249,35 +242,6 @@ const AutoGenerateList: React.FC = () => {
             align: 'center',
             width: 180,
             render: toLongDate,
-        },
-        {
-            title: '操作',
-            dataIndex: 'operate',
-            align: 'center',
-            width: 150,
-            render: (v, record) => {
-                let saveArchiveBtn = <a rel="noreferrer" onClick={() => {
-                    saveGenerateArchive(record.id).then(() => message.info('归档成功'));
-                }}>存档</a>
-                if (archiveTag) {
-                    saveArchiveBtn = <>&nbsp;</>
-                }
-
-                return (
-                    <Space>
-                        <a rel="noreferrer" onClick={() => history.push(`/auto-generate-provider#/id/${record.id}`)}>
-                            编辑
-                        </a>
-                        {saveArchiveBtn}
-                        <DeleteBtn text={'删除'}
-                                   title={'删除确认'}
-                                   link
-                                   content={<div>确定要删除吗？删除后不可恢复</div>}
-                                   onOk={() => onDeleteData(record)}
-                        />
-                    </Space>
-                );
-            },
         },
     ];
 
