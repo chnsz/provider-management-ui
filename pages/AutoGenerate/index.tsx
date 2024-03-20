@@ -417,7 +417,7 @@ const AutoGenerate: React.FC = () => {
         });
 
         // tag版本号跟随在schema中传入
-        if (baseInfo.tagPath && baseInfo.tagVersion) {
+        if (baseInfo?.tagPath && baseInfo?.tagVersion) {
             schema.push({
                 schemaType: "tags",
                 version: baseInfo.tagVersion
