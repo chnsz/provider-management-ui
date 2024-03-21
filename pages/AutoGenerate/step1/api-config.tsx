@@ -11,6 +11,7 @@ import {arrayMoveImmutable} from '@ant-design/pro-components';
 import CustomSchemaDialog from '../components/custom-schema-dialog';
 import {camelToSnake} from "@/utils/common";
 import {SchemaEditDialog} from "@/pages/AutoGenerate/components/schema-edit-dialog";
+import { allFunData } from './fun-arrange';
 
 const {Panel} = Collapse;
 const {TextArea} = Input;
@@ -961,8 +962,10 @@ const ApiConfig: React.FC<{
     setData: (data: ApiDetail[]) => any,
     baseInfo: any,
     dataId: number | null,
-    apiDataPar: ApiDetail[]
-}> = ({setData, baseInfo, dataId, apiDataPar}) => {
+    apiDataPar: ApiDetail[],
+    funData: allFunData[],
+    setFunData: (data: allFunData[]) => any,
+}> = ({setData, baseInfo, dataId, apiDataPar, funData, setFunData}) => {
     let [apiData, setApiData] = useState<ApiDetail[]>([]);
     const [activeKey, setActiveKey] = useState<string[]>([]);
     apiData = apiDataPar;
@@ -1161,6 +1164,16 @@ const ApiConfig: React.FC<{
         event.stopPropagation();
         if (!apiId) {
             return;
+        }
+
+        // 移除的API，如果为readContext,对应在readContext中,Set Schema类型的编排函数需要移除
+        const findData = apiData.find(item => item.id === apiId && item.schemaType === 'attribute');
+        if (findData) {
+            const readContextData = funData.find(item => item.id === 'readContext');
+            if (readContextData) {
+                readContextData.contextValue = readContextData.contextValue.filter(item => !(item.funType === 'setSchema' && item.funName === `${findData.apiNameEn}ToSchema`));
+            }
+            setFunData([...funData]);
         }
 
         const filterData = apiData.filter(item => item.id !== apiId);
