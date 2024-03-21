@@ -513,8 +513,12 @@ const AutoGenerate: React.FC = () => {
                         <div className={'portal-card'}>
                             <div className={'header'}>API 配置</div>
                             <div className={'container'}>
-                                <ApiConfig setData={onApiChange} baseInfo={baseInfo} dataId={dataId}
-                                           apiDataPar={apiData}/>
+                                <ApiConfig setData={onApiChange} 
+                                           baseInfo={baseInfo} 
+                                           dataId={dataId}
+                                           apiDataPar={apiData}
+                                           funData={allFunData}
+                                           setFunData={onAllFunDataChange}/>
                             </div>
                         </div>
 
