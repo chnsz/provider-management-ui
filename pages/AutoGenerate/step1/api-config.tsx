@@ -42,6 +42,7 @@ export type ApiDetail = {
     outputFieldList: Field[];
 
     schemaType: string;
+    serviceAlias: string;
     statusCode: string;
     resourceId: string;
     jmespath: string;
@@ -909,11 +910,12 @@ const ApiFieldView: React.FC<{
     </div>;
 }
 
-const ApiInfo: React.FC<{ api: ApiDetail, onSchemaTypeChange: (v: string) => any, deleteApiData: () => any }> = ({
-                                                                                                                     api,
-                                                                                                                     onSchemaTypeChange,
-                                                                                                                     deleteApiData
-                                                                                                                 }) => {
+const ApiInfo: React.FC<{ api: ApiDetail, onSchemaTypeChange: (v: string) => any, deleteApiData: () => any, onServiceAlias:(v: string) => any }> = ({
+    api,
+    onSchemaTypeChange,
+    deleteApiData,
+    onServiceAlias,
+}) => {
     return <Row>
         <Col span={12}>
             <Select
@@ -929,7 +931,15 @@ const ApiInfo: React.FC<{ api: ApiDetail, onSchemaTypeChange: (v: string) => any
                 <Option value="update">UpdateContext</Option>
                 <Option value="delete">DeleteContext</Option>
             </Select>
-            #{api.id} 【{api.productName}】&nbsp;&nbsp;{api.apiName} / {api.apiNameEn}
+            <Input value={api.serviceAlias}
+                onClick={(e) => e.stopPropagation()}
+                placeholder='为服务设置endpoint'
+                size={"middle"}
+                style={{ width: '160px' }}
+                onChange={e => {
+                    onServiceAlias(e.target.value)
+                }} />
+            <span style={{ marginLeft: '10px' }}>#{api.id} 【{api.productName}】&nbsp;&nbsp;{api.apiName} / {api.apiNameEn}</span>
         </Col>
         <Col span={12} style={{textAlign: 'right', marginTop: '4px'}}>
             [{api.method}]&nbsp;&nbsp;{api.uri}
@@ -1017,6 +1027,7 @@ const ApiConfig: React.FC<{
                     api.schemaType = findApiData.schemaType;
                 }
                 api.statusCode = '';
+                api.serviceAlias = '';
                 api.jmespath = '';
                 api.isJmespath = false;
                 api.rosourceOption = baseInfo?.providerType === 'DataSource' ? [{
@@ -1244,6 +1255,10 @@ const ApiConfig: React.FC<{
 
                                     setData(apiData)
                                 }}
+                                onServiceAlias={v => {
+                                    api.serviceAlias = v;
+                                    setData(apiData);
+                                }}          
                                 deleteApiData={(e) => deleteApiData(api.id, e)}
                             />;
 

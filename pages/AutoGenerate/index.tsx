@@ -281,6 +281,7 @@ const AutoGenerate: React.FC = () => {
                 uri: api.uri,
                 method: api.method,
                 serviceName: api.productName,
+                serviceAlias: api.serviceAlias,
                 requestIgnore: api.inputFieldList.filter(field => field.ignore).map(field => field.fieldName),
                 responseIgnore: api.outputFieldList?.filter(field => field.ignore).map(field => field.fieldName),
                 schemas: {},
