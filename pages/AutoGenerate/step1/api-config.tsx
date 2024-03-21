@@ -933,8 +933,9 @@ const ApiInfo: React.FC<{ api: ApiDetail, onSchemaTypeChange: (v: string) => any
             </Select>
             <Input value={api.serviceAlias}
                 onClick={(e) => e.stopPropagation()}
-                placeholder='为服务设置endpoint'
+                placeholder='ServiceName别名'
                 size={"middle"}
+                allowClear
                 style={{ width: '160px' }}
                 onChange={e => {
                     onServiceAlias(e.target.value)
@@ -1258,7 +1259,7 @@ const ApiConfig: React.FC<{
                                 onServiceAlias={v => {
                                     api.serviceAlias = v;
                                     setData(apiData);
-                                }}          
+                                }}
                                 deleteApiData={(e) => deleteApiData(api.id, e)}
                             />;
 
