@@ -243,6 +243,7 @@ const AutoGenerate: React.FC = () => {
             name: baseInfo?.providerName ?? null,
             serviceName: baseInfo?.endpoint ?? null,
             package: baseInfo?.packageName ?? null,
+            globalService: baseInfo?.globalService ?? null,
             tagsServicePath: baseInfo?.tagPath ?? null,
             tagsServiceVersion: baseInfo?.tagVersion ?? null,
             apis: apiData.map(item => `${item.id}_${item.apiNameEn}`),
@@ -513,8 +514,8 @@ const AutoGenerate: React.FC = () => {
                         <div className={'portal-card'}>
                             <div className={'header'}>API 配置</div>
                             <div className={'container'}>
-                                <ApiConfig setData={onApiChange} 
-                                           baseInfo={baseInfo} 
+                                <ApiConfig setData={onApiChange}
+                                           baseInfo={baseInfo}
                                            dataId={dataId}
                                            apiDataPar={apiData}
                                            funData={allFunData}

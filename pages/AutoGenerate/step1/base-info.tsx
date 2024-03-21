@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import '../index.less'
-import {Space, Select, Input} from "antd";
+import {Space, Select, Input, Checkbox} from "antd";
 
 const resourceOption = [
     {value: 'Resource', label: 'Resource'},
@@ -12,6 +12,7 @@ const BaseInfo: React.FC<{ setData: (data: any) => any, baseInfoPar: any }> = ({
     let [providerName, setProviderName] = useState<string>();
     let [endpoint, setEndpoint] = useState<string>();
     let [packageName, setPackageName] = useState<string>();
+    let [globalService, setGlobalService] = useState<boolean>(false);
     let [tagPath, setTagPath] = useState<string>();
     let [tagVersion, setTagVersion] = useState<string>();
     let [createTimeout, setCreateTimeout] = useState<string>();
@@ -24,6 +25,7 @@ const BaseInfo: React.FC<{ setData: (data: any) => any, baseInfoPar: any }> = ({
         providerName = baseInfoPar?.providerName;
         endpoint = baseInfoPar?.endpoint;
         packageName = baseInfoPar?.packageName;
+        globalService = baseInfoPar?.globalService;
         tagPath = baseInfoPar?.tagPath;
         tagVersion = baseInfoPar?.tagVersion;
         createTimeout = baseInfoPar?.createTimeout;
@@ -50,6 +52,7 @@ const BaseInfo: React.FC<{ setData: (data: any) => any, baseInfoPar: any }> = ({
                                         providerName,
                                         endpoint,
                                         packageName,
+                                        globalService,
                                         tagPath,
                                         tagVersion,
                                         createTimeout,
@@ -69,6 +72,7 @@ const BaseInfo: React.FC<{ setData: (data: any) => any, baseInfoPar: any }> = ({
                                        providerName: e.target.value,
                                        endpoint,
                                        packageName,
+                                       globalService,
                                        tagPath,
                                        tagVersion,
                                        createTimeout,
@@ -93,6 +97,7 @@ const BaseInfo: React.FC<{ setData: (data: any) => any, baseInfoPar: any }> = ({
                                        providerType,
                                        providerName,
                                        endpoint: e.target.value,
+                                       globalService,
                                        packageName,
                                        tagPath,
                                        tagVersion,
@@ -118,6 +123,7 @@ const BaseInfo: React.FC<{ setData: (data: any) => any, baseInfoPar: any }> = ({
                                        providerType,
                                        providerName,
                                        endpoint,
+                                       globalService,
                                        packageName: e.target.value,
                                        tagPath,
                                        tagVersion,
@@ -143,6 +149,7 @@ const BaseInfo: React.FC<{ setData: (data: any) => any, baseInfoPar: any }> = ({
                                        providerName,
                                        endpoint,
                                        packageName,
+                                       globalService,
                                        tagPath: e.target.value,
                                        tagVersion,
                                        createTimeout,
@@ -158,6 +165,7 @@ const BaseInfo: React.FC<{ setData: (data: any) => any, baseInfoPar: any }> = ({
                                    setData({
                                        providerType,
                                        providerName,
+                                       globalService,
                                        endpoint,
                                        packageName,
                                        tagPath,
@@ -170,6 +178,30 @@ const BaseInfo: React.FC<{ setData: (data: any) => any, baseInfoPar: any }> = ({
                                }}
                                style={{width: '145px'}} placeholder='请输入版本'/>
                     </Space.Compact>
+                </div>
+                <div>
+                    <div style={{margin: '33px 0 0 15px'}}>
+                        <Checkbox checked={globalService}
+                                  onChange={(e) => {
+                                      setGlobalService(e.target.checked);
+                                      setData({
+                                          providerType,
+                                          providerName,
+                                          endpoint,
+                                          packageName,
+                                          globalService: e.target.checked,
+                                          tagPath,
+                                          tagVersion,
+                                          createTimeout,
+                                          readTimeout,
+                                          updateTimeout,
+                                          deleteTimeout
+                                      });
+                                  }}
+                                  style={{width: '180px'}} >
+                            全局服务
+                        </Checkbox>
+                    </div>
                 </div>
             </div>
 
@@ -185,6 +217,7 @@ const BaseInfo: React.FC<{ setData: (data: any) => any, baseInfoPar: any }> = ({
                                    setData({
                                        providerType,
                                        providerName,
+                                       globalService,
                                        endpoint,
                                        packageName,
                                        tagPath,
@@ -209,6 +242,7 @@ const BaseInfo: React.FC<{ setData: (data: any) => any, baseInfoPar: any }> = ({
                                    setData({
                                        providerType,
                                        providerName,
+                                       globalService,
                                        endpoint,
                                        packageName,
                                        tagPath,
@@ -233,6 +267,7 @@ const BaseInfo: React.FC<{ setData: (data: any) => any, baseInfoPar: any }> = ({
                                    setData({
                                        providerType,
                                        providerName,
+                                       globalService,
                                        endpoint,
                                        packageName,
                                        tagPath,
@@ -257,6 +292,7 @@ const BaseInfo: React.FC<{ setData: (data: any) => any, baseInfoPar: any }> = ({
                                    setData({
                                        providerType,
                                        providerName,
+                                       globalService,
                                        endpoint,
                                        packageName,
                                        tagPath,
