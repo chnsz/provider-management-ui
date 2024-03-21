@@ -28,5 +28,6 @@ declare namespace AutoGenerate {
         productName?: string;
         providerType?: string;
         providerName?: string;
+        createdBy?: string;
     };
 }
