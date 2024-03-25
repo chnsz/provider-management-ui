@@ -1,9 +1,9 @@
 import {Field} from "@/pages/AutoGenerate/step1/api-config";
 import React, {useEffect, useState} from "react";
-import {Checkbox, Col, Modal, Row, Space, Typography} from "antd";
+import {Checkbox, Form, Input, Modal, Row, Space, Typography} from "antd";
 import CodeEditor from "@/components/CodeEditor";
 
-const {Title} = Typography;
+const {Title, Text} = Typography;
 
 const defaultSetter = `func(body, data *gjson.Result) string {
     return data.Get("xx").String()
@@ -75,41 +75,53 @@ export const SchemaEditDialog: React.FC<{
                footer={[]}
                width={'1500px'}>
 
-            <Space size={15} direction={'vertical'} style={{width: '100%', marginTop: '15px'}}>
+            <Space size={20} direction={'vertical'} style={{width: '100%', marginTop: '15px'}}>
                 <div>
                     <Title level={5}>基本属性</Title>
-                    <Space size={[8, 16]} wrap>
-                        <Checkbox checked={schema.schemaRequired} onChange={e => {
-                            const newSchema = {...schema};
-                            newSchema.schemaRequired = e.target.checked;
-                            setSchema(newSchema);
-                        }}>
-                            Required
-                        </Checkbox>
-                        <Checkbox checked={schema.computed}
-                                  onChange={e => {
-                                      const newSchema = {...schema};
-                                      newSchema.computed = e.target.checked;
-                                      setSchema(newSchema);
-                                  }}>
-                            Computed
-                        </Checkbox>
-                        <Checkbox checked={schema.sensitive}
-                                  onChange={e => {
-                                      const newSchema = {...schema};
-                                      newSchema.sensitive = e.target.checked;
-                                      setSchema(newSchema);
-                                  }}>
-                            Sensitive
-                        </Checkbox>
-                        <Checkbox checked={schema.keepZero}
-                                  onChange={e => {
-                                      const newSchema = {...schema};
-                                      newSchema.keepZero = e.target.checked;
-                                      setSchema(newSchema);
-                                  }}>
-                            KeepZero
-                        < /Checkbox>
+                    <Space size={[10, 10]} wrap style={{width: '100%'}} direction={'vertical'}>
+                        <Space.Compact block>
+                            <div>
+                                <span>名称：</span>
+                                {schema.schemaName}
+                            </div>
+                            <div style={{marginLeft: '20px'}}>
+                                <span>类型：</span>
+                                {schema.schemaType}
+                            </div>
+                        </Space.Compact>
+                        <Space.Compact block>
+                            <Checkbox checked={schema.schemaRequired} onChange={e => {
+                                const newSchema = {...schema};
+                                newSchema.schemaRequired = e.target.checked;
+                                setSchema(newSchema);
+                            }}>
+                                Required
+                            </Checkbox>
+                            <Checkbox checked={schema.computed}
+                                      onChange={e => {
+                                          const newSchema = {...schema};
+                                          newSchema.computed = e.target.checked;
+                                          setSchema(newSchema);
+                                      }}>
+                                Computed
+                            </Checkbox>
+                            <Checkbox checked={schema.sensitive}
+                                      onChange={e => {
+                                          const newSchema = {...schema};
+                                          newSchema.sensitive = e.target.checked;
+                                          setSchema(newSchema);
+                                      }}>
+                                Sensitive
+                            </Checkbox>
+                            <Checkbox checked={schema.keepZero}
+                                      onChange={e => {
+                                          const newSchema = {...schema};
+                                          newSchema.keepZero = e.target.checked;
+                                          setSchema(newSchema);
+                                      }}>
+                                KeepZero
+                            < /Checkbox>
+                        </Space.Compact>
                     </Space>
                 </div>
                 {
@@ -129,18 +141,20 @@ export const SchemaEditDialog: React.FC<{
                 }
                 {
                     schema.paramType === 'output' &&
-                    <div>
-                        <Title level={5}>自定义 Schema Setter 函数</Title>
-                        <CodeEditor language={'go'} value={schema.setterCode || getDefSetter(schema)} height={300}
-                                    onChange={(v: string) => {
-                                        if (v.trim() == getDefSetter(schema)) {
-                                            v = '';
-                                        }
-                                        const newSchema = {...schema};
-                                        newSchema.setterCode = v;
-                                        setSchema(newSchema);
-                                    }}/>
-                    </div>
+                    <>
+                        <div>
+                            <Title level={5}>自定义 Schema Setter 函数</Title>
+                            <CodeEditor language={'go'} value={schema.setterCode || getDefSetter(schema)} height={300}
+                                        onChange={(v: string) => {
+                                            if (v.trim() == getDefSetter(schema)) {
+                                                v = '';
+                                            }
+                                            const newSchema = {...schema};
+                                            newSchema.setterCode = v;
+                                            setSchema(newSchema);
+                                        }}/>
+                        </div>
+                    </>
                 }
             </Space>
         </Modal>

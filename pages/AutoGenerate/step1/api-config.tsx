@@ -139,7 +139,7 @@ const SchemaTypeOption = [
     {value: 'schema.TypeBool', label: 'schema.TypeBool'},
     {value: 'schema.TypeSet', label: 'schema.TypeSet'},
     {value: 'schema.TypeList', label: 'schema.TypeList'},
-    {value: 'map[string]string', label: 'schema.TypeMap'},
+    {value: 'schema.TypeMap', label: 'schema.TypeMap'},
 ];
 
 const SubElemTypeOption = [
