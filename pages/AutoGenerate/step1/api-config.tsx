@@ -11,38 +11,23 @@ import {arrayMoveImmutable} from '@ant-design/pro-components';
 import CustomSchemaDialog from '../components/custom-schema-dialog';
 import {camelToSnake} from "@/utils/common";
 import {SchemaEditDialog} from "@/pages/AutoGenerate/components/schema-edit-dialog";
-import { allFunData } from './fun-arrange';
+import {allFunData} from './fun-arrange';
+import {BaseInfo} from "@/pages/AutoGenerate/step1/base-info";
 
 const {Panel} = Collapse;
 const {TextArea} = Input;
 
 export type ApiDetail = {
     id: number;
-    productGroup: string;
     productName: string;
-    apiGroup: string;
     apiName: string;
     apiNameEn: string;
     method: string;
     uri: string;
-    uriShort: string;
-    publishStatus: string;
-    useRemark: string;
-    remark: string;
-    definition: string;
-    lastSyncDate: string;
-    created: string;
-    updated: string;
-    providerList: null;
-    funArrange?: {
-        value: string;
-        label: string
-    }
-
     inputFieldList: Field[];
     outputFieldList: Field[];
-
     schemaType: string;
+    schemaSubType: string;
     serviceAlias: string;
     statusCode: string;
     resourceId: string;
@@ -120,6 +105,7 @@ export type Field = {
     ignore?: boolean;
     schemaName: string;
     schemaType: string;
+    schemaSubType: string;
     schemaRequired: boolean;
     schemaDesc: string;
     computed?: boolean;
@@ -154,6 +140,13 @@ const SchemaTypeOption = [
     {value: 'schema.TypeSet', label: 'schema.TypeSet'},
     {value: 'schema.TypeList', label: 'schema.TypeList'},
     {value: 'map[string]string', label: 'schema.TypeMap'},
+];
+
+const SubElemTypeOption = [
+    {value: 'schema.TypeString', label: 'schema.TypeString'},
+    {value: 'schema.TypeInt', label: 'schema.TypeInt'},
+    {value: 'schema.TypeFloat', label: 'schema.TypeFloat'},
+    {value: 'schema.TypeBool', label: 'schema.TypeBool'},
 ];
 
 const ApiFieldView: React.FC<{
@@ -203,13 +196,15 @@ const ApiFieldView: React.FC<{
                 }
 
                 return <Space direction={'vertical'} size={8}>
-                    <div>名称：
+                    <Space.Compact>名称：
                         <Tooltip title={row.fieldName}>
                             {row.fieldName}{required}
                         </Tooltip>
-                    </div>
-                    <div>类型：{row.fieldType}</div>
-                    <div>位置：{row.fieldIn}</div>
+                    </Space.Compact>
+                    <Space.Compact>
+                        类型：{row.fieldType}
+                    </Space.Compact>
+                    <Space.Compact>位置：{row.fieldIn}</Space.Compact>
                 </Space>
             },
         },
@@ -285,7 +280,7 @@ const ApiFieldView: React.FC<{
                     />
                 } else {
                     return <Space direction={'vertical'} size={4}>
-                        <div>
+                        <Space.Compact>
                             名&nbsp;&nbsp;&nbsp;&nbsp;称：
                             <Input defaultValue={v}
                                    size={"middle"}
@@ -300,21 +295,35 @@ const ApiFieldView: React.FC<{
                                        };
                                        onFieldChange(row.paramType, row, 'schemaName', schemaValue)
                                    }}/>
-                        </div>
-                        <div>
+                        </Space.Compact>
+                        <Space.Compact>
                             类&nbsp;&nbsp;&nbsp;&nbsp;型：
-                            <Select
-                                defaultValue={row.schemaType}
-                                size={"middle"}
-                                className={'middle'}
-                                onChange={v => {
-                                    row.schemaType = v;
-                                    onFieldChange(row.paramType, row)
-                                }}
-                                options={SchemaTypeOption}
-                            />
-                        </div>
-                        <div>
+                                <Space.Compact>
+                                    <Select
+                                        defaultValue={row.schemaType}
+                                        size={"middle"}
+                                        className={'middle-half'}
+                                        onChange={v => {
+                                            row.schemaType = v;
+                                            onFieldChange(row.paramType, row)
+                                        }}
+                                        options={SchemaTypeOption}
+                                    />
+                                    <Select
+                                        defaultValue={row.schemaSubType}
+                                        allowClear
+                                        size={"middle"}
+                                        className={'middle-half'}
+                                        onChange={v => {
+                                            row.schemaSubType = v;
+                                            onFieldChange(row.paramType, row)
+                                        }}
+                                        placeholder={'Map/Set/List元素类型'}
+                                        options={SubElemTypeOption}
+                                    />
+                                </Space.Compact>
+                        </Space.Compact>
+                        <Space.Compact>
                             默认值：
                             <Input defaultValue={row.default}
                                    size={"middle"}
@@ -323,7 +332,7 @@ const ApiFieldView: React.FC<{
                                        row.default = e.target.value;
                                        onFieldChange(row.paramType, row)
                                    }}/>
-                        </div>
+                        </Space.Compact>
                     </Space>
                 }
             },
@@ -911,12 +920,17 @@ const ApiFieldView: React.FC<{
     </div>;
 }
 
-const ApiInfo: React.FC<{ api: ApiDetail, onSchemaTypeChange: (v: string) => any, deleteApiData: () => any, onServiceAlias:(v: string) => any }> = ({
-    api,
-    onSchemaTypeChange,
-    deleteApiData,
-    onServiceAlias,
-}) => {
+const ApiInfo: React.FC<{
+    api: ApiDetail,
+    onSchemaTypeChange: (v: string) => any,
+    deleteApiData: () => any,
+    onServiceAlias: (v: string) => any
+}> = ({
+          api,
+          onSchemaTypeChange,
+          deleteApiData,
+          onServiceAlias,
+      }) => {
     return <Row>
         <Col span={12}>
             <Select
@@ -933,15 +947,16 @@ const ApiInfo: React.FC<{ api: ApiDetail, onSchemaTypeChange: (v: string) => any
                 <Option value="delete">DeleteContext</Option>
             </Select>
             <Input value={api.serviceAlias}
-                onClick={(e) => e.stopPropagation()}
-                placeholder='ServiceName别名'
-                size={"middle"}
-                allowClear
-                style={{ width: '160px' }}
-                onChange={e => {
-                    onServiceAlias(e.target.value)
-                }} />
-            <span style={{ marginLeft: '10px' }}>#{api.id} 【{api.productName}】&nbsp;&nbsp;{api.apiName} / {api.apiNameEn}</span>
+                   onClick={(e) => e.stopPropagation()}
+                   placeholder='ServiceName别名'
+                   size={"middle"}
+                   allowClear
+                   style={{width: '160px'}}
+                   onChange={e => {
+                       onServiceAlias(e.target.value)
+                   }}/>
+            <span
+                style={{marginLeft: '10px'}}>#{api.id} 【{api.productName}】&nbsp;&nbsp;{api.apiName} / {api.apiNameEn}</span>
         </Col>
         <Col span={12} style={{textAlign: 'right', marginTop: '4px'}}>
             [{api.method}]&nbsp;&nbsp;{api.uri}
@@ -961,7 +976,7 @@ export const getType = (originType: string): string => {
 
 const ApiConfig: React.FC<{
     setData: (data: ApiDetail[]) => any,
-    baseInfo: any,
+    baseInfo: BaseInfo,
     dataId: number | null,
     apiDataPar: ApiDetail[],
     funData: allFunData[],
@@ -972,7 +987,7 @@ const ApiConfig: React.FC<{
     apiData = apiDataPar;
 
     useEffect(() => {
-        if (baseInfo?.providerType === 'DataSource' && apiData.length) {
+        if (baseInfo.providerType === 'DataSource' && apiData.length) {
             apiData.forEach(api => {
                 const uuOption = api.rosourceOption.find(item => item.value === '$_UUID_$');
                 if (!uuOption) {
@@ -990,7 +1005,7 @@ const ApiConfig: React.FC<{
             setData(apiData);
         }
 
-        if (baseInfo?.providerType === 'Resource' && apiData.length) {
+        if (baseInfo.providerType === 'Resource' && apiData.length) {
             apiData.forEach(api => {
                 api.rosourceOption = api.rosourceOption.filter(item => item.value !== '$_UUID_$')
                 if (api.resourceId === '$_UUID_$') {
@@ -1001,7 +1016,7 @@ const ApiConfig: React.FC<{
             })
         }
 
-    }, [baseInfo?.providerType])
+    }, [baseInfo.providerType])
 
     const pageOption = [
         {
@@ -1034,11 +1049,11 @@ const ApiConfig: React.FC<{
                 api.serviceAlias = '';
                 api.jmespath = '';
                 api.isJmespath = false;
-                api.rosourceOption = baseInfo?.providerType === 'DataSource' ? [{
+                api.rosourceOption = baseInfo.providerType === 'DataSource' ? [{
                     label: '使用UUID',
                     value: '$_UUID_$'
                 }] : [];
-                api.resourceId = baseInfo?.providerType === 'DataSource' ? '$_UUID_$' : '';
+                api.resourceId = baseInfo.providerType === 'DataSource' ? '$_UUID_$' : '';
                 api.dataPath = null;
                 api.nextExp = null;
                 api.linkExp = null;
