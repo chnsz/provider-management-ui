@@ -117,6 +117,10 @@ export type Field = {
     index?: number;
     getterCode?: string;
     setterCode?: string;
+    dateFormat?: {
+        source: string;
+        target: string;
+    }
 }
 
 export const FieldTypeOption = [
@@ -345,7 +349,7 @@ const ApiFieldView: React.FC<{
                     return '';
                 }
 
-                return <SchemaEditDialog schemaField={row} onChange={(data) => {
+                return <SchemaEditDialog schemaField={row} apiData={apiData} onChange={(data) => {
                     if (row.paramType === 'output') {
                         const arr = [...outputFieldList];
                         arr.forEach(t => {
@@ -355,6 +359,7 @@ const ApiFieldView: React.FC<{
                                 t.sensitive = row.sensitive;
                                 t.keepZero = row.keepZero;
                                 t.setterCode = row.setterCode;
+                                t.dateFormat = row.dateFormat;
                             }
                         });
                         setOutputFieldData(arr);
@@ -367,6 +372,7 @@ const ApiFieldView: React.FC<{
                                 t.sensitive = row.sensitive;
                                 t.keepZero = row.keepZero;
                                 t.setterCode = row.setterCode;
+                                t.dateFormat = row.dateFormat;
                             }
                         });
                         setInputFieldData(arr);
@@ -1095,6 +1101,10 @@ const ApiConfig: React.FC<{
                     t.keepZero = false;
                     t.selectSchemaName = '';
                     t.index = index + 1;
+                    t.dateFormat = {
+                        source: '',
+                        target: ''
+                    };
                     return t;
                 });
 
@@ -1105,6 +1115,10 @@ const ApiConfig: React.FC<{
                     t.schemaDesc = t.fieldDesc;
                     t.ignore = true;
                     t.index = index + 1;
+                    t.dateFormat = {
+                        source: '',
+                        target: ''
+                    };
                     api.rosourceOption.push({
                         label: t.fieldName,
                         value: t.fieldName
