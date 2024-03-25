@@ -120,7 +120,7 @@ export type Field = {
     dateFormat?: {
         source: string;
         target: string;
-    }
+    } | null;
 }
 
 export const FieldTypeOption = [
@@ -349,7 +349,7 @@ const ApiFieldView: React.FC<{
                     return '';
                 }
 
-                return <SchemaEditDialog schemaField={row} apiData={apiData} onChange={(data) => {
+                return <SchemaEditDialog schemaField={row} onChange={(data) => {
                     if (row.paramType === 'output') {
                         const arr = [...outputFieldList];
                         arr.forEach(t => {
@@ -1101,10 +1101,7 @@ const ApiConfig: React.FC<{
                     t.keepZero = false;
                     t.selectSchemaName = '';
                     t.index = index + 1;
-                    t.dateFormat = {
-                        source: '',
-                        target: ''
-                    };
+                    t.dateFormat = null;
                     return t;
                 });
 
@@ -1115,10 +1112,7 @@ const ApiConfig: React.FC<{
                     t.schemaDesc = t.fieldDesc;
                     t.ignore = true;
                     t.index = index + 1;
-                    t.dateFormat = {
-                        source: '',
-                        target: ''
-                    };
+                    t.dateFormat = null;
                     api.rosourceOption.push({
                         label: t.fieldName,
                         value: t.fieldName

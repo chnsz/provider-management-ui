@@ -2,7 +2,6 @@ import {Field} from "@/pages/AutoGenerate/step1/api-config";
 import React, {useEffect, useState} from "react";
 import {Checkbox, Form, Input, Modal, Row, Space, Typography} from "antd";
 import CodeEditor from "@/components/CodeEditor";
-import { ApiDetail } from "../step1/api-config";
 
 const {Title, Text} = Typography;
 
@@ -29,9 +28,8 @@ const getDefSetter = (schema: Field): string => {
 
 export const SchemaEditDialog: React.FC<{
     schemaField: Field,
-    apiData: ApiDetail,
     onChange: (rows: Field) => any,
-}> = ({schemaField, apiData, onChange}) => {
+}> = ({schemaField, onChange}) => {
     const [isDialogOpen, setDialogOpen] = useState(false);
     const [schema, setSchema] = useState<Field>(schemaField);
 
@@ -127,7 +125,7 @@ export const SchemaEditDialog: React.FC<{
                     </Space>
                 </div>
                 {
-                    apiData.schemaType === 'attribute' &&
+                    schema.paramType === 'output' &&
                     <div>
                         <Title level={5}>日期格式</Title>
                         <Space size={20} direction={'horizontal'}>
