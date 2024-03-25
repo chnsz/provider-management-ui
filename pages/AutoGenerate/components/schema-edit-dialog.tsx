@@ -125,6 +125,54 @@ export const SchemaEditDialog: React.FC<{
                     </Space>
                 </div>
                 {
+                    schema.paramType === 'output' &&
+                    <div>
+                        <Title level={5}>日期格式</Title>
+                        <Space size={20} direction={'horizontal'}>
+                            <span>
+                                <span style={{ marginRight: '10px', display: 'inline-block' }}>
+                                    <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>* </span>
+                                    原格式:
+                                </span>
+
+                                <Input placeholder="如: 2006-01-02T15:04:05"
+                                    allowClear
+                                    value={schema.dateFormat?.source}
+                                    onChange={e => {
+                                        const newSchema = {...schema};
+                                        newSchema['dateFormat'] = {
+                                            'source': e.target.value,
+                                            'target': schema.dateFormat?.target
+                                        };
+                                        setSchema(newSchema);
+                                    }}
+                                    style={{ width: '200px' }} />
+                            </span>
+                            <span>
+                                <span style={{ marginRight: '10px', display: 'inline-block' }}>
+                                    <span style={{ color: '#ff4d4f', fontWeight: 'bold' }}>* </span>
+                                    目标格式:
+                                </span>
+
+                                <Input placeholder="如: 2006-01-02T15:04:05"
+                                    allowClear
+                                    value={schema.dateFormat?.target}
+                                    onChange={e => {
+                                        const newSchema = {...schema};
+                                        newSchema['dateFormat'] = {
+                                            'source': schema.dateFormat?.source,
+                                            'target': e.target.value
+                                        };
+                                        setSchema(newSchema);
+                                    }}
+                                    style={{ width: '200px' }} />
+                            </span>
+
+                        </Space>
+                    </div>
+
+                }
+                {
                     schema.paramType === 'input' &&
                     <div>
                         <Title level={5}>自定义 Schema Getter 函数</Title>
@@ -156,6 +204,7 @@ export const SchemaEditDialog: React.FC<{
                         </div>
                     </>
                 }
+                
             </Space>
         </Modal>
     </>
