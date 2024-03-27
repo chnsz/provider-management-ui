@@ -66,7 +66,7 @@ const FunArrange: React.FC<{
             align: 'center',
             width: '100px',
             render: (_, record: funData) => {
-                if (['callApi', 'setSchema'].includes(record.funType)) {
+                if (['callApi'].includes(record.funType)) {
                     return <Text disabled>移除</Text>
                 }
 
